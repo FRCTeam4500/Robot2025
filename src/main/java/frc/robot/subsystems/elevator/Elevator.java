@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.logging.HoundLog;
+import frc.robot.utilities.logging.Loggable;
 
-public class Elevator extends SubsystemBase {
+public class Elevator extends SubsystemBase implements Loggable{
   private Motor upMotor;
 
   public Elevator() {
@@ -134,4 +136,9 @@ public class Elevator extends SubsystemBase {
                   return upMotor.atTarget();
                 }));
   }
+
+@Override
+public void log(String path) {
+   HoundLog.log(path, "Up Motor", upMotor);
+}
 }
