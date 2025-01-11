@@ -43,7 +43,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
                 pid -> { // Configuring the pid controller
                   pid.setTolerance(1); // Within one unit to our goal is good enough
                 }),
-            TargetType.Velocity, // This motor goes to a position
+            TargetType.Velocity, // This motor goes to a velocity
             0 // The starting position of the motor is 0 units
             );
   }
@@ -63,7 +63,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
    * @param targetVelocity velocity in rad/s
    */
   private void runIntake(double targetVelocity) {
-    runMotor.setVoltage(targetVelocity);
+    runMotor.setTarget(targetVelocity);
   }
 
   /**
@@ -82,7 +82,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
 
   @Override
   public void log(String path) {
-    HoundLog.log(path, "Position", tiltMotor.getPosition());
-    HoundLog.log(path, "Speed", runMotor.getVelocity());
+    HoundLog.log(path, "Tilt Motor", tiltMotor);
+    HoundLog.log(path, "Run Motor", runMotor);
   }
 }

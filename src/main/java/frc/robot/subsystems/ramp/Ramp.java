@@ -61,6 +61,6 @@ public class Ramp extends SubsystemBase implements Loggable {
 
   @Override
   public void log(String path) {
-    HoundLog.log(path, "Position", tiltMotor.getPosition());
+    HoundLog.log(path, "Motor", tiltMotor);
   }
 }
