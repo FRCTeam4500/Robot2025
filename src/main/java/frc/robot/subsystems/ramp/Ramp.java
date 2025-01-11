@@ -37,7 +37,7 @@ public class Ramp extends SubsystemBase implements Loggable {
    * @param targetAngle the target angle in rad.
    */
   public void moveRamp(double targetAngle) {
-    tiltMotor.setTarget(target);
+    tiltMotor.setTarget(targetAngle);
   }
 
   /** 
