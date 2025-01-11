@@ -40,8 +40,8 @@ public class Elevator extends SubsystemBase implements Loggable{
                   return upMotor.atTarget();
                 }));
   }
+
   /**
-   * 
    * @return A command that makes the elevator go up to the fourth level
    */
   public Command level4() {
@@ -56,9 +56,10 @@ public class Elevator extends SubsystemBase implements Loggable{
                   return upMotor.atTarget();
                 }));
   }
-    /**
-    * @return A command that makes the elevator go to the third level
-     */
+
+  /**
+   * @return A command that makes the elevator go to the third level
+   */
   public Command level3() {
     return Commands.runOnce(
             () -> {
@@ -82,14 +83,13 @@ public class Elevator extends SubsystemBase implements Loggable{
             },
             this)
         .andThen(
-            Commands.waitUntil( 
+            Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
                 }));
   }
-  
+
   /**
-   * 
    * @return A command that moves the elevator up to the first level
    */
   public Command level1() {
@@ -106,7 +106,6 @@ public class Elevator extends SubsystemBase implements Loggable{
   }
 
   /**
-   * 
    * @return A command that moves the elevator to the level of the lower algae
    */
   public Command lowAlgae() {
@@ -121,9 +120,10 @@ public class Elevator extends SubsystemBase implements Loggable{
                   return upMotor.atTarget();
                 }));
   }
-/**
- * @return A command that moves the elevator to the level of the higher algae
- */
+
+  /**
+   * @return A command that moves the elevator to the level of the higher algae
+   */
   public Command highAlgae() {
     return Commands.runOnce(
             () -> {
