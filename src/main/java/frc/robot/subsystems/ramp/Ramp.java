@@ -13,7 +13,6 @@ import frc.robot.utilities.logging.Loggable;
 /** The Ramp subsystem is used by the robot to intake game pieces. */
 public class Ramp extends SubsystemBase implements Loggable {
 
-  /** The motor that tilts the ramp. */
   private Motor tiltMotor;
 
   private double intakeAngle = 0;
@@ -33,17 +32,26 @@ public class Ramp extends SubsystemBase implements Loggable {
             );
   }
 
-  /** Moves the ramp to the specified target angle. */
-  public void moveRamp(double target) {
+  /**
+   * Moves the ramp to the specified target angle.
+   * @param targetAngle the target angle in rad.
+   */
+  public void moveRamp(double targetAngle) {
     tiltMotor.setTarget(target);
   }
 
-  /** Moves the ramp to the stow angle. */
+  /** 
+   * Moves the ramp to the stow angle.
+   * @return Command to move ramp to the stow angle.
+   */
   public Command raiseRamp() {
     return Commands.runOnce(() -> moveRamp(stowAngle));
   }
 
-  /** Moves the ramp to the intake angle. */
+  /**
+   * Moves the ramp to the intake angle.
+   * @param Command to move ramp to the intake angle.
+   */
   public Command lowerRamp() {
     return Commands.runOnce(() -> moveRamp(intakeAngle));
   }

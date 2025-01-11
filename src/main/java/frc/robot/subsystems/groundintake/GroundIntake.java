@@ -10,6 +10,10 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
+/** 
+ * The GroundIntake subsystem is on the same side of the robot 
+ * as the placer and feeds the placer from the ground. 
+ */
 public class GroundIntake extends SubsystemBase implements Loggable {
 
     private Motor tiltMotor;
