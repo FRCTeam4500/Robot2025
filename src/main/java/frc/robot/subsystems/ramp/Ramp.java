@@ -34,14 +34,16 @@ public class Ramp extends SubsystemBase implements Loggable {
 
   /**
    * Moves the ramp to the specified target angle.
+   *
    * @param targetAngle the target angle in rad.
    */
   public void moveRamp(double targetAngle) {
     tiltMotor.setTarget(targetAngle);
   }
 
-  /** 
+  /**
    * Moves the ramp to the stow angle.
+   *
    * @return Command to move ramp to the stow angle.
    */
   public Command raiseRamp() {
@@ -50,6 +52,7 @@ public class Ramp extends SubsystemBase implements Loggable {
 
   /**
    * Moves the ramp to the intake angle.
+   *
    * @param Command to move ramp to the intake angle.
    */
   public Command lowerRamp() {
