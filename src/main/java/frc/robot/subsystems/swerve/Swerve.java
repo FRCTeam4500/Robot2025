@@ -94,7 +94,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               68,
               6.884,
               new ModuleConfig(0.5, 6, 1.2, DCMotor.getKrakenX60(1).withReduction(5.143), 60, 1),
-              FRONT_LEFT_TRANSLATION.getY()*2);
+              FRONT_LEFT_TRANSLATION.getY() * 2);
     }
     AutoBuilder.configure(
         estimator::getEstimatedPosition,
@@ -143,16 +143,22 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command robotCentric(XboxController xbox) {
-    return Commands.run(() -> {
-      double coefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
-      drive(
-        new ChassisSpeeds(
-          coefficient * withHardDeadzone(-xbox.getLeftY(), 0.1) * MAX_SPEEDS.vxMetersPerSecond,
-          coefficient * withHardDeadzone(-xbox.getLeftX(), 0.1) * MAX_SPEEDS.vyMetersPerSecond,
-          coefficient * withHardDeadzone(-xbox.getRightX(), 0.1) * MAX_SPEEDS.omegaRadiansPerSecond
-        )
-      );
-    }, this);
+    return Commands.run(
+        () -> {
+          double coefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
+          drive(
+              new ChassisSpeeds(
+                  coefficient
+                      * withHardDeadzone(-xbox.getLeftY(), 0.1)
+                      * MAX_SPEEDS.vxMetersPerSecond,
+                  coefficient
+                      * withHardDeadzone(-xbox.getLeftX(), 0.1)
+                      * MAX_SPEEDS.vyMetersPerSecond,
+                  coefficient
+                      * withHardDeadzone(-xbox.getRightX(), 0.1)
+                      * MAX_SPEEDS.omegaRadiansPerSecond));
+        },
+        this);
   }
 
   /**
