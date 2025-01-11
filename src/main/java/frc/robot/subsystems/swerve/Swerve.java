@@ -94,10 +94,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               68,
               6.884,
               new ModuleConfig(0.5, 6, 1.2, DCMotor.getKrakenX60(1).withReduction(5.143), 60, 1),
-              FRONT_LEFT_TRANSLATION,
-              FRONT_RIGHT_TRANSLATION,
-              BACK_LEFT_TRANSLATION,
-              BACK_RIGHT_TRANSLATION);
+              FRONT_LEFT_TRANSLATION.getY()*2);
     }
     AutoBuilder.configure(
         estimator::getEstimatedPosition,
