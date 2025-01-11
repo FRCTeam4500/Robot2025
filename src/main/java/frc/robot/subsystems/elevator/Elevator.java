@@ -10,7 +10,7 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
-public class Elevator extends SubsystemBase implements Loggable{
+public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
 
   public Elevator() {
@@ -137,8 +137,8 @@ public class Elevator extends SubsystemBase implements Loggable{
                 }));
   }
 
-@Override
-public void log(String path) {
-   HoundLog.log(path, "Up Motor", upMotor);
-}
+  @Override
+  public void log(String path) {
+    HoundLog.log(path, "Up Motor", upMotor);
+  }
 }
