@@ -75,7 +75,6 @@ public class GroundIntake extends SubsystemBase implements Loggable {
     }
 
     /**
-     * 
      * @return Command to move intake to stow position and stop wheels
      */
     public Command stowIntake() {
