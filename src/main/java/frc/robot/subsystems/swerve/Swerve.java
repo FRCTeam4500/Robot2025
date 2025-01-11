@@ -161,6 +161,23 @@ public class Swerve extends SubsystemBase implements Loggable {
         this);
   }
 
+  public Command poseCentric(Pose2d target) {
+    PIDController forwardPID = new PIDController(3, 0, 0);
+    PIDController sidewaysPID = new PIDController(3, 0, 0);
+    PIDController rotationalPID = new PIDController(10, 0, 0);
+    return Commands.run(
+      () -> {
+        Pose2d current = estimator.getEstimatedPosition();
+        ChassisSpeeds speeds = new ChassisSpeeds(
+          forwardPID.calculate(current.getX(), target.getX()),
+          sidewaysPID.calculate(current.getY(), target.getY()),
+          rotationalPID.calculate(current.getRotation().getRadians(), target.getRotation().getRadians())
+        );
+        drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
+      }, this
+    );
+  }
+
   /**
    * Updates the heading of the robot
    *
