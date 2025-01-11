@@ -3,12 +3,15 @@ package frc.robot.subsystems.ramp;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.logging.HoundLog;
+import frc.robot.utilities.logging.Loggable;
 
 /** The Ramp subsystem is used by the robot to intake game pieces. */
-public class Ramp {
+public class Ramp extends SubsystemBase implements Loggable {
 
   /** The motor that tilts the ramp. */
   private Motor tiltMotor;
@@ -43,5 +46,10 @@ public class Ramp {
   /** Moves the ramp to the intake angle. */
   public Command lowerRamp() {
     return Commands.runOnce(() -> moveRamp(intakeAngle));
+  }
+
+  @Override
+  public void log(String path) {
+    HoundLog.log(path, "Position", tiltMotor.getPosition());
   }
 }
