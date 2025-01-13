@@ -125,7 +125,7 @@ public Command algaeFromRamp() {
                 .andThen(
                   Commands.runOnce(()-> {
                     upMotor.setTarget(0.5);
-                  }), this)
+                  }))
                   .andThen(
                     Commands.waitUntil(() ->{
                       return upMotor.atTarget();
