@@ -3,14 +3,11 @@ package frc.robot.subsystems.swerve;
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
 
-import java.util.Set;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -42,6 +39,7 @@ import frc.robot.utilities.ExtendedMath;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.Set;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
 public class Swerve extends SubsystemBase implements Loggable {
@@ -185,173 +183,136 @@ public class Swerve extends SubsystemBase implements Loggable {
         this);
   }
 
+  public Command alignToReef(boolean alignRight) {
+    // use current position v center of reef
+    // operate in range of angles
+    // areas BASED ON SIDE OF REEF DUUUUHHHHH
+    // 6 areas; 30 to -30,30 to 90,etc.
 
-  public Command alignToReef(boolean alignRight){
-      //use current position v center of reef
-      //operate in range of angles
-      //areas BASED ON SIDE OF REEF DUUUUHHHHH
-      //6 areas; 30 to -30,30 to 90,etc.
+    // TL (blue):
 
-      //TL (blue):
+    return Commands.defer(
+        () -> {
+          boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue);
+          Translation2d robert = estimator.getEstimatedPosition().getTranslation();
+          Translation2d reef;
 
+          if (isBlue) {
+            reef = new Translation2d(4.5, 4);
 
-      return Commands.defer(() -> {
+          } else {
+            reef = new Translation2d(13.1, 4);
+          }
 
-        boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue);
-        Translation2d robert = estimator.getEstimatedPosition().getTranslation();
-        Translation2d reef;
-        
-        if (isBlue){
-          reef = new Translation2d(4.5,4);
+          double angle = robert.minus(reef).getAngle().getDegrees();
+          angle = MathUtil.inputModulus(angle, -30, 330);
 
-        }
-        else{
-          reef = new Translation2d(13.1,4);
+          if (angle <= 30 && angle >= -30) {
+            if (isBlue) {
+              if (alignRight) {
 
-        }
+                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            } else {
+              if (alignRight) {
 
-        double angle = robert.minus(reef).getAngle().getDegrees();
-        angle = MathUtil.inputModulus(angle, -30, 330);
-
-        if ( angle <= 30 && angle>= -30){
-          if(isBlue){
-            if (alignRight){
-
-              return poseCentric(new Pose2d(6.07,4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+              }
             }
-            else{
-              return poseCentric(new Pose2d(6.07,3.75,Rotation2d.fromDegrees(0)));
+
+          } else if (angle <= 90 && angle >= 30) {
+            if (isBlue) {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(5.25, 5.09, Rotation2d.fromDegrees(60)));
+              } else {
+                return poseCentric(new Pose2d(4.95, 5.16, Rotation2d.fromDegrees(60)));
+              }
+            } else {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(13.8, 5.04, Rotation2d.fromDegrees(60)));
+              } else {
+                return poseCentric(new Pose2d(13.52, 5.16, Rotation2d.fromDegrees(60)));
+              }
+            }
+
+          } else if (angle <= 150 && angle >= 90) {
+            if (isBlue) {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            } else {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            }
+
+          } else if (angle <= 210 && angle >= 150) {
+            if (isBlue) {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            } else {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            }
+
+          } else if (angle <= 270 && angle >= 210) {
+            if (isBlue) {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            } else {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            }
+
+          } else {
+            if (isBlue) {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+              }
+            } else {
+              if (alignRight) {
+
+                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+              } else {
+                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+              }
             }
           }
-          else{
-            if (alignRight){
-
-              return poseCentric(new Pose2d(14.67,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(14.67,3.75,Rotation2d.fromDegrees(0)));
-            }
-
-          }
-          
-
-        }
-        else if ( angle <= 90 && angle>= 30){
-          if(isBlue){
-            if (alignRight){
-
-              return poseCentric(new Pose2d(5.25,5.09, Rotation2d.fromDegrees(60)));
-            }
-            else{
-              return poseCentric(new Pose2d(4.95,5.16,Rotation2d.fromDegrees(60)));
-            }
-          }
-          else{
-            if (alignRight){
-
-              return poseCentric(new Pose2d(13.8,5.04, Rotation2d.fromDegrees(60)));
-            }
-            else{
-              return poseCentric(new Pose2d(13.52,5.16,Rotation2d.fromDegrees(60)));
-            }
-
-          }
-          
-        }
-        else if ( angle <= 150 && angle>= 90){
-          if(isBlue){
-            if (alignRight){
-
-              return poseCentric(new Pose2d(6.07,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(6.07,3.75,Rotation2d.fromDegrees(0)));
-            }
-          }
-          else{
-            if (alignRight){
-
-              return poseCentric(new Pose2d(14.67,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(14.67,3.75,Rotation2d.fromDegrees(0)));
-            }
-
-          }
-          
-        }
-        else if ( angle <= 210 && angle>= 150){
-          if(isBlue){
-            if (alignRight){
-
-              return poseCentric(new Pose2d(6.07,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(6.07,3.75,Rotation2d.fromDegrees(0)));
-            }
-          }
-          else{
-            if (alignRight){
-
-              return poseCentric(new Pose2d(14.67,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(14.67,3.75,Rotation2d.fromDegrees(0)));
-            }
-
-          }
-          
-        }
-        else if ( angle <= 270 && angle>= 210){
-          if(isBlue){
-            if (alignRight){
-
-              return poseCentric(new Pose2d(6.07,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(6.07,3.75,Rotation2d.fromDegrees(0)));
-            }
-          }
-          else{
-            if (alignRight){
-
-              return poseCentric(new Pose2d(14.67,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(14.67,3.75,Rotation2d.fromDegrees(0)));
-            }
-
-          }
-          
-        }
-        else {
-          if(isBlue){
-            if (alignRight){
-
-              return poseCentric(new Pose2d(6.07,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(6.07,3.75,Rotation2d.fromDegrees(0)));
-            }
-          }
-          else{
-            if (alignRight){
-
-              return poseCentric(new Pose2d(14.67,4.15, Rotation2d.fromDegrees(0)));
-            }
-            else{
-              return poseCentric(new Pose2d(14.67,3.75,Rotation2d.fromDegrees(0)));
-            }
-
-          }
-          
-
-        }
-
-      }, Set.of(this));
-
-
+        },
+        Set.of(this));
   }
+
   /**
    * Updates the heading of the robot
    *
