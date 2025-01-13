@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   public Command stow() {
     return Commands.runOnce(
             () -> {
-              upMotor.setTarget(0);
+              upMotor.setTarget(0.5);
             },
             this)
         .andThen(
@@ -105,6 +105,33 @@ public class Elevator extends SubsystemBase implements Loggable {
                 }));
   }
 
+ /**
+   * @return A command that moves the elevator down to the ramp, waits .1 second, then
+   */
+public Command algaeFromRamp() {
+    return Commands.runOnce(
+            () -> {
+              upMotor.setTarget(0);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return upMotor.atTarget();
+                }))
+                .andThen(
+                  Commands.waitSeconds(.1)
+                )
+                .andThen(
+                  Commands.runOnce(()-> {
+                    upMotor.setTarget(0.5);
+                  }), this)
+                  .andThen(
+                    Commands.waitUntil(() ->{
+                      return upMotor.atTarget();
+                    }));
+
+  }
   /**
    * @return A command that moves the elevator to the level of the lower algae
    */
