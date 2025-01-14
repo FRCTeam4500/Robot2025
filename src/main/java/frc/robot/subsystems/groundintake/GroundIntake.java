@@ -23,6 +23,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
   private double intakePosition = 10; // TODO: change
 
   private double intakeSpeed = 3;
+  private double outtakeSpeed = -3;
 
   /** Creates a new ground intake. */
   public GroundIntake() {
@@ -67,10 +68,24 @@ public class GroundIntake extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return Command to move intake to intake position and begin running wheels
+   * @return Command to move intake to intake position
    */
   public Command readyIntake() {
-    return runOnce(() -> moveIntake(intakePosition)).andThen(runOnce(() -> runIntake(intakeSpeed)));
+    return runOnce(() -> moveIntake(intakePosition));
+  }
+
+  /**
+   * @return Command to begin running the wheels to intake 
+   */
+  public Command intake() {
+    return runOnce(() -> runIntake(intakeSpeed));
+  }
+
+  /**
+   * @return Command to begin running the wheels to eject
+   */
+  public Command outtake() {
+    return runOnce(() -> runIntake(outtakeSpeed));
   }
 
   /**
