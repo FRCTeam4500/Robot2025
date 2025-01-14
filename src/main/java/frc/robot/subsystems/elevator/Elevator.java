@@ -105,10 +105,10 @@ public class Elevator extends SubsystemBase implements Loggable {
                 }));
   }
 
- /**
+  /**
    * @return A command that moves the elevator down to the ramp, waits .1 second, then
    */
-public Command algaeFromRamp() {
+  public Command algaeFromRamp() {
     return Commands.runOnce(
             () -> {
               upMotor.setTarget(0);
@@ -119,19 +119,19 @@ public Command algaeFromRamp() {
                 () -> {
                   return upMotor.atTarget();
                 }))
-                .andThen(
-                  Commands.waitSeconds(.1)
-                )
-                .andThen(
-                  Commands.runOnce(()-> {
-                    upMotor.setTarget(0.5);
-                  }))
-                  .andThen(
-                    Commands.waitUntil(() ->{
-                      return upMotor.atTarget();
-                    }));
-
+        .andThen(Commands.waitSeconds(.1))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  upMotor.setTarget(0.5);
+                }))
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return upMotor.atTarget();
+                }));
   }
+
   /**
    * @return A command that moves the elevator to the level of the lower algae
    */
