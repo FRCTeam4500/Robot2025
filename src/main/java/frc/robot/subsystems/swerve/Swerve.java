@@ -11,9 +11,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -45,15 +43,12 @@ public class Swerve extends SubsystemBase implements Loggable {
   private SwerveDriveKinematics kinematics;
   private SwerveDrivePoseEstimator estimator;
   private Limelight[] tagCameras;
-  private Limelight pieceCamera;
   private Rotation2d targetHeading;
   private PIDController headingPID;
-  private PIDController piecePID;
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
     tagCameras = new Limelight[] {new Limelight("limelight-hehehe")};
-    pieceCamera = new Limelight("limelight-haha", new Pose3d(0, 0, 0.48, new Rotation3d(0, 0, 0)));
     if (RobotBase.isReal()) {
       gyro = Gyro.fromNavX(navx -> {});
     } else {
@@ -77,7 +72,6 @@ public class Swerve extends SubsystemBase implements Loggable {
     headingPID.enableContinuousInput(-Math.PI, Math.PI);
     headingPID.setTolerance(Math.PI / 32, Math.PI / 32);
     headingPID.setSetpoint(0);
-    piecePID = new PIDController(0.25, 0, 0);
 
     GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
 
@@ -127,19 +121,6 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
-  }
-
-  public Command pieceCentric(XboxController xbox) {
-    return Commands.run(
-        () -> {
-          ChassisSpeeds original = calculateVelRobotRel(xbox);
-          drive(
-              new ChassisSpeeds(
-                  original.vxMetersPerSecond,
-                  piecePID.calculate(-pieceCamera.getTX(), 0),
-                  original.omegaRadiansPerSecond));
-        },
-        this);
   }
 
   public Command robotCentric(XboxController xbox) {
