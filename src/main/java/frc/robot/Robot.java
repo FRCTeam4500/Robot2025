@@ -60,6 +60,10 @@ public class Robot extends TimedRobot {
     xbox.leftBumper().whileTrue(swerve.robotCentric(xbox.getHID()));
     xbox.povLeft().whileTrue(swerve.alignToReef(false));
     xbox.povRight().whileTrue(swerve.alignToReef(true));
+    xbox.x().and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
+    xbox.b().and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
+    xbox.x().and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
+    xbox.b().and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
   }
 
   public void setupAuto() {
