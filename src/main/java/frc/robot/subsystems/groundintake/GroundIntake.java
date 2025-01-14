@@ -75,7 +75,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return Command to begin running the wheels to intake 
+   * @return Command to begin running the wheels to intake
    */
   public Command intake() {
     return runOnce(() -> runIntake(intakeSpeed));
