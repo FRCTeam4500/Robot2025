@@ -168,7 +168,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   public Command poseCentric(Pose2d target) {
     PIDController forwardPID = new PIDController(3, 0, 0);
     PIDController sidewaysPID = new PIDController(3, 0, 0);
-    PIDController rotationalPID = new PIDController(10, 0, 0);
+    PIDController rotationalPID = new PIDController(8, 0, 0);
+    rotationalPID.enableContinuousInput(0, 2 * Math.PI);
     return Commands.run(
         () -> {
           Pose2d current = estimator.getEstimatedPosition();
@@ -188,124 +189,100 @@ public class Swerve extends SubsystemBase implements Loggable {
     // operate in range of angles
     // areas BASED ON SIDE OF REEF DUUUUHHHHH
     // 6 areas; 30 to -30,30 to 90,etc.
-
-    // TL (blue):
-
     return Commands.defer(
         () -> {
           boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue);
           Translation2d robert = estimator.getEstimatedPosition().getTranslation();
           Translation2d reef;
-
           if (isBlue) {
             reef = new Translation2d(4.5, 4);
-
           } else {
             reef = new Translation2d(13.1, 4);
           }
-
           double angle = robert.minus(reef).getAngle().getDegrees();
           angle = MathUtil.inputModulus(angle, -30, 330);
-
           if (angle <= 30 && angle >= -30) {
             if (isBlue) {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(5.69, 4.17, Rotation2d.fromDegrees(0)));
               } else {
-                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(5.69, 3.86, Rotation2d.fromDegrees(0)));
               }
             } else {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(14.34, 4.2, Rotation2d.fromDegrees(0)));
               } else {
-                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(14.34, 3.84, Rotation2d.fromDegrees(0)));
               }
             }
-
           } else if (angle <= 90 && angle >= 30) {
             if (isBlue) {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(5.25, 5.09, Rotation2d.fromDegrees(60)));
+                return poseCentric(new Pose2d(4.94, 5.18, Rotation2d.fromDegrees(60)));
               } else {
-                return poseCentric(new Pose2d(4.95, 5.16, Rotation2d.fromDegrees(60)));
+                return poseCentric(new Pose2d(5.25, 5.00, Rotation2d.fromDegrees(60)));
               }
             } else {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(13.8, 5.04, Rotation2d.fromDegrees(60)));
-              } else {
                 return poseCentric(new Pose2d(13.52, 5.16, Rotation2d.fromDegrees(60)));
+              } else {
+                return poseCentric(new Pose2d(13.8, 5.04, Rotation2d.fromDegrees(60)));
               }
             }
-
           } else if (angle <= 150 && angle >= 90) {
             if (isBlue) {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(3.74, 4.99, Rotation2d.fromDegrees(120)));
               } else {
-                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(4.03, 5.16, Rotation2d.fromDegrees(120)));
               }
             } else {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(12.31, 5.02, Rotation2d.fromDegrees(120)));
               } else {
-                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(12.58, 5.18, Rotation2d.fromDegrees(120)));
               }
             }
-
           } else if (angle <= 210 && angle >= 150) {
             if (isBlue) {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(3.26, 3.87, Rotation2d.fromDegrees(180)));
               } else {
-                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(3.23, 4.21, Rotation2d.fromDegrees(180)));
               }
             } else {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(11.81, 3.86, Rotation2d.fromDegrees(180)));
               } else {
-                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(11.81, 4.21, Rotation2d.fromDegrees(180)));
               }
             }
-
           } else if (angle <= 270 && angle >= 210) {
             if (isBlue) {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(4.00, 2.90, Rotation2d.fromDegrees(240)));
               } else {
-                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(3.70, 3.05, Rotation2d.fromDegrees(240)));
               }
             } else {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(12.6, 2.87, Rotation2d.fromDegrees(240)));
               } else {
-                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(12.32, 3.03, Rotation2d.fromDegrees(240)));
               }
             }
-
           } else {
             if (isBlue) {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(6.07, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(5.25, 3.03, Rotation2d.fromDegrees(300)));
               } else {
-                return poseCentric(new Pose2d(6.07, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(4.93, 2.84, Rotation2d.fromDegrees(300)));
               }
             } else {
               if (alignRight) {
-
-                return poseCentric(new Pose2d(14.67, 4.15, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(13.85, 3.01, Rotation2d.fromDegrees(300)));
               } else {
-                return poseCentric(new Pose2d(14.67, 3.75, Rotation2d.fromDegrees(0)));
+                return poseCentric(new Pose2d(13.54, 2.83, Rotation2d.fromDegrees(300)));
               }
             }
           }

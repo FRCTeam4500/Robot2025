@@ -58,6 +58,8 @@ public class Robot extends TimedRobot {
     resetHeading.onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     pieceAlign.whileTrue(swerve.pieceCentric(xbox.getHID()));
     xbox.leftBumper().whileTrue(swerve.robotCentric(xbox.getHID()));
+    xbox.povLeft().whileTrue(swerve.alignToReef(false));
+    xbox.povRight().whileTrue(swerve.alignToReef(true));
   }
 
   public void setupAuto() {
