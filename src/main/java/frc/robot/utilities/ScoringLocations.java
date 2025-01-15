@@ -21,17 +21,15 @@ public class ScoringLocations {
 
   public static Pose2d allianceFlip(Pose2d blue) {
     if (DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue)) {
-        return blue;
+      return blue;
     }
     return flip(blue);
-
   }
 
   public static Pose2d flip(Pose2d og) {
     return new Pose2d(
         17.55 - og.getX(),
         8.05 - og.getY(),
-        new Rotation2d(og.getRotation().getRadians() - Math.PI)
-    );
+        new Rotation2d(og.getRotation().getRadians() - Math.PI));
   }
 }
