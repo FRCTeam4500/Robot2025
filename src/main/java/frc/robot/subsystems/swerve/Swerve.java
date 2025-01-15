@@ -2,16 +2,19 @@ package frc.robot.subsystems.swerve;
 
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
+import static frc.robot.utilities.ScoringLocations.flip;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -32,9 +35,11 @@ import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
 import frc.robot.utilities.ExtendedMath;
+import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.Set;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
 public class Swerve extends SubsystemBase implements Loggable {
@@ -146,7 +151,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   public Command poseCentric(Pose2d target) {
     PIDController forwardPID = new PIDController(3, 0, 0);
     PIDController sidewaysPID = new PIDController(3, 0, 0);
-    PIDController rotationalPID = new PIDController(10, 0, 0);
+    PIDController rotationalPID = new PIDController(8, 0, 0);
+    rotationalPID.enableContinuousInput(0, 2 * Math.PI);
     return Commands.run(
         () -> {
           Pose2d current = estimator.getEstimatedPosition();
@@ -159,6 +165,112 @@ public class Swerve extends SubsystemBase implements Loggable {
           drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
         },
         this);
+  }
+
+  public Command alignToReef(boolean alignRight) {
+    // use current position v center of reef
+    // operate in range of angles
+    // areas BASED ON SIDE OF REEF DUUUUHHHHH
+    // 6 areas; 30 to -30,30 to 90,etc.
+    return Commands.defer(
+        () -> {
+          boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue);
+          Translation2d robert = estimator.getEstimatedPosition().getTranslation();
+          Translation2d reef;
+          if (isBlue) {
+            reef = new Translation2d(4.5, 4);
+          } else {
+            reef = new Translation2d(13.1, 4);
+          }
+          double angle = robert.minus(reef).getAngle().getDegrees();
+          angle = MathUtil.inputModulus(angle, -30, 330);
+          if (angle <= 30 && angle >= -30) {
+            if (isBlue) {
+              if (alignRight) {
+                return poseCentric(ScoringLocations.H);
+              } else {
+                return poseCentric(ScoringLocations.G);
+              }
+            } else {
+              if (alignRight) {
+                return poseCentric(flip(ScoringLocations.B));
+              } else {
+                return poseCentric(flip(ScoringLocations.A));
+              }
+            }
+          } else if (angle <= 90 && angle >= 30) {
+            if (isBlue) {
+              if (alignRight) {
+                return poseCentric(ScoringLocations.J);
+              } else {
+                return poseCentric(ScoringLocations.I);
+              }
+            } else {
+              if (alignRight) {
+                return poseCentric(flip(ScoringLocations.D));
+              } else {
+                return poseCentric(flip(ScoringLocations.C));
+              }
+            }
+          } else if (angle <= 150 && angle >= 90) {
+            if (isBlue) {
+              if (alignRight) {
+                return poseCentric(ScoringLocations.L);
+              } else {
+                return poseCentric(ScoringLocations.K);
+              }
+            } else {
+              if (alignRight) {
+                return poseCentric(flip(ScoringLocations.F));
+              } else {
+                return poseCentric(flip(ScoringLocations.E));
+              }
+            }
+          } else if (angle <= 210 && angle >= 150) {
+            if (isBlue) {
+              if (alignRight) {
+                return poseCentric(ScoringLocations.B);
+              } else {
+                return poseCentric(ScoringLocations.A);
+              }
+            } else {
+              if (alignRight) {
+                return poseCentric(flip(ScoringLocations.H));
+              } else {
+                return poseCentric(flip(ScoringLocations.G));
+              }
+            }
+          } else if (angle <= 270 && angle >= 210) {
+            if (isBlue) {
+              if (alignRight) {
+                return poseCentric(ScoringLocations.D);
+              } else {
+                return poseCentric(ScoringLocations.C);
+              }
+            } else {
+              if (alignRight) {
+                return poseCentric(flip(ScoringLocations.J));
+              } else {
+                return poseCentric(flip(ScoringLocations.I));
+              }
+            }
+          } else {
+            if (isBlue) {
+              if (alignRight) {
+                return poseCentric(ScoringLocations.F);
+              } else {
+                return poseCentric(ScoringLocations.E);
+              }
+            } else {
+              if (alignRight) {
+                return poseCentric(flip(ScoringLocations.L));
+              } else {
+                return poseCentric(flip(ScoringLocations.K));
+              }
+            }
+          }
+        },
+        Set.of(this));
   }
 
   /**
