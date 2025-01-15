@@ -2,9 +2,11 @@ package frc.robot.subsystems.swerve;
 
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
+import static frc.robot.utilities.ScoringLocations.allianceFlip;
 import static frc.robot.utilities.ScoringLocations.flip;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -107,6 +109,31 @@ public class Swerve extends SubsystemBase implements Loggable {
           return alliance == Alliance.Red;
         },
         this);
+
+    NamedCommands.registerCommand(
+        "To A", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.A)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To B", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.B)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To C", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.C)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To D", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.D)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To E", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.E)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To F", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.F)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To G", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.G)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To H", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.H)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To I", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.I)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To J", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.J)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To K", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.K)), Set.of(this)));
+    NamedCommands.registerCommand(
+        "To L", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.L)), Set.of(this)));
   }
 
   /**
