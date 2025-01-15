@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to back left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "back left to J"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "To J"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "J to CSL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CSL to K"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "To K"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K to CSL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CSL to L"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "To L"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

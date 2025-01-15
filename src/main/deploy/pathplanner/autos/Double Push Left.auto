@@ -1,0 +1,97 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 to push right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "push righ to 4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4 to push left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "push left to j (DPL)"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "To J"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "J to CSL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CSL to K"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "To K"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "K to CSL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CSL to L"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "To L"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
