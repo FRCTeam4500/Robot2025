@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
+import static frc.robot.utilities.ScoringLocations.flip;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -36,6 +37,7 @@ import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
 import frc.robot.utilities.ExtendedMath;
+import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
@@ -204,85 +206,85 @@ public class Swerve extends SubsystemBase implements Loggable {
           if (angle <= 30 && angle >= -30) {
             if (isBlue) {
               if (alignRight) {
-                return poseCentric(new Pose2d(5.69, 4.17, Rotation2d.fromDegrees(0)));
+                return poseCentric(ScoringLocations.H);
               } else {
-                return poseCentric(new Pose2d(5.69, 3.86, Rotation2d.fromDegrees(0)));
+                return poseCentric(ScoringLocations.G);
               }
             } else {
               if (alignRight) {
-                return poseCentric(new Pose2d(14.34, 4.2, Rotation2d.fromDegrees(0)));
+                return poseCentric(flip(ScoringLocations.B));
               } else {
-                return poseCentric(new Pose2d(14.34, 3.84, Rotation2d.fromDegrees(0)));
+                return poseCentric(flip(ScoringLocations.A));
               }
             }
           } else if (angle <= 90 && angle >= 30) {
             if (isBlue) {
               if (alignRight) {
-                return poseCentric(new Pose2d(4.94, 5.18, Rotation2d.fromDegrees(60)));
+                return poseCentric(ScoringLocations.J);
               } else {
-                return poseCentric(new Pose2d(5.25, 5.00, Rotation2d.fromDegrees(60)));
+                return poseCentric(ScoringLocations.I);
               }
             } else {
               if (alignRight) {
-                return poseCentric(new Pose2d(13.52, 5.16, Rotation2d.fromDegrees(60)));
+                return poseCentric(flip(ScoringLocations.D));
               } else {
-                return poseCentric(new Pose2d(13.8, 5.04, Rotation2d.fromDegrees(60)));
+                return poseCentric(flip(ScoringLocations.C));
               }
             }
           } else if (angle <= 150 && angle >= 90) {
             if (isBlue) {
               if (alignRight) {
-                return poseCentric(new Pose2d(3.74, 4.99, Rotation2d.fromDegrees(120)));
+                return poseCentric(ScoringLocations.L);
               } else {
-                return poseCentric(new Pose2d(4.03, 5.16, Rotation2d.fromDegrees(120)));
+                return poseCentric(ScoringLocations.K);
               }
             } else {
               if (alignRight) {
-                return poseCentric(new Pose2d(12.31, 5.02, Rotation2d.fromDegrees(120)));
+                return poseCentric(flip(ScoringLocations.F));
               } else {
-                return poseCentric(new Pose2d(12.58, 5.18, Rotation2d.fromDegrees(120)));
+                return poseCentric(flip(ScoringLocations.E));
               }
             }
           } else if (angle <= 210 && angle >= 150) {
             if (isBlue) {
               if (alignRight) {
-                return poseCentric(new Pose2d(3.26, 3.87, Rotation2d.fromDegrees(180)));
+                return poseCentric(ScoringLocations.B);
               } else {
-                return poseCentric(new Pose2d(3.23, 4.21, Rotation2d.fromDegrees(180)));
+                return poseCentric(ScoringLocations.A);
               }
             } else {
               if (alignRight) {
-                return poseCentric(new Pose2d(11.81, 3.86, Rotation2d.fromDegrees(180)));
+                return poseCentric(flip(ScoringLocations.H));
               } else {
-                return poseCentric(new Pose2d(11.81, 4.21, Rotation2d.fromDegrees(180)));
+                return poseCentric(flip(ScoringLocations.G));
               }
             }
           } else if (angle <= 270 && angle >= 210) {
             if (isBlue) {
               if (alignRight) {
-                return poseCentric(new Pose2d(4.00, 2.90, Rotation2d.fromDegrees(240)));
+                return poseCentric(ScoringLocations.D);
               } else {
-                return poseCentric(new Pose2d(3.70, 3.05, Rotation2d.fromDegrees(240)));
+                return poseCentric(ScoringLocations.C);
               }
             } else {
               if (alignRight) {
-                return poseCentric(new Pose2d(12.6, 2.87, Rotation2d.fromDegrees(240)));
+                return poseCentric(flip(ScoringLocations.J));
               } else {
-                return poseCentric(new Pose2d(12.32, 3.03, Rotation2d.fromDegrees(240)));
+                return poseCentric(flip(ScoringLocations.I));
               }
             }
           } else {
             if (isBlue) {
               if (alignRight) {
-                return poseCentric(new Pose2d(5.25, 3.03, Rotation2d.fromDegrees(300)));
+                return poseCentric(ScoringLocations.F);
               } else {
-                return poseCentric(new Pose2d(4.93, 2.84, Rotation2d.fromDegrees(300)));
+                return poseCentric(ScoringLocations.E);
               }
             } else {
               if (alignRight) {
-                return poseCentric(new Pose2d(13.85, 3.01, Rotation2d.fromDegrees(300)));
+                return poseCentric(flip(ScoringLocations.L));
               } else {
-                return poseCentric(new Pose2d(13.54, 2.83, Rotation2d.fromDegrees(300)));
+                return poseCentric(flip(ScoringLocations.K));
               }
             }
           }
