@@ -3,7 +3,11 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
+<<<<<<< HEAD
     "New Folder"
+=======
+    "Autos"
+>>>>>>> origin/Autos
   ],
   "autoFolders": [],
   "defaultMaxVel": 5.0,
