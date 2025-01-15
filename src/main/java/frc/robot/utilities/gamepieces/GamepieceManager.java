@@ -41,7 +41,6 @@ public class GamepieceManager {
 
   public static void resetField() {
     pieces.clear();
-    // TODO: Add starting translations of the pieces here!!
     addPiece(new Gamepiece(new Translation2d(2.9, 7)));
     addPiece(new Gamepiece(new Translation2d(2.9, 5.55)));
     addPiece(new Gamepiece(new Translation2d(2.9, 4.1)));
