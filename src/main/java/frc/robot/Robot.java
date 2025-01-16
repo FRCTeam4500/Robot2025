@@ -66,18 +66,14 @@ public class Robot extends TimedRobot {
     SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous()
-        .whileTrue(Commands.defer(() -> chooser.getSelected(), Set.of(swerve)));
+        .whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
 
   public void setupLogging() {
-    DogLogOptions homeOptions = new DogLogOptions(true, true, true, true, true, 1000);
-    DogLogOptions compOptions = new DogLogOptions(false, true, true, true, true, 1000);
+    DogLogOptions options = new DogLogOptions(() -> !DriverStation.isFMSAttached(), true, true, true, true, 1000);
     HoundLog.setEnabled(true);
     HoundLog.setPdh(new PowerDistribution());
-    HoundLog.setOptions(homeOptions);
-    Trigger atComp = new Trigger(() -> DriverStation.isFMSAttached());
-    atComp.onTrue(Commands.runOnce(() -> HoundLog.setOptions(compOptions)));
-    atComp.onFalse(Commands.runOnce(() -> HoundLog.setOptions(homeOptions)));
+    HoundLog.setOptions(options);
     GamepieceManager.resetField();
   }
 

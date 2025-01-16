@@ -42,6 +42,7 @@ import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
 public class Swerve extends SubsystemBase implements Loggable {
@@ -110,6 +111,7 @@ public class Swerve extends SubsystemBase implements Loggable {
         },
         this);
 
+    NamedCommands.registerCommand("Idle", Commands.idle(this));    
     NamedCommands.registerCommand(
         "To A", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.A)), Set.of(this)));
     NamedCommands.registerCommand(
@@ -117,9 +119,9 @@ public class Swerve extends SubsystemBase implements Loggable {
     NamedCommands.registerCommand(
         "To C", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.C)), Set.of(this)));
     NamedCommands.registerCommand(
-        "To D", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.D)), Set.of(this)));
+      "To D", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.D)), Set.of(this)));
     NamedCommands.registerCommand(
-        "To E", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.E)), Set.of(this)));
+      "To E", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.E)), Set.of(this)));
     NamedCommands.registerCommand(
         "To F", Commands.defer(() -> poseCentric(allianceFlip(ScoringLocations.F)), Set.of(this)));
     NamedCommands.registerCommand(
@@ -181,19 +183,19 @@ public class Swerve extends SubsystemBase implements Loggable {
     PIDController rotationalPID = new PIDController(8, 0, 0);
     rotationalPID.enableContinuousInput(0, 2 * Math.PI);
     return Commands.run(
-        () -> {
-          Pose2d current = estimator.getEstimatedPosition();
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  forwardPID.calculate(current.getX(), target.getX()),
-                  sidewaysPID.calculate(current.getY(), target.getY()),
-                  rotationalPID.calculate(
-                      current.getRotation().getRadians(), target.getRotation().getRadians()));
-          drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
-        },
-        this);
+      () -> {
+        Pose2d current = estimator.getEstimatedPosition();
+        ChassisSpeeds speeds =
+        new ChassisSpeeds(
+          forwardPID.calculate(current.getX(), target.getX()),
+          sidewaysPID.calculate(current.getY(), target.getY()),
+          rotationalPID.calculate(
+            current.getRotation().getRadians(), target.getRotation().getRadians()));
+            drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
+          },
+          this);
   }
-
+  
   public Command alignToReef(boolean alignRight) {
     // use current position v center of reef
     // operate in range of angles
