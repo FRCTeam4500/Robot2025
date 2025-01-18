@@ -64,12 +64,12 @@ public class Robot extends TimedRobot {
   public void setupAuto() {
     SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", chooser);
-    RobotModeTriggers.autonomous()
-        .whileTrue(Commands.deferredProxy(chooser::getSelected));
+    RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
 
   public void setupLogging() {
-    DogLogOptions options = new DogLogOptions(() -> !DriverStation.isFMSAttached(), true, true, true, true, 1000);
+    DogLogOptions options =
+        new DogLogOptions(() -> !DriverStation.isFMSAttached(), true, true, true, true, 1000);
     HoundLog.setEnabled(true);
     HoundLog.setPdh(new PowerDistribution());
     HoundLog.setOptions(options);
