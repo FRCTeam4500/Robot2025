@@ -55,10 +55,10 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
-    tagCameras = new Limelight[] { new Limelight("limelight-hehehe") };
+    tagCameras = new Limelight[] {new Limelight("limelight-hehehe")};
     if (RobotBase.isReal()) { // running on hardware robot
       gyro = Gyro.fromNavX(navx -> {});
-    } else {                  // running robot simulation
+    } else { // running robot simulation
       gyro = Gyro.fromSim(() -> getSpeeds().omegaRadiansPerSecond);
     }
     modules =
@@ -90,12 +90,14 @@ public class Swerve extends SubsystemBase implements Loggable {
       alert.set(true);
       alert.close();
       System.out.println(e.getMessage());
-      config = new RobotConfig(
-        68,   // robot's mass in kg
-        6.884,   // Robot's moment of inertia
-        new ModuleConfig(0.5, 6, 1.2, DCMotor.getKrakenX60(1).withReduction(5.143), 60, 1),
-        FRONT_LEFT_TRANSLATION.getY() * 2 // the trackwidth of the robot (dist. from top left to top right for example)
-      );
+      config =
+          new RobotConfig(
+              68, // robot's mass in kg
+              6.884, // Robot's moment of inertia
+              new ModuleConfig(0.5, 6, 1.2, DCMotor.getKrakenX60(1).withReduction(5.143), 60, 1),
+              FRONT_LEFT_TRANSLATION.getY()
+                  * 2 // the trackwidth of the robot (dist. from top left to top right for example)
+              );
     }
     AutoBuilder.configure(
         estimator::getEstimatedPosition,
@@ -219,7 +221,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                 if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.L);
                 else poseCentricCommand = poseCentric(ScoringLocations.K);
               } else if (angle <= 210 && angle >= 150) {
-                if (alignRight)  poseCentricCommand = poseCentric(ScoringLocations.B);
+                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.B);
                 else poseCentricCommand = poseCentric(ScoringLocations.A);
               } else if (angle <= 270 && angle >= 210) {
                 if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.D);
