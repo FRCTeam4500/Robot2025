@@ -31,13 +31,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "J to CSL"
+            "pathName": "J-CSL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CSL to K"
+            "pathName": "CSL-K"
           }
         },
         {
@@ -55,13 +55,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "K to CSL"
+            "pathName": "K-CSL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CSL to L"
+            "pathName": "CSL-L"
           }
         },
         {
@@ -79,13 +79,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "L to CSL"
+            "pathName": "L-CSL"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "CSL to A"
+            "pathName": "CSL-A"
           }
         },
         {
