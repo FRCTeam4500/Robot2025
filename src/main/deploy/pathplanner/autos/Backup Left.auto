@@ -7,19 +7,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 to H"
+            "pathName": "4-H"
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "To H"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "To H"
+                }
+              }
+            ]
           }
         }
       ]
