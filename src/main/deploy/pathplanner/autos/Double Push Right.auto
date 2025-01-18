@@ -7,25 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4-Push Left"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4-Push Left (2)"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4-Push Right"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4-Push Right (2)"
+            "pathName": "4-E"
           }
         },
         {

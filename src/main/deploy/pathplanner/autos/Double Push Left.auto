@@ -7,37 +7,26 @@
         {
           "type": "path",
           "data": {
-            "pathName": "4 to push right"
+            "pathName": "4-J"
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "push righ to 4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "4 to push left"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "push left to j (DPL)"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "To J"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "To J"
+                }
+              }
+            ]
           }
         },
         {
@@ -53,15 +42,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "To K"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "To K"
+                }
+              }
+            ]
           }
         },
         {
@@ -77,15 +73,53 @@
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 1.0
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "To L"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "To L"
+            "pathName": "L-CSL"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CSL-A"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "To A"
+                }
+              }
+            ]
           }
         }
       ]
