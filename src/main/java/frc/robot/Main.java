@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.robots.*;
 
 public final class Main {
   public static void main(String... args) {

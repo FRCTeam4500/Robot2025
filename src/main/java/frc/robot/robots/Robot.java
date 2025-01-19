@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package frc.robot.robots;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import dev.doglog.DogLogOptions;
@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Superstructure;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
@@ -68,11 +69,10 @@ public class Robot extends TimedRobot {
   }
 
   public void setupLogging() {
-    DogLogOptions options =
-        new DogLogOptions(() -> !DriverStation.isFMSAttached(), true, true, true, true, 1000);
     HoundLog.setEnabled(true);
     HoundLog.setPdh(new PowerDistribution());
-    HoundLog.setOptions(options);
+    HoundLog.setOptions(
+        new DogLogOptions(() -> !DriverStation.isFMSAttached(), true, true, true, true, 1000));
     GamepieceManager.resetField();
   }
 

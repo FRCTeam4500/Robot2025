@@ -56,9 +56,9 @@ public class Swerve extends SubsystemBase implements Loggable {
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
     tagCameras = new Limelight[] {new Limelight("limelight-hehehe")};
-    if (RobotBase.isReal()) {
+    if (RobotBase.isReal()) { // running on hardware robot
       gyro = Gyro.fromNavX(navx -> {});
-    } else {
+    } else { // running robot simulation
       gyro = Gyro.fromSim(() -> getSpeeds().omegaRadiansPerSecond);
     }
     modules =
@@ -92,10 +92,12 @@ public class Swerve extends SubsystemBase implements Loggable {
       System.out.println(e.getMessage());
       config =
           new RobotConfig(
-              68,
-              6.884,
+              68, // robot's mass in kg
+              6.884, // Robot's moment of inertia
               new ModuleConfig(0.5, 6, 1.2, DCMotor.getKrakenX60(1).withReduction(5.143), 60, 1),
-              FRONT_LEFT_TRANSLATION.getY() * 2);
+              FRONT_LEFT_TRANSLATION.getY()
+                  * 2 // the trackwidth of the robot (dist. from top left to top right for example)
+              );
     }
     AutoBuilder.configure(
         estimator::getEstimatedPosition,
@@ -180,7 +182,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     PIDController forwardPID = new PIDController(3, 0, 0);
     PIDController sidewaysPID = new PIDController(3, 0, 0);
     PIDController rotationalPID = new PIDController(8, 0, 0);
-    rotationalPID.enableContinuousInput(0, 2 * Math.PI);
+    rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
     return Commands.run(
         () -> {
           Pose2d current = estimator.getEstimatedPosition();
@@ -202,101 +204,60 @@ public class Swerve extends SubsystemBase implements Loggable {
     // 6 areas; 30 to -30,30 to 90,etc.
     return Commands.defer(
         () -> {
-          boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue);
           Translation2d robert = estimator.getEstimatedPosition().getTranslation();
           Translation2d reef;
-          if (isBlue) {
-            reef = new Translation2d(4.5, 4);
-          } else {
-            reef = new Translation2d(13.1, 4);
+          Command poseCentricCommand = Commands.none();
+          switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
+            case Blue:
+              reef = new Translation2d(4.5, 4);
+              double angle = robert.minus(reef).getAngle().getDegrees();
+              angle = MathUtil.inputModulus(angle, -30, 330);
+              if (angle <= 30 && angle >= -30) {
+                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.H);
+                else poseCentricCommand = poseCentric(ScoringLocations.G);
+              } else if (angle <= 90 && angle >= 30) {
+                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.J);
+                else poseCentricCommand = poseCentric(ScoringLocations.I);
+              } else if (angle <= 150 && angle >= 90) {
+                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.L);
+                else poseCentricCommand = poseCentric(ScoringLocations.K);
+              } else if (angle <= 210 && angle >= 150) {
+                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.B);
+                else poseCentricCommand = poseCentric(ScoringLocations.A);
+              } else if (angle <= 270 && angle >= 210) {
+                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.D);
+                else poseCentricCommand = poseCentric(ScoringLocations.C);
+              } else {
+                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.F);
+                else poseCentricCommand = poseCentric(ScoringLocations.E);
+              }
+              break;
+            case Red:
+              reef = new Translation2d(13.1, 4);
+              double angleRed = robert.minus(reef).getAngle().getDegrees();
+              angleRed = MathUtil.inputModulus(angleRed, -30, 330);
+              if (angleRed <= 30 && angleRed >= -30) {
+                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.B));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.A));
+              } else if (angleRed <= 90 && angleRed >= 30) {
+                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.D));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.C));
+              } else if (angleRed <= 150 && angleRed >= 90) {
+                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.F));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.E));
+              } else if (angleRed <= 210 && angleRed >= 150) {
+                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.H));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.G));
+              } else if (angleRed <= 270 && angleRed >= 210) {
+                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.J));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.I));
+              } else {
+                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.L));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.K));
+              }
+              break;
           }
-          double angle = robert.minus(reef).getAngle().getDegrees();
-          angle = MathUtil.inputModulus(angle, -30, 330);
-          if (angle <= 30 && angle >= -30) {
-            if (isBlue) {
-              if (alignRight) {
-                return poseCentric(ScoringLocations.H);
-              } else {
-                return poseCentric(ScoringLocations.G);
-              }
-            } else {
-              if (alignRight) {
-                return poseCentric(flip(ScoringLocations.B));
-              } else {
-                return poseCentric(flip(ScoringLocations.A));
-              }
-            }
-          } else if (angle <= 90 && angle >= 30) {
-            if (isBlue) {
-              if (alignRight) {
-                return poseCentric(ScoringLocations.J);
-              } else {
-                return poseCentric(ScoringLocations.I);
-              }
-            } else {
-              if (alignRight) {
-                return poseCentric(flip(ScoringLocations.D));
-              } else {
-                return poseCentric(flip(ScoringLocations.C));
-              }
-            }
-          } else if (angle <= 150 && angle >= 90) {
-            if (isBlue) {
-              if (alignRight) {
-                return poseCentric(ScoringLocations.L);
-              } else {
-                return poseCentric(ScoringLocations.K);
-              }
-            } else {
-              if (alignRight) {
-                return poseCentric(flip(ScoringLocations.F));
-              } else {
-                return poseCentric(flip(ScoringLocations.E));
-              }
-            }
-          } else if (angle <= 210 && angle >= 150) {
-            if (isBlue) {
-              if (alignRight) {
-                return poseCentric(ScoringLocations.B);
-              } else {
-                return poseCentric(ScoringLocations.A);
-              }
-            } else {
-              if (alignRight) {
-                return poseCentric(flip(ScoringLocations.H));
-              } else {
-                return poseCentric(flip(ScoringLocations.G));
-              }
-            }
-          } else if (angle <= 270 && angle >= 210) {
-            if (isBlue) {
-              if (alignRight) {
-                return poseCentric(ScoringLocations.D);
-              } else {
-                return poseCentric(ScoringLocations.C);
-              }
-            } else {
-              if (alignRight) {
-                return poseCentric(flip(ScoringLocations.J));
-              } else {
-                return poseCentric(flip(ScoringLocations.I));
-              }
-            }
-          } else {
-            if (isBlue) {
-              if (alignRight) {
-                return poseCentric(ScoringLocations.F);
-              } else {
-                return poseCentric(ScoringLocations.E);
-              }
-            } else {
-              if (alignRight) {
-                return poseCentric(flip(ScoringLocations.L));
-              } else {
-                return poseCentric(flip(ScoringLocations.K));
-              }
-            }
-          }
+          return poseCentricCommand;
         },
         Set.of(this));
   }
