@@ -93,4 +93,31 @@ public interface FeedbackController {
       }
     };
   }
+
+  public static FeedbackController empty(double tolerance) {
+    return new FeedbackController() {
+      private double goal;
+      @Override
+      public double calculate(double measurement, double goal) {
+        this.goal = goal;
+        return 0;
+      }
+
+      @Override
+      public double getGoal() {
+        return goal;
+      }
+
+      @Override
+      public State getSetpoint() {
+        return new State(goal, 0);
+      }
+
+      @Override
+      public boolean atGoal() {
+        return true;
+      }
+      
+    };
+  }
 }
