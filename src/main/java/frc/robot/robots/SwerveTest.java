@@ -14,14 +14,19 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.SysIDCommands;
 import frc.robot.utilities.logging.HoundLog;
 
 public class SwerveTest extends LoggedRobot {
@@ -213,6 +218,50 @@ public class SwerveTest extends LoggedRobot {
     };
     private double[] offsets = new double[] {0, 0, 0, 0};    
     public SwerveTest() {
+    }
+
+    public SysIDCommands identifyAngleMotors() {
+        return angleMotors[0].getSynchronizedSysIDCommands(
+            "AngleMotors", 
+            1, 
+            10, 
+            10, 
+            angleMotors[1], angleMotors[2], angleMotors[3]
+        );
+    }
+
+    
+    public Command tuneAngleMotors(XboxController xbox) {
+        return Commands.run(() -> {
+            double target = Math.atan2(-xbox.getLeftY(), -xbox.getLeftX());
+            target = MathUtil.inputModulus(target / (2 * Math.PI), 0, 1);
+            for (Motor motor : angleMotors) {
+                motor.setTarget(target);
+            }
+        }).finallyDo(
+            () -> {
+                for (Motor motor : angleMotors) {
+                    motor.setVoltage(0);
+                }
+            }
+        );
+    }
+    
+    public Command testAngleMotors() {
+        return Commands.runOnce(() -> {
+                for (Motor motor : angleMotors) {
+                    motor.setVoltage(12);
+                }
+            }, angleMotors
+        ).andThen(
+            Commands.idle()
+        ).finallyDo(
+            () -> {
+                for (Motor motor : angleMotors) {
+                    motor.setVoltage(0);
+                }
+            }
+        );
     }
 
     @Override
