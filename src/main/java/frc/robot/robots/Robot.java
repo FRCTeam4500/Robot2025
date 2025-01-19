@@ -24,7 +24,6 @@ import frc.robot.Superstructure;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
-import java.util.Set;
 
 public class Robot extends TimedRobot {
   private Swerve swerve = new Swerve();
@@ -66,8 +65,7 @@ public class Robot extends TimedRobot {
   public void setupAuto() {
     SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", chooser);
-    RobotModeTriggers.autonomous()
-        .whileTrue(Commands.defer(() -> chooser.getSelected(), Set.of(swerve)));
+    RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
 
   public void setupLogging() {
