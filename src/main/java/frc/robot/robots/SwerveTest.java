@@ -115,7 +115,7 @@ public class SwerveTest extends LoggedRobot {
     private Motor[] angleMotors = new Motor[] {
         Motor.fromSparkMax(
             5, 
-            true, 
+            false, 
             spark -> {
                 SparkMaxConfig config = new SparkMaxConfig();
                 config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
@@ -139,7 +139,7 @@ public class SwerveTest extends LoggedRobot {
         ),
         Motor.fromSparkMax(
             6, 
-            true, 
+            false, 
             spark -> {
                 SparkMaxConfig config = new SparkMaxConfig();
                 config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
@@ -163,7 +163,7 @@ public class SwerveTest extends LoggedRobot {
         ),
         Motor.fromSparkMax(
             7, 
-            true, 
+            false, 
             spark -> {
                 SparkMaxConfig config = new SparkMaxConfig();
                 config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
@@ -187,7 +187,7 @@ public class SwerveTest extends LoggedRobot {
         ),
         Motor.fromSparkMax(
             8, 
-            true, 
+            false, 
             spark -> {
                 SparkMaxConfig config = new SparkMaxConfig();
                 config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
