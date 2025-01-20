@@ -97,6 +97,7 @@ public interface FeedbackController {
   public static FeedbackController empty(double tolerance) {
     return new FeedbackController() {
       private double goal;
+
       @Override
       public double calculate(double measurement, double goal) {
         this.goal = goal;
@@ -117,7 +118,6 @@ public interface FeedbackController {
       public boolean atGoal() {
         return true;
       }
-      
     };
   }
 }
