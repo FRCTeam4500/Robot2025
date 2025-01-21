@@ -643,15 +643,11 @@ public class Motor extends SubsystemBase implements Loggable {
       and element 2 is acceleration
     */
     double[] stateHolder = new double[] {initialPosition, 0, 0};
+    fb.calculate(initialPosition, initialPosition);
     return new Motor(
         type,
         position -> stateHolder[0] = position,
         voltage -> {
-          if (voltage == 0) {
-            stateHolder[1] = 0;
-            stateHolder[2] = 0;
-            return;
-          }
           switch (type) {
             case Velocity:
               State nextStateVel = fb.getSetpoint();
@@ -670,7 +666,7 @@ public class Motor extends SubsystemBase implements Loggable {
         () -> stateHolder[0],
         () -> stateHolder[1],
         fb,
-        null,
+        Optional.empty(),
         path -> HoundLog.log(path, "Acceleration", stateHolder[2]));
   }
 }
