@@ -10,11 +10,7 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
-
-
-
-public class Grabber {
-    
+public class Grabber extends SubsystemBase implements Loggable {
     private Motor speedstr;
 
     public Grabber() {
@@ -25,7 +21,7 @@ public class Grabber {
                   pid -> {
                     pid.setTolerance(0.01);
                   }),
-              TargetType.Position,
+              TargetType.Velocity,
               0);
     }
   
@@ -35,7 +31,7 @@ public class Grabber {
     public Command stop() {
       return Commands.runOnce(
               () -> {
-                speedstr.setTarget(0.5);
+                speedstr.setTarget(0);
               },
               this)
           .andThen(
@@ -75,14 +71,8 @@ public class Grabber {
                       return speedstr.atTarget();
                     }));
       }
-    
-  
 
       public void log(String path) {
         HoundLog.log(path, "Speed Motor", speedstr);
       }
-
-
-
-
 }
