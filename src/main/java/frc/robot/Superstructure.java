@@ -41,7 +41,6 @@ public class Superstructure implements Loggable {
     SmartDashboard.putData("End Intake", intake.stowIntake());
     SmartDashboard.putData("Stow Elevator", elevator.stow());
     SmartDashboard.putData("L4 Elevator", elevator.level4());
-
   }
 
   public void log(String name) {

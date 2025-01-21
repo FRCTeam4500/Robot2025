@@ -11,68 +11,69 @@ import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
 public class Grabber extends SubsystemBase implements Loggable {
-    private Motor speedstr;
+  private Motor speedstr;
 
-    public Grabber() {
-      speedstr =
-          Motor.fromIdealSim(
-              FeedbackController.fromPID(
-                  new PIDController(10, 0, 0),
-                  pid -> {
-                    pid.setTolerance(0.01);
-                  }),
-              TargetType.Velocity,
-              0);
-    }
-  
-    /**
-     * @return A command that stowps the grabber
-     */
-    public Command stop() {
-      return Commands.runOnce(
-              () -> {
-                speedstr.setTarget(0);
-              },
-              this)
-          .andThen(
-              Commands.waitUntil(
-                  () -> {
-                    return speedstr.atTarget();
-                  }));
-    }
-  
-    /**
-     * @return A command that makes the intaker suck
-     */
-    public Command intake() {
-      return Commands.runOnce(
-              () -> {
-                speedstr.setTarget(2);
-              },
-              this)
-          .andThen(
-              Commands.waitUntil(
-                  () -> {
-                    return speedstr.atTarget();
-                  }));
-    }
+  public Grabber() {
+    speedstr =
+        Motor.fromIdealSim(
+            FeedbackController.fromPID(
+                new PIDController(10, 0, 0),
+                pid -> {
+                  pid.setTolerance(0.01);
+                }),
+            TargetType.Velocity,
+            0);
+  }
+
   /**
-     * @return A command that makes the shooter?? intaker?? spit
-     */
-    public Command eject() {
-        return Commands.runOnce(
+   * @return A command that stowps the grabber
+   */
+  public Command stop() {
+    return Commands.runOnce(
+            () -> {
+              speedstr.setTarget(0);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
                 () -> {
-                    speedstr.setTarget(2);
-                },
-                this)
-            .andThen(
-                Commands.waitUntil(
-                    () -> {
-                      return speedstr.atTarget();
-                    }));
-      }
+                  return speedstr.atTarget();
+                }));
+  }
 
-      public void log(String path) {
-        HoundLog.log(path, "Speed Motor", speedstr);
-      }
+  /**
+   * @return A command that makes the intaker suck
+   */
+  public Command intake() {
+    return Commands.runOnce(
+            () -> {
+              speedstr.setTarget(2);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return speedstr.atTarget();
+                }));
+  }
+
+  /**
+   * @return A command that makes the shooter?? intaker?? spit
+   */
+  public Command eject() {
+    return Commands.runOnce(
+            () -> {
+              speedstr.setTarget(2);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return speedstr.atTarget();
+                }));
+  }
+
+  public void log(String path) {
+    HoundLog.log(path, "Speed Motor", speedstr);
+  }
 }
