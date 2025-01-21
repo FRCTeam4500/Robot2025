@@ -43,11 +43,11 @@ public class Superstructure implements Loggable {
     SmartDashboard.putData("L4 Elevator", elevator.level4());
   }
 
-  public void log(String name) {
+  public void log(String path) {
     // Call log() methods for contained subsystems
-    HoundLog.log(name, "Climber", climber);
-    HoundLog.log(name, "Ground Intake", intake);
-    HoundLog.log(name, "Elevator", elevator);
+    HoundLog.log(path, "Climber", climber);
+    HoundLog.log(path, "Ground Intake", intake);
+    HoundLog.log(path, "Elevator", elevator);
   }
 
   // Put Command Factories Here
