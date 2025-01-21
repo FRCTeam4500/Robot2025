@@ -3,6 +3,7 @@ package frc.robot.subsystems.groundintake;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
@@ -72,31 +73,26 @@ public class GroundIntake extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return Command to move intake to intake position
-   */
-  public Command readyIntake() {
-    return runOnce(() -> moveIntake(intakePosition));
-  }
-
-  /**
-   * @return Command to begin running the wheels to intake
+   * @return Command to begin running the wheels to intake and moves the intake
    */
   public Command intake() {
-    return runOnce(() -> runIntake(intakeSpeed));
+    return Commands.runOnce(() -> runIntake(intakeSpeed), this)
+        .alongWith(Commands.runOnce(() -> moveIntake(intakePosition)));
   }
 
   /**
    * @return Command to begin running the wheels to eject
    */
   public Command outtake() {
-    return runOnce(() -> runIntake(outtakeSpeed));
+    return Commands.runOnce(() -> runIntake(outtakeSpeed), this);
   }
 
   /**
    * @return Command to move intake to stow position and stop wheels
    */
   public Command stowIntake() {
-    return runOnce(() -> moveIntake(stowPosition)).andThen(runOnce(() -> runIntake(0)));
+    return Commands.runOnce(() -> moveIntake(stowPosition), this)
+        .andThen(Commands.runOnce(() -> runIntake(0)));
   }
 
   @Override

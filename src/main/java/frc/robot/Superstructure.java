@@ -1,7 +1,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.groundintake.GroundIntake;
@@ -11,7 +12,7 @@ import frc.robot.utilities.logging.Loggable;
 
 /**
  * A class that holds together the top half of our robot. Basically everything except the
- * drivetrain. It exposes command factories which combine the various subsystems to preform tasks
+ * drivetrain. It exposes command factories which combine the various subsystems to vimal tasks
  */
 public class Superstructure implements Loggable {
   // Create objects for all non-drivebase subsystems
@@ -27,20 +28,6 @@ public class Superstructure implements Loggable {
     intake = new GroundIntake();
     elevator = new Elevator();
     ramp = new Ramp();
-    configureMech();
-  }
-
-  private void configureMech() {
-    robotMech.getRoot("Climber Root", 1, .1).append(climber.mech);
-    robotMech.getRoot("Intake Root", 2, .1).append(intake.mech);
-    robotMech.getRoot("Elevator Root", 1.5, .1).append(elevator.mech);
-    SmartDashboard.putData("Robot Mech", robotMech);
-    SmartDashboard.putData("Start Climb", climber.up());
-    SmartDashboard.putData("End Climb", climber.down());
-    SmartDashboard.putData("Start Intake", intake.readyIntake());
-    SmartDashboard.putData("End Intake", intake.stowIntake());
-    SmartDashboard.putData("Stow Elevator", elevator.stow());
-    SmartDashboard.putData("L4 Elevator", elevator.level4());
   }
 
   public void log(String path) {
@@ -51,4 +38,53 @@ public class Superstructure implements Loggable {
   }
 
   // Put Command Factories Here
+
+  // ready level 1
+  public Command readyLevel1() {
+    return elevator.level1();
+  }
+
+  // ready level 2
+  public Command readyLevel2() {
+    return elevator.level2();
+  }
+
+  // ready level 3
+  public Command readyLevel3() {
+    return elevator.level3();
+  }
+
+  // ready level 4
+  public Command readyLevel4() {
+    return elevator.level4();
+  }
+
+  // ready climb
+  public Command readyClimb() {
+    return climber.up();
+  }
+
+  // climb
+  public Command climb() {
+    return climber.down();
+  }
+
+  public Command intake() {
+    return Commands.none();
+  }
+
+  // start ground intake
+  public Command readyGroundIntake() {
+    return intake.intake();
+  }
+
+  // end ground intake
+  public Command endGroundIntake() {
+    return intake.stowIntake();
+  }
+
+  // stow
+  public Command stow() {
+    return elevator.stow().alongWith(intake.stowIntake()).alongWith(climber.down());
+  }
 }
