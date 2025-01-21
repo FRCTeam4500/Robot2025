@@ -33,10 +33,7 @@ public class Robot extends TimedRobot {
   private CommandXboxController xbox = new CommandXboxController(2);
   private CommandJoystick stick = new CommandJoystick(1);
 
-  /**
-   * make a robot @param
-   * 
-   */
+  /** make a robot @param */
   public Robot() {
     DriverStation.silenceJoystickConnectionWarning(true);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
@@ -45,6 +42,7 @@ public class Robot extends TimedRobot {
     setupDriveController();
     setupAuto();
   }
+
   public void setupOperatorController() {
     Trigger levelOne = stick.button(10);
     Trigger levelTwo = stick.button(9);
@@ -52,13 +50,13 @@ public class Robot extends TimedRobot {
     Trigger levelFour = stick.button(8);
     Trigger toggleClimb = stick.button(5);
     Trigger latchClimb = stick.button(6);
-    Trigger groundIntake = stick.button(2); //no z
+    Trigger groundIntake = stick.button(2); // no z
     Trigger stowButton = stick.button(11);
     Trigger coralIntake = stick.button(4);
-    ///Trigger readyProcessor = stick.button(3); //no z
-    ///Trigger placeAlgae = stick.button(1);
-    ////Trigger highAlgae = stick.povUp();
-    ////////////////Trigger lowAlgae = stick.povDown();
+    /// Trigger readyProcessor = stick.button(3); //no z
+    /// Trigger placeAlgae = stick.button(1);
+    //// Trigger highAlgae = stick.povUp();
+    //////////////// Trigger lowAlgae = stick.povDown();
 
     levelOne.onTrue(structure.readyLevel1());
     levelTwo.onTrue(structure.readyLevel2());
@@ -69,11 +67,11 @@ public class Robot extends TimedRobot {
     coralIntake.onTrue(structure.intake());
     stowButton.onTrue(structure.endGroundIntake());
     groundIntake.onTrue(structure.readyGroundIntake());
-    //readyProcessor.onTrue(structure.readyProcessor());
-    //placeAlgae.onTrue(structure.readyplacealgae());
-    //highAlgae.onTrue(structure.);
-    //lowAlgae.onTrue(structure.());
-  } 
+    // readyProcessor.onTrue(structure.readyProcessor());
+    // placeAlgae.onTrue(structure.readyplacealgae());
+    // highAlgae.onTrue(structure.);
+    // lowAlgae.onTrue(structure.());
+  }
 
   public void setupDriveController() {
     Trigger onBlue =
