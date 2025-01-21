@@ -93,6 +93,9 @@ public class Motor extends SubsystemBase implements Loggable {
    * @apiNote Using this method causes {@link #atTarget()} to always return true!
    */
   public void setVoltage(double volts) {
+    if (Math.abs(volts) > 12) {
+      volts = 12 * Math.signum(volts);
+    }
     target = volts;
     useVoltage = true;
   }
