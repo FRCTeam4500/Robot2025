@@ -50,7 +50,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
             TargetType.Velocity, // This motor goes to a velocity
             0 // The starting position of the motor is 0 units
             );
-      mech = new MechanismLigament2d("Intake Tilt", .5, 90);
+    mech = new MechanismLigament2d("Intake Tilt", .5, 90);
   }
 
   /**
@@ -104,7 +104,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Tilt Motor", tiltMotor);
     HoundLog.log(path, "Run Motor", runMotor);
   }
-  
+
   @Override
   public void periodic() {
     mech.setAngle(tiltMotor.getPosition());

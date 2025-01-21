@@ -77,7 +77,7 @@ public class Climber extends SubsystemBase implements Loggable {
     HoundLog.log(path, "extend Motor", extendMotor);
     HoundLog.log(path, "tilty Motor", tiltyMotor);
   }
-  
+
   @Override
   public void periodic() {
     mech.setAngle(tiltyMotor.getPosition());

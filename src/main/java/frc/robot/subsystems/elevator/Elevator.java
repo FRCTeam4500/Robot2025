@@ -174,6 +174,6 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-      mech.setLength(upMotor.getPosition());
+    mech.setLength(upMotor.getPosition());
   }
 }
