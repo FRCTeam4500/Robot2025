@@ -25,6 +25,54 @@ public class Grabber extends SubsystemBase implements Loggable {
             0);
   }
 
+
+public class Grabber extends SubsystemBase{
+    
+    private Motor speedstr;
+
+    public Grabber() {
+      speedstr =
+          Motor.fromIdealSim(
+              FeedbackController.fromPID(
+                  new PIDController(10, 0, 0),
+                  pid -> {
+                    pid.setTolerance(0.01);
+                  }),
+              TargetType.Position,
+              0);
+    }
+  
+    /**
+     * @return A command that stowps the grabber
+     */
+    public Command stop() {
+      return Commands.runOnce(
+              () -> {
+                speedstr.setTarget(0.5);
+              },
+              this)
+          .andThen(
+              Commands.waitUntil(
+                  () -> {
+                    return speedstr.atTarget();
+                  }));
+    }
+  
+    /**
+     * @return A command that makes the intaker suck
+     */
+    public Command intake() {
+      return Commands.runOnce(
+              () -> {
+                speedstr.setTarget(2);
+              },
+              this)
+          .andThen(
+              Commands.waitUntil(
+                  () -> {
+                    return speedstr.atTarget();
+                  }));
+    }
   /**
    * @return A command that stowps the grabber
    */
