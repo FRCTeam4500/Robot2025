@@ -99,7 +99,7 @@ public class SwerveConstants {
                     controller.setTolerance(0.01);
                   }),
               Optional.of(new FeedforwardConstants(0, 0.18487, 2.953, 0.22385)),
-              TargetType.Position));
+              TargetType.Meters));
 
   public static final SwerveModule FRONT_RIGHT_MODULE =
       new SwerveModule(
@@ -150,7 +150,7 @@ public class SwerveConstants {
                     controller.setTolerance(0.01);
                   }),
               Optional.of(new FeedforwardConstants(0, 0.18487, 2.953, 0.22385)),
-              TargetType.Position));
+              TargetType.Meters));
 
   public static final SwerveModule BACK_LEFT_MODULE =
       new SwerveModule(
@@ -201,7 +201,7 @@ public class SwerveConstants {
                     controller.setTolerance(0.01);
                   }),
               Optional.of(new FeedforwardConstants(0, 0.18487, 2.953, 0.22385)),
-              TargetType.Position));
+              TargetType.Meters));
 
   public static final SwerveModule BACK_RIGHT_MODULE =
       new SwerveModule(
@@ -252,5 +252,5 @@ public class SwerveConstants {
                     controller.setTolerance(0.01);
                   }),
               Optional.of(new FeedforwardConstants(0, 0.18487, 2.953, 0.22385)),
-              TargetType.Position));
+              TargetType.Meters));
 }

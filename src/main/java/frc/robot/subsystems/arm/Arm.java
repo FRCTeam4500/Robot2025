@@ -1,10 +1,12 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.WiringConstants.ArmWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
@@ -28,9 +30,15 @@ public class Arm extends SubsystemBase implements Loggable {
   public Arm() {
     tiltMotor =
         Motor.fromTalonFX(
-            0,
-            (TalonFX fx) -> {},
-            (FeedforwardSim sim) -> {},
+            ArmWiring.ARM_ID,
+            (TalonFX fx) -> {
+              TalonFXConfiguration config = new TalonFXConfiguration();
+              config.CurrentLimits.StatorCurrentLimit = 40;
+              config.CurrentLimits.StatorCurrentLimitEnable = true;
+            },
+            (FeedforwardSim sim) -> {
+              sim.withHardstops(handoffAngle, startAngle);
+            },
             startAngle,
             FeedbackController.fromPID(
                 new PIDController(0, 0, 0),
@@ -38,7 +46,7 @@ public class Arm extends SubsystemBase implements Loggable {
                   pid.setTolerance(1);
                 }),
             Optional.empty(),
-            TargetType.Rotation);
+            TargetType.Degrees);
   }
 
   public Command stow() {

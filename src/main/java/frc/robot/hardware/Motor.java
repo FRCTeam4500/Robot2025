@@ -133,8 +133,8 @@ public class Motor extends SubsystemBase implements Loggable {
       return true;
     }
     switch (type) {
-      case Position:
-      case Rotation:
+      case Meters:
+      case Degrees:
         fb.calculate(getPosition(), target);
         break;
       case Velocity:
@@ -162,7 +162,7 @@ public class Motor extends SubsystemBase implements Loggable {
     double fbVolts = 0;
     double ffVolts = 0;
     switch (type) {
-      case Position:
+      case Meters:
         fbVolts = fb.calculate(getPosition(), target);
         ffVolts = ff.kG() + ff.kS() * Math.signum(fbVolts);
         break;
@@ -171,10 +171,10 @@ public class Motor extends SubsystemBase implements Loggable {
         fbVolts = fb.calculate(velocity, target);
         ffVolts = ff.kS() * Math.signum(target) + ff.kV() * target;
         break;
-      case Rotation:
+      case Degrees:
         double position = getPosition();
         fbVolts = fb.calculate(position, target);
-        ffVolts = ff.kS() * Math.signum(fbVolts) + ff.kG() * Math.cos(2 * Math.PI * position);
+        ffVolts = ff.kS() * Math.signum(fbVolts) + ff.kG() * Math.cos(Math.toRadians(position));
         break;
     }
     voltageSetter.accept(fbVolts + ffVolts);
@@ -291,11 +291,11 @@ public class Motor extends SubsystemBase implements Loggable {
   /** The types of targets a motor can have as its goal */
   public static enum TargetType {
     /** Targets a position */
-    Position,
+    Meters,
     /** Targets a velocity */
     Velocity,
     /** Targets a vertical rotation, taking into account the changing gravitational force */
-    Rotation;
+    Degrees;
   }
 
   /**
@@ -602,7 +602,7 @@ public class Motor extends SubsystemBase implements Loggable {
     if (ff == null || ff.kV() == 0 || ff.kA() == 0) {
       return fromIdealSim(fb, type, inititalPosition);
     }
-    FeedforwardSim sim = new FeedforwardSim(ff, inititalPosition, type == TargetType.Rotation);
+    FeedforwardSim sim = new FeedforwardSim(ff, inititalPosition, type == TargetType.Degrees);
     config.accept(sim);
     return new Motor(
         type,

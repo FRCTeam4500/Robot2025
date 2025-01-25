@@ -65,8 +65,6 @@ public class Robot extends TimedRobot {
     toggleClimb.onTrue(structure.readyClimb());
     latchClimb.onTrue(structure.climb());
     coralIntake.onTrue(structure.intake());
-    stowButton.onTrue(structure.endGroundIntake());
-    groundIntake.onTrue(structure.readyGroundIntake());
     // readyProcessor.onTrue(structure.readyProcessor());
     // placeAlgae.onTrue(structure.readyplacealgae());
     // highAlgae.onTrue(structure.);

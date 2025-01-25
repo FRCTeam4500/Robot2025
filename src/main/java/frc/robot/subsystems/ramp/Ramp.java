@@ -27,7 +27,7 @@ public class Ramp extends SubsystemBase implements Loggable {
                 pid -> { // Configuring the pid controller
                   pid.setTolerance(1); // Within one unit to our goal is good enough
                 }),
-            TargetType.Position, // This motor goes to a position
+            TargetType.Meters, // This motor goes to a position
             0 // The starting position of the motor is 0 units
             );
   }

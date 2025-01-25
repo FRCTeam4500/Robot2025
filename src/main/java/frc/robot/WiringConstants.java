@@ -24,4 +24,24 @@ public class WiringConstants {
     public static final int BACK_LEFT_ENCODER_ID = 3;
     public static final int BACK_RIGHT_ENCODER_ID = 2;
   }
+
+  public static class PlacerWiring {
+    public static final int PLACER_ID = 29;
+  }
+
+  public static class ArmWiring {
+    public static final int ARM_ID = 1;
+  }
+
+  public static class ElevatorWiring {
+    public static final int ELEVATOR_ID = -200;
+  }
+
+  public static class ClimberWiring {
+    public static final int CLIMBER_ID = -201;
+  }
+
+  public static class RampWiring {
+    public static final int RAMP_ID = -202;
+  }
 }

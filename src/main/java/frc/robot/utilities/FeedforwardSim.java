@@ -21,7 +21,7 @@ public class FeedforwardSim extends SubsystemBase implements Loggable {
    * @param feedforward The feedforward constants used to model the mechansim
    * @param initialPosition The initial position of the mechanism
    * @param scaleGravity Whether to scale kG based on the angle of the mechanism. If this is true,
-   *     units are assumed to be rotations, with 0 being horizontal, and 0.25 pointing straight up.
+   *     units are assumed to be degrees, with 0 being horizontal, and 0.25 pointing straight up.
    * @throws IllegalArgumentException if the feedforward's kV or kA is 0
    */
   public FeedforwardSim(
@@ -41,7 +41,7 @@ public class FeedforwardSim extends SubsystemBase implements Loggable {
     }
     double gravityVolts = feedforward.kG();
     if (scaleGravity) {
-      gravityVolts *= Math.cos(state.position * 2 * Math.PI);
+      gravityVolts *= Math.cos(Math.toRadians(state.position));
     }
     double staticVolts = Math.signum(state.velocity) * feedforward.kS();
     double velocityVolts = state.velocity * feedforward.kV();

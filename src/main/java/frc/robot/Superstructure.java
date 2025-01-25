@@ -20,7 +20,6 @@ public class Superstructure implements Loggable {
   // Create objects for all non-drivebase subsystems
   private Mechanism2d robotMech;
   private Climber climber;
-  private GroundIntake intake;
   private Elevator elevator;
   private Ramp ramp;
   private Arm arm;
@@ -44,42 +43,34 @@ public class Superstructure implements Loggable {
   }
 
   public Command readyLevel1() {
-    return elevator.level1();
+    return elevator.level1().alongWith(arm.placeL1());
   }
 
   public Command readyLevel2() {
-    return elevator.level2();
+    return elevator.level2().alongWith(arm.placeL2());
   }
 
   public Command readyLevel3() {
-    return elevator.level3();
+    return elevator.level3().alongWith(arm.placeL3());
   }
 
   public Command readyLevel4() {
-    return elevator.level4();
+    return elevator.level4().alongWith(arm.placeL4());
   }
 
   public Command readyClimb() {
-    return climber.up();
+    return stow().andThen(ramp.raiseRamp()).andThen(climber.up());
   }
 
   public Command climb() {
-    return climber.down();
+    return climber.climb();
   }
 
   public Command intake() {
     return Commands.none();
   }
 
-  public Command readyGroundIntake() {
-    return intake.intake();
-  }
-
-  public Command endGroundIntake() {
-    return intake.stowIntake();
-  }
-
   public Command stow() {
-    return elevator.stow().alongWith(intake.stowIntake()).alongWith(climber.down());
+    return arm.stow().andThen(elevator.stow()).alongWith(climber.stow());
   }
 }
