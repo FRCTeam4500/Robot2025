@@ -21,7 +21,6 @@ import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
-
 import java.util.Optional;
 
 public class SwerveConstants {

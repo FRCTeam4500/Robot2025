@@ -41,7 +41,6 @@ import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-
 import java.util.Set;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
