@@ -1,12 +1,9 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.Optional;
-
-import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -18,6 +15,7 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.Optional;
 
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
@@ -28,36 +26,36 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double l3Position = 1.75;
   private final double l2Position = 1.5;
   private final double l1Position = 1.25;
-  private final double stationPosition = 1;    // intake from coral station
-  private final double groundPosition = 0;     // ground intake?
+  private final double stationPosition = 1; // intake from coral station
+  private final double groundPosition = 0; // ground intake?
   private final double processingPosition = 0; // algae processor
-  private final double lowAlgaePosition = 0;   // between l2 and l3
-  private final double highAlgaePosition = 0;  // between l3 and l4
+  private final double lowAlgaePosition = 0; // between l2 and l3
+  private final double highAlgaePosition = 0; // between l3 and l4
 
   public Elevator() {
     upMotor =
         Motor.fromSparkMax(
-          ElevatorWiring.ELEVATOR_ID,
-          false,
-          (SparkMax spark) -> {
-            SparkMaxConfig config = new SparkMaxConfig();
-            config.smartCurrentLimit(50);
-            config.encoder.positionConversionFactor(1 / 1.0);
-            config.encoder.velocityConversionFactor(1 / 60.0);
-            spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-          },
-          (FeedforwardSim sim) -> {
-            sim.withHardstops(0, 2);
-          },
-          0,
-          FeedbackController.fromPID(
-            new PIDController(0, 0, 0),
-            pid -> {
-              pid.setTolerance(0.01);
-          }),
-          Optional.empty(),
-          TargetType.Meters
-        );
+            ElevatorWiring.ELEVATOR_ID,
+            false,
+            (SparkMax spark) -> {
+              SparkMaxConfig config = new SparkMaxConfig();
+              config.smartCurrentLimit(50);
+              config.encoder.positionConversionFactor(1 / 1.0);
+              config.encoder.velocityConversionFactor(1 / 60.0);
+              spark.configure(
+                  config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            },
+            (FeedforwardSim sim) -> {
+              sim.withHardstops(0, 2);
+            },
+            0,
+            FeedbackController.fromPID(
+                new PIDController(0, 0, 0),
+                pid -> {
+                  pid.setTolerance(0.01);
+                }),
+            Optional.empty(),
+            TargetType.Meters);
   }
 
   /**
@@ -187,6 +185,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                   return upMotor.atTarget();
                 }));
   }
+
   /**
    * @return A command that moves the elevator to the level of the higher algae
    */
@@ -202,6 +201,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                   return upMotor.atTarget();
                 }));
   }
+
   /**
    * @return A command that moves the elevator to the level of the higher algae
    */
@@ -217,6 +217,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                   return upMotor.atTarget();
                 }));
   }
+
   /**
    * @return A command that moves the elevator to the level of the higher algae
    */
