@@ -93,6 +93,9 @@ public class Motor extends SubsystemBase implements Loggable {
    * @apiNote Using this method causes {@link #atTarget()} to always return true!
    */
   public void setVoltage(double volts) {
+    if (Math.abs(volts) > 12) {
+      volts = 12 * Math.signum(volts);
+    }
     target = volts;
     useVoltage = true;
   }
@@ -643,15 +646,11 @@ public class Motor extends SubsystemBase implements Loggable {
       and element 2 is acceleration
     */
     double[] stateHolder = new double[] {initialPosition, 0, 0};
+    fb.calculate(initialPosition, initialPosition);
     return new Motor(
         type,
         position -> stateHolder[0] = position,
         voltage -> {
-          if (voltage == 0) {
-            stateHolder[1] = 0;
-            stateHolder[2] = 0;
-            return;
-          }
           switch (type) {
             case Velocity:
               State nextStateVel = fb.getSetpoint();
@@ -670,7 +669,7 @@ public class Motor extends SubsystemBase implements Loggable {
         () -> stateHolder[0],
         () -> stateHolder[1],
         fb,
-        null,
+        Optional.empty(),
         path -> HoundLog.log(path, "Acceleration", stateHolder[2]));
   }
 }

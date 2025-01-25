@@ -1,7 +1,9 @@
 package frc.robot.subsystems.groundintake;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
@@ -19,10 +21,13 @@ public class GroundIntake extends SubsystemBase implements Loggable {
 
   private Motor runMotor;
 
-  private double stowPosition = 0;
-  private double intakePosition = 10; // TODO: change
+  public final MechanismLigament2d mech;
 
-  private double intakeSpeed = 3;
+  private double stowPosition = 90;
+  private double intakePosition = 0; // TODO: change
+
+  private double intakeSpeed = 3000;
+  private double outtakeSpeed = -3000;
 
   /** Creates a new ground intake. */
   public GroundIntake() {
@@ -34,7 +39,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
                   pid.setTolerance(1); // Within one unit to our goal is good enough
                 }),
             TargetType.Position, // This motor goes to a position
-            0 // The starting position of the motor is 0 units
+            90 // The starting position of the motor is 90 units
             );
     runMotor =
         Motor.fromIdealSim(
@@ -46,6 +51,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
             TargetType.Velocity, // This motor goes to a velocity
             0 // The starting position of the motor is 0 units
             );
+    mech = new MechanismLigament2d("Intake Tilt", .5, 90);
   }
 
   /**
@@ -67,22 +73,36 @@ public class GroundIntake extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return Command to move intake to intake position and begin running wheels
+   * @return Command to begin running the wheels to intake and moves the intake
    */
-  public Command readyIntake() {
-    return runOnce(() -> moveIntake(intakePosition)).andThen(runOnce(() -> runIntake(intakeSpeed)));
+  public Command intake() {
+    return Commands.runOnce(() -> runIntake(intakeSpeed), this)
+        .alongWith(Commands.runOnce(() -> moveIntake(intakePosition)));
+  }
+
+  /**
+   * @return Command to begin running the wheels to eject
+   */
+  public Command outtake() {
+    return Commands.runOnce(() -> runIntake(outtakeSpeed), this);
   }
 
   /**
    * @return Command to move intake to stow position and stop wheels
    */
   public Command stowIntake() {
-    return runOnce(() -> moveIntake(stowPosition)).andThen(runOnce(() -> runIntake(0)));
+    return Commands.runOnce(() -> moveIntake(stowPosition), this)
+        .andThen(Commands.runOnce(() -> runIntake(0)));
   }
 
   @Override
   public void log(String path) {
     HoundLog.log(path, "Tilt Motor", tiltMotor);
     HoundLog.log(path, "Run Motor", runMotor);
+  }
+
+  @Override
+  public void periodic() {
+    mech.setAngle(tiltMotor.getPosition());
   }
 }

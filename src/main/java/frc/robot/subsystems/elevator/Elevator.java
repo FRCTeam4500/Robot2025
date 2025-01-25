@@ -1,6 +1,7 @@
 package frc.robot.subsystems.elevator;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,6 +13,7 @@ import frc.robot.utilities.logging.Loggable;
 
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
+  public final MechanismLigament2d mech;
 
   public Elevator() {
     upMotor =
@@ -22,7 +24,8 @@ public class Elevator extends SubsystemBase implements Loggable {
                   pid.setTolerance(0.01);
                 }),
             TargetType.Position,
-            0);
+            0.5);
+    mech = new MechanismLigament2d("Elevator", 0.5, 90);
   }
 
   /**
@@ -31,7 +34,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   public Command stow() {
     return Commands.runOnce(
             () -> {
-              upMotor.setTarget(0);
+              upMotor.setTarget(0.5);
             },
             this)
         .andThen(
@@ -106,6 +109,33 @@ public class Elevator extends SubsystemBase implements Loggable {
   }
 
   /**
+   * @return A command that moves the elevator down to the ramp, waits .1 second, then
+   */
+  public Command coralFromRamp() {
+    return Commands.runOnce(
+            () -> {
+              upMotor.setTarget(0);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return upMotor.atTarget();
+                }))
+        .andThen(Commands.waitSeconds(.1))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  upMotor.setTarget(0.5);
+                }))
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return upMotor.atTarget();
+                }));
+  }
+
+  /**
    * @return A command that moves the elevator to the level of the lower algae
    */
   public Command lowAlgae() {
@@ -140,5 +170,10 @@ public class Elevator extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Up Motor", upMotor);
+  }
+
+  @Override
+  public void periodic() {
+    mech.setLength(upMotor.getPosition());
   }
 }
