@@ -9,7 +9,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.utilities.logging.HoundLog;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
