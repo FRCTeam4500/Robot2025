@@ -3,9 +3,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.groundintake.GroundIntake;
+import frc.robot.subsystems.placer.Placer;
 import frc.robot.subsystems.ramp.Ramp;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
@@ -21,6 +23,8 @@ public class Superstructure implements Loggable {
   private GroundIntake intake;
   private Elevator elevator;
   private Ramp ramp;
+  private Arm arm;
+  private Placer placer;
 
   public Superstructure() {
     robotMech = new Mechanism2d(3, 3);
@@ -28,6 +32,8 @@ public class Superstructure implements Loggable {
     intake = new GroundIntake();
     elevator = new Elevator();
     ramp = new Ramp();
+    arm = new Arm();
+    placer = new Placer();
   }
 
   public void log(String path) {
@@ -37,34 +43,26 @@ public class Superstructure implements Loggable {
     HoundLog.log(path, "Elevator", elevator);
   }
 
-  // Put Command Factories Here
-
-  // ready level 1
   public Command readyLevel1() {
     return elevator.level1();
   }
 
-  // ready level 2
   public Command readyLevel2() {
     return elevator.level2();
   }
 
-  // ready level 3
   public Command readyLevel3() {
     return elevator.level3();
   }
 
-  // ready level 4
   public Command readyLevel4() {
     return elevator.level4();
   }
 
-  // ready climb
   public Command readyClimb() {
     return climber.up();
   }
 
-  // climb
   public Command climb() {
     return climber.down();
   }
@@ -73,17 +71,14 @@ public class Superstructure implements Loggable {
     return Commands.none();
   }
 
-  // start ground intake
   public Command readyGroundIntake() {
     return intake.intake();
   }
 
-  // end ground intake
   public Command endGroundIntake() {
     return intake.stowIntake();
   }
 
-  // stow
   public Command stow() {
     return elevator.stow().alongWith(intake.stowIntake()).alongWith(climber.down());
   }

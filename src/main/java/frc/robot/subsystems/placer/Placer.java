@@ -1,4 +1,4 @@
-package frc.robot.subsystems.grabber;
+package frc.robot.subsystems.placer;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -10,10 +10,10 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
-public class Grabber extends SubsystemBase implements Loggable {
+public class Placer extends SubsystemBase implements Loggable {
   private Motor speedstr;
 
-  public Grabber() {
+  public Placer() {
     speedstr =
         Motor.fromIdealSim(
             FeedbackController.fromPID(

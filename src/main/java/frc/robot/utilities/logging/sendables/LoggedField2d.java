@@ -3,6 +3,7 @@ package frc.robot.utilities.logging.sendables;
 import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+
 import java.util.HashMap;
 
 public class LoggedField2d implements Loggable {

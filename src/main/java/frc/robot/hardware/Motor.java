@@ -21,6 +21,7 @@ import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.SysIDCommands;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;

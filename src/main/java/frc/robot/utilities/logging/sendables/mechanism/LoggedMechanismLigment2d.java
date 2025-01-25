@@ -3,6 +3,7 @@ package frc.robot.utilities.logging.sendables.mechanism;
 import edu.wpi.first.wpilibj.util.Color8Bit;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+
 import java.util.HashMap;
 
 public class LoggedMechanismLigment2d implements Loggable {
