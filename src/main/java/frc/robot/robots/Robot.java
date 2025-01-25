@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   private CommandXboxController xbox = new CommandXboxController(2);
   private CommandJoystick stick = new CommandJoystick(1);
 
-  /** make a robot @param */
+  /** make a robot */
   public Robot() {
     DriverStation.silenceJoystickConnectionWarning(true);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
@@ -48,23 +48,25 @@ public class Robot extends TimedRobot {
     Trigger levelTwo = stick.button(9);
     Trigger levelThree = stick.button(7);
     Trigger levelFour = stick.button(8);
-    Trigger toggleClimb = stick.button(5);
-    Trigger latchClimb = stick.button(6);
-    Trigger groundIntake = stick.button(2); // no z
+    Trigger readyClimb = stick.button(5);
+    Trigger climb = stick.button(6);
     Trigger stowButton = stick.button(11);
     Trigger coralIntake = stick.button(4);
-    /// Trigger readyProcessor = stick.button(3); //no z
-    /// Trigger placeAlgae = stick.button(1);
-    //// Trigger highAlgae = stick.povUp();
-    //////////////// Trigger lowAlgae = stick.povDown();
+    // Trigger groundIntake = stick.button(2);    // no z
+    // Trigger readyProcessor = stick.button(3); // no z
+    // Trigger placeAlgae = stick.button(1);
+    // Trigger highAlgae = stick.povUp();
+    // Trigger lowAlgae = stick.povDown();
 
     levelOne.onTrue(structure.readyLevel1());
     levelTwo.onTrue(structure.readyLevel2());
     levelThree.onTrue(structure.readyLevel3());
     levelFour.onTrue(structure.readyLevel4());
-    toggleClimb.onTrue(structure.readyClimb());
-    latchClimb.onTrue(structure.climb());
+    readyClimb.onTrue(structure.readyClimb());
+    climb.onTrue(structure.climb());
     coralIntake.onTrue(structure.intake());
+    coralIntake.onFalse(structure.stow());
+    stowButton.onTrue(structure.stow());
     // readyProcessor.onTrue(structure.readyProcessor());
     // placeAlgae.onTrue(structure.readyplacealgae());
     // highAlgae.onTrue(structure.);

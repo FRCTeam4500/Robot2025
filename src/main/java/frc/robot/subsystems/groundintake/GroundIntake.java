@@ -17,7 +17,6 @@ import frc.robot.utilities.logging.Loggable;
 public class GroundIntake extends SubsystemBase implements Loggable {
 
   private Motor tiltMotor;
-
   private Motor runMotor;
 
   private double stowPosition = 90;

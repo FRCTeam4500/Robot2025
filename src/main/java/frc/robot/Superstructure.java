@@ -28,7 +28,6 @@ public class Superstructure implements Loggable {
   public Superstructure() {
     robotMech = new Mechanism2d(3, 3);
     climber = new Climber();
-    intake = new GroundIntake();
     elevator = new Elevator();
     ramp = new Ramp();
     arm = new Arm();
@@ -38,8 +37,10 @@ public class Superstructure implements Loggable {
   public void log(String path) {
     // Call log() methods for contained subsystems
     HoundLog.log(path, "Climber", climber);
-    HoundLog.log(path, "Ground Intake", intake);
     HoundLog.log(path, "Elevator", elevator);
+    HoundLog.log(path, "Placer", placer);
+    HoundLog.log(path, "Ramp", ramp);
+    HoundLog.log(path, "Arm", arm);
   }
 
   public Command readyLevel1() {
@@ -59,7 +60,7 @@ public class Superstructure implements Loggable {
   }
 
   public Command readyClimb() {
-    return stow().andThen(ramp.raiseRamp()).andThen(climber.up());
+    return stow().andThen(ramp.raiseRamp()).andThen(climber.ready());
   }
 
   public Command climb() {
@@ -67,10 +68,10 @@ public class Superstructure implements Loggable {
   }
 
   public Command intake() {
-    return Commands.none();
+    return arm.stow().andThen(elevator.handoff()).andThen(arm.handoff()).andThen(placer.intake());
   }
 
   public Command stow() {
-    return arm.stow().andThen(elevator.stow()).alongWith(climber.stow());
+    return arm.stow().alongWith(placer.stop()).andThen(elevator.stow()).alongWith(climber.stow().andThen(ramp.lowerRamp()));
   }
 }
