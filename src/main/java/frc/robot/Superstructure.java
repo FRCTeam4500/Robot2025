@@ -12,7 +12,7 @@ import frc.robot.utilities.logging.Loggable;
 
 /**
  * A class that holds together the top half of our robot. Basically everything except the
- * drivetrain. It exposes command factories which combine the various subsystems to vimal tasks
+ * drivetrain. It exposes command factories which combine the various subsystems
  */
 public class Superstructure implements Loggable {
   // Create objects for all non-drivebase subsystems
