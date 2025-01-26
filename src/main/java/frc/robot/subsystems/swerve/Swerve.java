@@ -197,7 +197,7 @@ public class Swerve extends SubsystemBase implements Loggable {
         this);
   }
 
-  public Command alignToReef(boolean alignRight) {
+  public Command alignToReef(Alignment position) {
     // use current position v center of reef
     // operate in range of angles
     // areas BASED ON SIDE OF REEF DUUUUHHHHH
@@ -213,22 +213,46 @@ public class Swerve extends SubsystemBase implements Loggable {
               double angle = robert.minus(reef).getAngle().getDegrees();
               angle = MathUtil.inputModulus(angle, -30, 330);
               if (angle <= 30 && angle >= -30) {
-                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.H);
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.H);
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(ScoringLocations.H.interpolate(ScoringLocations.G, 0.5));
                 else poseCentricCommand = poseCentric(ScoringLocations.G);
               } else if (angle <= 90 && angle >= 30) {
-                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.J);
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.J);
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(ScoringLocations.J.interpolate(ScoringLocations.I, 0.5));
                 else poseCentricCommand = poseCentric(ScoringLocations.I);
               } else if (angle <= 150 && angle >= 90) {
-                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.L);
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.L);
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(ScoringLocations.L.interpolate(ScoringLocations.K, 0.5));
                 else poseCentricCommand = poseCentric(ScoringLocations.K);
               } else if (angle <= 210 && angle >= 150) {
-                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.B);
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.B);
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(ScoringLocations.B.interpolate(ScoringLocations.A, 0.5));
                 else poseCentricCommand = poseCentric(ScoringLocations.A);
               } else if (angle <= 270 && angle >= 210) {
-                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.D);
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.D);
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(ScoringLocations.D.interpolate(ScoringLocations.C, 0.5));
                 else poseCentricCommand = poseCentric(ScoringLocations.C);
               } else {
-                if (alignRight) poseCentricCommand = poseCentric(ScoringLocations.F);
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.F);
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(ScoringLocations.F.interpolate(ScoringLocations.E, 0.5));
                 else poseCentricCommand = poseCentric(ScoringLocations.E);
               }
               break;
@@ -237,22 +261,46 @@ public class Swerve extends SubsystemBase implements Loggable {
               double angleRed = robert.minus(reef).getAngle().getDegrees();
               angleRed = MathUtil.inputModulus(angleRed, -30, 330);
               if (angleRed <= 30 && angleRed >= -30) {
-                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.B));
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.B));
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(flip(ScoringLocations.B).interpolate(flip(ScoringLocations.A), 0.5));
                 else poseCentricCommand = poseCentric(flip(ScoringLocations.A));
               } else if (angleRed <= 90 && angleRed >= 30) {
-                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.D));
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.D));
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(flip(ScoringLocations.D).interpolate(flip(ScoringLocations.C), 0.5));
                 else poseCentricCommand = poseCentric(flip(ScoringLocations.C));
               } else if (angleRed <= 150 && angleRed >= 90) {
-                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.F));
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.F));
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(flip(ScoringLocations.F).interpolate(flip(ScoringLocations.E), 0.5));
                 else poseCentricCommand = poseCentric(flip(ScoringLocations.E));
               } else if (angleRed <= 210 && angleRed >= 150) {
-                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.H));
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.H));
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(flip(ScoringLocations.H).interpolate(flip(ScoringLocations.G), 0.5));
                 else poseCentricCommand = poseCentric(flip(ScoringLocations.G));
               } else if (angleRed <= 270 && angleRed >= 210) {
-                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.J));
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.J));
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(flip(ScoringLocations.J).interpolate(flip(ScoringLocations.I), 0.5));
                 else poseCentricCommand = poseCentric(flip(ScoringLocations.I));
               } else {
-                if (alignRight) poseCentricCommand = poseCentric(flip(ScoringLocations.L));
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.L));
+                else if (position == Alignment.Middle)
+                poseCentricCommand =
+                    poseCentric(flip(ScoringLocations.L).interpolate(flip(ScoringLocations.K), 0.5));
                 else poseCentricCommand = poseCentric(flip(ScoringLocations.K));
               }
               break;
@@ -395,5 +443,11 @@ public class Swerve extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Back Left Module", modules[2]);
     HoundLog.log(path, "Back Right Module", modules[3]);
     HoundLog.log(path, "Gyro", gyro);
+  }
+
+  public static enum Alignment {
+    Right,
+    Middle,
+    Left;
   }
 }

@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Superstructure;
 import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.Swerve.Alignment;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 
@@ -80,6 +81,11 @@ public class Robot extends TimedRobot {
     Trigger faceForwards = new Trigger(() -> xbox.getRightY() < -0.5);
     Trigger faceBackwards = new Trigger(() -> xbox.getRightY() > 0.5);
     Trigger resetHeading = xbox.a();
+    Trigger alignReefLeft = xbox.povLeft();
+    Trigger alignReefMiddle = xbox.povUp();
+    Trigger alignReefRight = xbox.povRight();
+    Trigger leftStationIntake = xbox.x();
+    Trigger rightStationIntake = xbox.b();
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
@@ -87,12 +93,13 @@ public class Robot extends TimedRobot {
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    xbox.povLeft().whileTrue(swerve.alignToReef(false));
-    xbox.povRight().whileTrue(swerve.alignToReef(true));
-    xbox.x().and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
-    xbox.b().and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    xbox.x().and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
-    xbox.b().and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
+    alignReefLeft.whileTrue(swerve.alignToReef(Alignment.Left));
+    alignReefMiddle.whileTrue(swerve.alignToReef(Alignment.Middle));
+    alignReefRight.whileTrue(swerve.alignToReef(Alignment.Right));
+    leftStationIntake.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
+    rightStationIntake.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
+    leftStationIntake.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
+    rightStationIntake.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
   }
 
   public void setupAuto() {
