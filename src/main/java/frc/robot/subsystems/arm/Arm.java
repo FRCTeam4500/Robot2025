@@ -142,6 +142,6 @@ public class Arm extends SubsystemBase implements Loggable {
 
   @Override
   public void log(String path) {
-    HoundLog.log("Tilt Motor", tiltMotor);
+    HoundLog.log(path, "Tilt Motor", tiltMotor);
   }
 }

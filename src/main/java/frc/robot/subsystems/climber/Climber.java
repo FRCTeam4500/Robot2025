@@ -13,9 +13,9 @@ import frc.robot.utilities.logging.Loggable;
 public class Climber extends SubsystemBase implements Loggable {
   private Motor tiltyMotor;
 
-  private final double climbAngle = 125;
+  private final double climbAngle = 45;
   private final double readyAngle = 180;
-  private final double stowAngle = 90;
+  private final double stowAngle = 0;
 
   public Climber() {
     tiltyMotor =
@@ -26,7 +26,7 @@ public class Climber extends SubsystemBase implements Loggable {
                   pid.setTolerance(1);
                 }),
             TargetType.Meters,
-            0);
+            stowAngle);
   }
 
   public Command stow() {

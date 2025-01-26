@@ -41,10 +41,11 @@ public class Robot extends TimedRobot {
 
     setupLogging();
     setupDriveController();
+    setupOperatorController();
     setupAuto();
   }
 
-  public void setupOperatorController() {
+  private void setupOperatorController() {
     Trigger levelOne = stick.button(10);
     Trigger levelTwo = stick.button(9);
     Trigger levelThree = stick.button(7);
@@ -74,7 +75,7 @@ public class Robot extends TimedRobot {
     // lowAlgae.onTrue(structure.());
   }
 
-  public void setupDriveController() {
+  private void setupDriveController() {
     Trigger onBlue =
         new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue);
     Trigger onRed = onBlue.negate();
@@ -100,6 +101,8 @@ public class Robot extends TimedRobot {
     rightStationIntake.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
     leftStationIntake.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
     rightStationIntake.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
+    rightStationIntake.or(leftStationIntake).onTrue(structure.intake());
+    rightStationIntake.or(leftStationIntake).onFalse(structure.stow());
   }
 
   public void setupAuto() {
