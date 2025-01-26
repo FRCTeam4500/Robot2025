@@ -4,7 +4,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -52,11 +53,11 @@ public class Elevator extends SubsystemBase implements Loggable {
               sim.withHardstops(0, 2);
             },
             0,
-            FeedbackController.fromPID(
-                new PIDController(0, 0, 0),
-                pid -> {
-                  pid.setTolerance(0.01);
-                }),
+            FeedbackController.fromProfiledPID(
+              new ProfiledPIDController(0, 0, 0, new Constraints(2, 4)), 
+              (ProfiledPIDController pid) -> {
+                pid.setTolerance(0.01);
+              }),
             Optional.empty(),
             TargetType.Meters);
     mech = new MechanismLigament2d("Elevator", 0, 90);

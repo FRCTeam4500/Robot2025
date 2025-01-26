@@ -30,6 +30,12 @@ public interface FeedbackController {
   public boolean atGoal();
 
   /**
+   * Resets the feedback controller, clearing integral and derivative terms
+   * @param measurement The current measurement. The target of the controller is set to this!
+   */
+  public void reset(double measurement);
+
+  /**
    * @param pid PID controller
    * @param config function that modifies the controller, configuring it
    * @return FeedbackController overlying the PID
@@ -56,6 +62,12 @@ public interface FeedbackController {
       @Override
       public boolean atGoal() {
         return pid.atSetpoint();
+      }
+
+      @Override
+      public void reset(double measurement) {
+          pid.calculate(measurement, measurement);
+          pid.reset();
       }
     };
   }
@@ -91,6 +103,12 @@ public interface FeedbackController {
       public boolean atGoal() {
         return pid.atSetpoint();
       }
+
+      @Override
+      public void reset(double measurement) {
+        pid.calculate(measurement, measurement);
+        pid.reset(measurement);   
+      }
     };
   }
 
@@ -117,6 +135,11 @@ public interface FeedbackController {
       @Override
       public boolean atGoal() {
         return true;
+      }
+
+      @Override
+      public void reset(double measurement) {
+        this.goal = measurement;
       }
     };
   }

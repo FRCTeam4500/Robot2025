@@ -646,11 +646,16 @@ public class Motor extends SubsystemBase implements Loggable {
       and element 2 is acceleration
     */
     double[] stateHolder = new double[] {initialPosition, 0, 0};
-    fb.calculate(initialPosition, initialPosition);
+    fb.reset(initialPosition);
     return new Motor(
         type,
         position -> stateHolder[0] = position,
         voltage -> {
+          if (DriverStation.isDisabled()) {
+            stateHolder[1] = 0;
+            stateHolder[2] = 0;
+            return;
+          }
           switch (type) {
             case Velocity:
               State nextStateVel = fb.getSetpoint();

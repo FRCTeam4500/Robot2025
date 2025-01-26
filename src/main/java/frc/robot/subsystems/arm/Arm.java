@@ -2,7 +2,8 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -42,11 +43,11 @@ public class Arm extends SubsystemBase implements Loggable {
               sim.withHardstops(handoffAngle, startAngle);
             },
             startAngle,
-            FeedbackController.fromPID(
-                new PIDController(0, 0, 0),
-                (PIDController pid) -> {
-                  pid.setTolerance(1);
-                }),
+            FeedbackController.fromProfiledPID(
+              new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)), 
+              (ProfiledPIDController pid) -> {
+                pid.setTolerance(0.1);
+              }),
             Optional.empty(),
             TargetType.Degrees);
     mech = new MechanismLigament2d("Arm", .5, startAngle);

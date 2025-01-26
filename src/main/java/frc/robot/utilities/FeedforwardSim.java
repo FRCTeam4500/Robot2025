@@ -84,6 +84,9 @@ public class FeedforwardSim extends SubsystemBase implements Loggable {
    * @param volts The motor's new voltage
    */
   public void setVoltage(double volts) {
+    if (Math.abs(volts) > 12) {
+      volts = 12 * Math.signum(volts);
+    }
     this.volts = volts;
   }
 

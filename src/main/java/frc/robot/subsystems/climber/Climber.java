@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,11 +23,11 @@ public class Climber extends SubsystemBase implements Loggable {
   public Climber() {
     tiltyMotor =
         Motor.fromIdealSim(
-            FeedbackController.fromPID(
-                new PIDController(0, 0, 0),
-                pid -> {
-                  pid.setTolerance(1);
-                }),
+            FeedbackController.fromProfiledPID(
+              new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)), 
+              (ProfiledPIDController pid) -> {
+                pid.setTolerance(1);
+              }),
             TargetType.Meters,
             stowAngle);
     mech = new MechanismLigament2d("Climber", .3, stowAngle);
