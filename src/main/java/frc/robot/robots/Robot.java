@@ -73,6 +73,15 @@ public class Robot extends TimedRobot {
     // placeAlgae.onTrue(structure.readyplacealgae());
     // highAlgae.onTrue(structure.);
     // lowAlgae.onTrue(structure.());
+
+    SmartDashboard.putData("Ready Level 1", structure.readyLevel1());
+    SmartDashboard.putData("Ready Level 2", structure.readyLevel2());
+    SmartDashboard.putData("Ready Level 3", structure.readyLevel3());
+    SmartDashboard.putData("Ready Level 4", structure.readyLevel4());
+    SmartDashboard.putData("Ready Climb", structure.readyClimb());
+    SmartDashboard.putData("Climb", structure.climb());
+    SmartDashboard.putData("Intake", structure.intake());
+    SmartDashboard.putData("Stow", structure.stow());
   }
 
   private void setupDriveController() {

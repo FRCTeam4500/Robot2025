@@ -1,6 +1,7 @@
 package frc.robot.subsystems.groundintake;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,12 +16,12 @@ import frc.robot.utilities.logging.Loggable;
  * from the ground.
  */
 public class GroundIntake extends SubsystemBase implements Loggable {
-
   private Motor tiltMotor;
   private Motor runMotor;
+  public final MechanismLigament2d mech;
 
   private double stowPosition = 90;
-  private double intakePosition = 0; // TODO: change
+  private double intakePosition = 0;
 
   private double intakeSpeed = 3000;
   private double outtakeSpeed = -3000;
@@ -34,7 +35,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
                 pid -> { // Configuring the pid controller
                   pid.setTolerance(1); // Within one unit to our goal is good enough
                 }),
-            TargetType.Meters, // This motor goes to a position
+            TargetType.Degrees, // This motor goes to a position
             90 // The starting position of the motor is 90 units
             );
     runMotor =
@@ -47,6 +48,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
             TargetType.Velocity, // This motor goes to a velocity
             0 // The starting position of the motor is 0 units
             );
+    mech = new MechanismLigament2d("Ground Intake", .3, 90);
   }
 
   /**
@@ -94,5 +96,6 @@ public class GroundIntake extends SubsystemBase implements Loggable {
   public void log(String path) {
     HoundLog.log(path, "Tilt Motor", tiltMotor);
     HoundLog.log(path, "Run Motor", runMotor);
+    mech.setAngle(tiltMotor.getPosition());
   }
 }

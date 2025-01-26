@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
@@ -30,6 +31,16 @@ public class Superstructure implements Loggable {
     ramp = new Ramp();
     arm = new Arm();
     placer = new Placer();
+
+    configureMech();
+  }
+
+  private void configureMech() {
+    robotMech.getRoot("Climber Root", 1, 0.1).append(climber.mech);
+    elevator.armHolder.append(arm.mech);
+    robotMech.getRoot("Elevator Root", 1.7, 0.1).append(elevator.mech);
+    robotMech.getRoot("Ramp Root", 1.6, 0.3).append(ramp.mech);
+    SmartDashboard.putData("Robot Mech", robotMech);
   }
 
   public void log(String path) {

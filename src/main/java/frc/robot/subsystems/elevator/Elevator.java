@@ -5,6 +5,7 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +20,8 @@ import java.util.Optional;
 
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
+  public final MechanismLigament2d mech;
+  public final MechanismLigament2d armHolder;
 
   private final double stowPosition = 0;
   private final double handoffPosition = .5;
@@ -56,6 +59,9 @@ public class Elevator extends SubsystemBase implements Loggable {
                 }),
             Optional.empty(),
             TargetType.Meters);
+    mech = new MechanismLigament2d("Elevator", 0, 90);
+    armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);
+    mech.append(armHolder);
   }
 
   /**
@@ -237,5 +243,6 @@ public class Elevator extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Up Motor", upMotor);
+    mech.setLength(upMotor.getPosition() + 0.1);
   }
 }

@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climber;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,6 +13,7 @@ import frc.robot.utilities.logging.Loggable;
 
 public class Climber extends SubsystemBase implements Loggable {
   private Motor tiltyMotor;
+  public final MechanismLigament2d mech;
 
   private final double climbAngle = 45;
   private final double readyAngle = 180;
@@ -27,6 +29,7 @@ public class Climber extends SubsystemBase implements Loggable {
                 }),
             TargetType.Meters,
             stowAngle);
+    mech = new MechanismLigament2d("Climber", .3, stowAngle);
   }
 
   public Command stow() {
@@ -70,6 +73,7 @@ public class Climber extends SubsystemBase implements Loggable {
 
   @Override
   public void log(String path) {
-    HoundLog.log(path, "tilty Motor", tiltyMotor);
+    HoundLog.log(path, "Tilty Motor", tiltyMotor);
+    mech.setAngle(tiltyMotor.getPosition());
   }
 }

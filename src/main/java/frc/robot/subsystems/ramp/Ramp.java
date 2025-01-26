@@ -1,6 +1,7 @@
 package frc.robot.subsystems.ramp;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,11 +13,11 @@ import frc.robot.utilities.logging.Loggable;
 
 /** The Ramp subsystem is used by the robot to intake game pieces. */
 public class Ramp extends SubsystemBase implements Loggable {
-
   private Motor tiltMotor;
+  public final MechanismLigament2d mech;
 
-  private double intakeAngle = 0;
-  private double stowAngle = 10; // TODO: change !
+  private double intakeAngle = 155;
+  private double stowAngle = 90;
 
   /** Creates a new Ramp subsystem. */
   public Ramp() {
@@ -27,9 +28,10 @@ public class Ramp extends SubsystemBase implements Loggable {
                 pid -> { // Configuring the pid controller
                   pid.setTolerance(1); // Within one unit to our goal is good enough
                 }),
-            TargetType.Meters, // This motor goes to a position
-            0 // The starting position of the motor is 0 units
+            TargetType.Degrees, // This motor goes to a position
+            intakeAngle // The starting position of the motor is 0 units
             );
+    mech = new MechanismLigament2d("Ramp", 0.4, intakeAngle);
   }
 
   /**
@@ -62,5 +64,6 @@ public class Ramp extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Motor", tiltMotor);
+    mech.setAngle(tiltMotor.getPosition());
   }
 }

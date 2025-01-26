@@ -3,6 +3,7 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 public class Arm extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
+  public final MechanismLigament2d mech;
 
   private final double startAngle = 110;
   private final double stowAngle = 90;
@@ -47,6 +49,8 @@ public class Arm extends SubsystemBase implements Loggable {
                 }),
             Optional.empty(),
             TargetType.Degrees);
+    mech = new MechanismLigament2d("Arm", .5, startAngle);
+    mech.append(new MechanismLigament2d("Placer", 0.1, -90));
   }
 
   public Command stow() {
@@ -143,5 +147,6 @@ public class Arm extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Tilt Motor", tiltMotor);
+    mech.setAngle(tiltMotor.getPosition());
   }
 }
