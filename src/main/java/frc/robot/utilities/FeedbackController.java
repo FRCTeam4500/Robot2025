@@ -31,6 +31,7 @@ public interface FeedbackController {
 
   /**
    * Resets the feedback controller, clearing integral and derivative terms
+   *
    * @param measurement The current measurement. The target of the controller is set to this!
    */
   public void reset(double measurement);
@@ -66,8 +67,8 @@ public interface FeedbackController {
 
       @Override
       public void reset(double measurement) {
-          pid.calculate(measurement, measurement);
-          pid.reset();
+        pid.calculate(measurement, measurement);
+        pid.reset();
       }
     };
   }
@@ -107,7 +108,7 @@ public interface FeedbackController {
       @Override
       public void reset(double measurement) {
         pid.calculate(measurement, measurement);
-        pid.reset(measurement);   
+        pid.reset(measurement);
       }
     };
   }

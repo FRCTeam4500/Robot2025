@@ -54,10 +54,10 @@ public class Elevator extends SubsystemBase implements Loggable {
             },
             0,
             FeedbackController.fromProfiledPID(
-              new ProfiledPIDController(0, 0, 0, new Constraints(2, 4)), 
-              (ProfiledPIDController pid) -> {
-                pid.setTolerance(0.01);
-              }),
+                new ProfiledPIDController(0, 0, 0, new Constraints(2, 4)),
+                (ProfiledPIDController pid) -> {
+                  pid.setTolerance(0.01);
+                }),
             Optional.empty(),
             TargetType.Meters);
     mech = new MechanismLigament2d("Elevator", 0, 90);

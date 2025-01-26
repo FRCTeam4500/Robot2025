@@ -38,10 +38,10 @@ public class GroundIntake extends SubsystemBase implements Loggable {
             //       pid.setTolerance(1); // Within one unit to our goal is good enough
             //     }),
             FeedbackController.fromProfiledPID(
-              new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)), 
-              (ProfiledPIDController pid) -> {
-                pid.setTolerance(0.1);
-              }),
+                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
+                (ProfiledPIDController pid) -> {
+                  pid.setTolerance(0.1);
+                }),
             TargetType.Degrees, // This motor goes to a position
             90 // The starting position of the motor is 90 units
             );

@@ -44,10 +44,10 @@ public class Arm extends SubsystemBase implements Loggable {
             },
             startAngle,
             FeedbackController.fromProfiledPID(
-              new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)), 
-              (ProfiledPIDController pid) -> {
-                pid.setTolerance(0.1);
-              }),
+                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
+                (ProfiledPIDController pid) -> {
+                  pid.setTolerance(0.1);
+                }),
             Optional.empty(),
             TargetType.Degrees);
     mech = new MechanismLigament2d("Arm", .5, startAngle);

@@ -24,10 +24,10 @@ public class Climber extends SubsystemBase implements Loggable {
     tiltyMotor =
         Motor.fromIdealSim(
             FeedbackController.fromProfiledPID(
-              new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)), 
-              (ProfiledPIDController pid) -> {
-                pid.setTolerance(1);
-              }),
+                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
+                (ProfiledPIDController pid) -> {
+                  pid.setTolerance(1);
+                }),
             TargetType.Meters,
             stowAngle);
     mech = new MechanismLigament2d("Climber", .3, stowAngle);

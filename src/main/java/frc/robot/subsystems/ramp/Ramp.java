@@ -25,10 +25,10 @@ public class Ramp extends SubsystemBase implements Loggable {
     tiltMotor =
         Motor.fromIdealSim( // Make an ideal sim
             FeedbackController.fromProfiledPID(
-              new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)), 
-              (ProfiledPIDController pid) -> {
-                pid.setTolerance(1);
-              }),
+                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
+                (ProfiledPIDController pid) -> {
+                  pid.setTolerance(1);
+                }),
             TargetType.Degrees, // This motor goes to a position
             intakeAngle // The starting position of the motor is 0 units
             );
