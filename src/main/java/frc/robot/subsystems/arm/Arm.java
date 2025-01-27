@@ -147,13 +147,14 @@ public class Arm extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return Trigger which governs whether or not it is safe to move the elevator
-   *         given the arm's current position.
+   * @return Trigger which governs whether or not it is safe to move the elevator given the arm's
+   *     current position.
    */
   public Trigger canMoveElevator() {
-    return new Trigger(() -> {
-      return tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100;
-    });
+    return new Trigger(
+        () -> {
+          return tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100;
+        });
   }
 
   @Override
