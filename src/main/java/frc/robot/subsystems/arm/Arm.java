@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.ArmWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
@@ -143,6 +144,16 @@ public class Arm extends SubsystemBase implements Loggable {
                 () -> {
                   return tiltMotor.atTarget();
                 }));
+  }
+
+  /**
+   * @return Trigger which governs whether or not it is safe to move the elevator
+   *         given the arm's current position.
+   */
+  public Trigger canMoveElevator() {
+    return new Trigger(() -> {
+      return tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100;
+    });
   }
 
   @Override
