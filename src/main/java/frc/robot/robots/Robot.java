@@ -6,12 +6,9 @@
 package frc.robot.robots;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import dev.doglog.DogLogOptions;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,7 +25,7 @@ import frc.robot.subsystems.swerve.Swerve.Alignment;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
   private Swerve swerve = new Swerve();
   private Superstructure structure = new Superstructure();
   private CommandXboxController xbox = new CommandXboxController(2);
@@ -39,7 +36,6 @@ public class Robot extends TimedRobot {
     DriverStation.silenceJoystickConnectionWarning(true);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
 
-    setupLogging();
     setupDriveController();
     setupOperatorController();
     setupAuto();
@@ -118,14 +114,6 @@ public class Robot extends TimedRobot {
     SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
-  }
-
-  public void setupLogging() {
-    HoundLog.setEnabled(true);
-    HoundLog.setPdh(new PowerDistribution());
-    HoundLog.setOptions(
-        new DogLogOptions(() -> !DriverStation.isFMSAttached(), true, true, true, true, 1000));
-    GamepieceManager.resetField();
   }
 
   @Override
