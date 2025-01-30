@@ -2,8 +2,9 @@ package frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import com.ctre.phoenix6.signals.InvertedValue;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.ArmWiring;
 import frc.robot.hardware.Motor;
+import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardSim;
@@ -37,19 +39,22 @@ public class Arm extends SubsystemBase implements Loggable {
             ArmWiring.ARM_ID,
             (TalonFX fx) -> {
               TalonFXConfiguration config = new TalonFXConfiguration();
-              config.CurrentLimits.StatorCurrentLimit = 40;
+              config.CurrentLimits.StatorCurrentLimit = 60;
               config.CurrentLimits.StatorCurrentLimitEnable = true;
+              config.Feedback.SensorToMechanismRatio = (60 / 12.0) * (60.0 / 18) / 360;
+              config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+              fx.getConfigurator().apply(config);
             },
             (FeedforwardSim sim) -> {
               sim.withHardstops(handoffAngle, startAngle);
             },
             startAngle,
-            FeedbackController.fromProfiledPID(
-                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
-                (ProfiledPIDController pid) -> {
+            FeedbackController.fromPID(
+                new PIDController(0.01, 0, 0),
+                (PIDController pid) -> {
                   pid.setTolerance(0.1);
                 }),
-            Optional.empty(),
+            Optional.of(new FeedforwardConstants(1.016, 0.297, 0.0046134, 0.00075716)),
             TargetType.Degrees);
     mech = new MechanismLigament2d("Arm", .5, startAngle);
     mech.append(new MechanismLigament2d("Placer", 0.1, -90));
