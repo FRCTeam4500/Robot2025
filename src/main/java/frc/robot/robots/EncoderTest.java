@@ -1,7 +1,7 @@
 package frc.robot.robots;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
-import frc.robot.utilities.logging.HoundLog;;
+import frc.robot.utilities.logging.HoundLog;
 
 public class EncoderTest extends LoggedRobot {
   private AnalogEncoder fl;
@@ -23,5 +23,4 @@ public class EncoderTest extends LoggedRobot {
     HoundLog.log("bl angle encoder", bl.get());
     HoundLog.log("br angle encoder", br.get());
   }
-
 }

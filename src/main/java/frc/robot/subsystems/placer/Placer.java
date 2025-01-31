@@ -4,9 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,35 +26,37 @@ public class Placer extends SubsystemBase implements Loggable {
   private final double intakeSpeed = -25;
   private final double ejectSpeed = 25;
 
-  public final Trigger hasPieceTrigger = new Trigger(() -> {
-    return runMotor.getTarget() != 0 && ExtendedMath.within(runMotor.getVelocity(), 0, 5);
-  }).debounce(2);
+  public final Trigger hasPieceTrigger =
+      new Trigger(
+              () -> {
+                return runMotor.getTarget() != 0
+                    && ExtendedMath.within(runMotor.getVelocity(), 0, 5);
+              })
+          .debounce(2);
 
   public Placer() {
     runMotor =
         Motor.fromTalonFX(
             PlacerWiring.PLACER_ID,
             (TalonFX fx) -> {
-                TalonFXConfiguration config = new TalonFXConfiguration();
-                config.Audio.AllowMusicDurDisable = true;
-                config.CurrentLimits.StatorCurrentLimit = 40;
-                config.CurrentLimits.StatorCurrentLimitEnable = false;
-                config.CurrentLimits.SupplyCurrentLimitEnable = false;
-                config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-                config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-                fx.getConfigurator().apply(config);
+              TalonFXConfiguration config = new TalonFXConfiguration();
+              config.Audio.AllowMusicDurDisable = true;
+              config.CurrentLimits.StatorCurrentLimit = 40;
+              config.CurrentLimits.StatorCurrentLimitEnable = false;
+              config.CurrentLimits.SupplyCurrentLimitEnable = false;
+              config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+              config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+              fx.getConfigurator().apply(config);
             },
             (FeedforwardSim sim) -> {},
             0,
             FeedbackController.fromPID(
                 new PIDController(0, 0, 0),
                 (PIDController pid) -> {
-                    pid.setTolerance(0.5);
-                }
-            ),
+                  pid.setTolerance(0.5);
+                }),
             Optional.of(new FeedforwardConstants(0, 0.47622, 0.12973, 0.01321)),
-            TargetType.Velocity
-        );
+            TargetType.Velocity);
   }
 
   /**

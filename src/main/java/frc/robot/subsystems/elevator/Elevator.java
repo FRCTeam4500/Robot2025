@@ -5,7 +5,6 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,24 +43,24 @@ public class Elevator extends SubsystemBase implements Loggable {
             ElevatorWiring.ELEVATOR_ID,
             false,
             (SparkMax spark) -> {
-                SparkMaxConfig config = new SparkMaxConfig();
-                config.idleMode(IdleMode.kBrake);
-                config.encoder.positionConversionFactor(1 / 216.5);
-                config.encoder.velocityConversionFactor(1 / 216.5 / 60);
-                config.smartCurrentLimit(60);
-                spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+              SparkMaxConfig config = new SparkMaxConfig();
+              config.idleMode(IdleMode.kBrake);
+              config.encoder.positionConversionFactor(1 / 216.5);
+              config.encoder.velocityConversionFactor(1 / 216.5 / 60);
+              config.smartCurrentLimit(60);
+              spark.configure(
+                  config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
             },
             (FeedforwardSim sim) -> {
               sim.withHardstops(0, 1);
             },
             0,
             FeedbackController.fromPID(
-                new PIDController(35, 0, 0), 
+                new PIDController(35, 0, 0),
                 (PIDController pid) -> {
-                    pid.setTolerance(0.05);
-                }
-            ),
-            Optional.of(new FeedforwardConstants(0.15472, 0.098108, 27.673, 3.4548)), 
+                  pid.setTolerance(0.05);
+                }),
+            Optional.of(new FeedforwardConstants(0.15472, 0.098108, 27.673, 3.4548)),
             TargetType.Meters);
     mech = new MechanismLigament2d("Elevator", 0, 90);
     armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);
