@@ -50,11 +50,6 @@ public class Robot extends LoggedRobot {
     Trigger climb = stick.button(6);
     Trigger stowButton = stick.button(11);
     Trigger coralIntake = stick.button(4);
-    // Trigger groundIntake = stick.button(2);    // no z
-    // Trigger readyProcessor = stick.button(3); // no z
-    // Trigger placeAlgae = stick.button(1);
-    // Trigger highAlgae = stick.povUp();
-    // Trigger lowAlgae = stick.povDown();
 
     levelOne.onTrue(structure.readyLevel1());
     levelTwo.onTrue(structure.readyLevel2());
@@ -65,10 +60,6 @@ public class Robot extends LoggedRobot {
     coralIntake.onTrue(structure.intake());
     coralIntake.onFalse(structure.stow());
     stowButton.onTrue(structure.stow());
-    // readyProcessor.onTrue(structure.readyProcessor());
-    // placeAlgae.onTrue(structure.readyplacealgae());
-    // highAlgae.onTrue(structure.);
-    // lowAlgae.onTrue(structure.());
 
     SmartDashboard.putData("Ready Level 1", structure.readyLevel1());
     SmartDashboard.putData("Ready Level 2", structure.readyLevel2());
@@ -78,6 +69,7 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Climb", structure.climb());
     SmartDashboard.putData("Intake", structure.intake());
     SmartDashboard.putData("Stow", structure.stow());
+    SmartDashboard.putData("Shoot", structure.shoot());
   }
 
   private void setupDriveController() {

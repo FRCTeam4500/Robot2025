@@ -89,6 +89,13 @@ public class Motor extends SubsystemBase implements Loggable {
   }
 
   /**
+   * @return the target position/velocity of the motor
+   */
+  public double getTarget() {
+    return target;
+  }
+
+  /**
    * @param volts the target voltage
    * @apiNote Using this method causes {@link #atTarget()} to always return true!
    */
