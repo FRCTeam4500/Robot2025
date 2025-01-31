@@ -88,11 +88,15 @@ public class Superstructure implements Loggable {
         .andThen(placer.intake());
   }
 
+  public Command shoot() {
+    return placer.eject().andThen(Commands.waitSeconds(0.5)).andThen(stow());
+  }
+
   public Command stow() {
     return placer
         .stop()
         .andThen(arm.stow())
-        .alongWith(Commands.waitUntil(arm.canMoveElevator()).andThen(elevator.stow()))
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
         .andThen(climber.stow())
         .andThen(ramp.show());
   }
