@@ -14,7 +14,6 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-
 import java.util.Optional;
 
 public class Placer extends SubsystemBase implements Loggable {
@@ -48,9 +47,9 @@ public class Placer extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-   if (errorFilter.calculate(runMotor.getVelocity()-runMotor.getTarget()) > 3) {
-    hasPiece = true;
-   }
+    if (errorFilter.calculate(runMotor.getVelocity() - runMotor.getTarget()) > 3) {
+      hasPiece = true;
+    }
   }
 
   /**

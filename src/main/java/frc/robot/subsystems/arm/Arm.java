@@ -32,7 +32,8 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double handoffAngle = -100;
   private final double stationAngle = 75;
 
-  public final Trigger canMoveElevator = new Trigger(() -> tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100);
+  public final Trigger canMoveElevator =
+      new Trigger(() -> tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100);
 
   public Arm() {
     tiltMotor =
