@@ -15,6 +15,7 @@ import frc.robot.WiringConstants.PlacerWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.utilities.ExtendedMath;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
@@ -24,17 +25,14 @@ import java.util.Optional;
 public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
 
-  private boolean hasPiece;
-  private final double intakeSpeed = 2;
-  private final double ejectSpeed = 2;
+  private final double intakeSpeed = -25;
+  private final double ejectSpeed = 25;
 
-  private LinearFilter errorFilter;
-
-  public final Trigger hasPieceTrigger = new Trigger(() -> hasPiece);
+  public final Trigger hasPieceTrigger = new Trigger(() -> {
+    return runMotor.getTarget() != 0 && ExtendedMath.within(runMotor.getVelocity(), 0, 5);
+  }).debounce(2);
 
   public Placer() {
-    hasPiece = true;
-    errorFilter = LinearFilter.movingAverage(15);
     runMotor =
         Motor.fromTalonFX(
             PlacerWiring.PLACER_ID,
@@ -42,7 +40,7 @@ public class Placer extends SubsystemBase implements Loggable {
                 TalonFXConfiguration config = new TalonFXConfiguration();
                 config.Audio.AllowMusicDurDisable = true;
                 config.CurrentLimits.StatorCurrentLimit = 40;
-                config.CurrentLimits.StatorCurrentLimitEnable = true;
+                config.CurrentLimits.StatorCurrentLimitEnable = false;
                 config.CurrentLimits.SupplyCurrentLimitEnable = false;
                 config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
                 config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
@@ -59,13 +57,6 @@ public class Placer extends SubsystemBase implements Loggable {
             Optional.of(new FeedforwardConstants(0, 0.47622, 0.12973, 0.01321)),
             TargetType.Velocity
         );
-  }
-
-  @Override
-  public void periodic() {
-    if (errorFilter.calculate(runMotor.getVelocity() - runMotor.getTarget()) > 3) {
-      hasPiece = true;
-    }
   }
 
   /**
@@ -106,7 +97,6 @@ public class Placer extends SubsystemBase implements Loggable {
   public Command eject() {
     return Commands.runOnce(
             () -> {
-              hasPiece = false;
               runMotor.setTarget(ejectSpeed);
             },
             this)
@@ -119,6 +109,6 @@ public class Placer extends SubsystemBase implements Loggable {
 
   public void log(String path) {
     HoundLog.log(path, "Speed Motor", runMotor);
-    HoundLog.log(path, "ErrorFilter", errorFilter.lastValue());
+    HoundLog.log(path, "Intaked", hasPieceTrigger.getAsBoolean());
   }
 }

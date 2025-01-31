@@ -27,10 +27,10 @@ public class Elevator extends SubsystemBase implements Loggable {
   public final MechanismLigament2d armHolder;
 
   private final double stowPosition = 0;
-  private final double handoffPosition = .5;
-  private final double l4Position = 1;
-  private final double l3Position = 0.75;
-  private final double l2Position = 0.5;
+  private final double handoffPosition = .651;
+  private final double l4Position = .95;
+  private final double l3Position = 0.456;
+  private final double l2Position = 0.129;
   private final double l1Position = 0;
   private final double stationPosition = 0; // intake from coral station
   private final double groundPosition = 0; // ground intake?
@@ -45,7 +45,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             false,
             (SparkMax spark) -> {
                 SparkMaxConfig config = new SparkMaxConfig();
-                config.idleMode(IdleMode.kCoast);
+                config.idleMode(IdleMode.kBrake);
                 config.encoder.positionConversionFactor(1 / 216.5);
                 config.encoder.velocityConversionFactor(1 / 216.5 / 60);
                 config.smartCurrentLimit(60);
@@ -56,7 +56,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             },
             0,
             FeedbackController.fromPID(
-                new PIDController(15, 0, 0), 
+                new PIDController(35, 0, 0), 
                 (PIDController pid) -> {
                     pid.setTolerance(0.05);
                 }

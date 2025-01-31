@@ -3,6 +3,8 @@ package frc.robot.subsystems.arm;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,17 +25,18 @@ public class Arm extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
   public final MechanismLigament2d mech;
 
-  private final double startAngle = 110;
-  private final double stowAngle = 90;
-  private final double placeL4Angle = 45;
-  private final double placeL3Angle = 75;
-  private final double placeL2Angle = 75;
-  private final double placeL1Angle = 0;
-  private final double handoffAngle = -100;
+  private final double startAngle = 101.851;
+  private final double stowAngle = 75;
+  private final double placeL4Angle = 70;
+  private final double placeL3Angle = 60;
+  private final double placeL2Angle = 60;
+  private final double placeL1Angle = 60;
+  private final double handoffAngle = -90;
+  // private final double handoffAngle = -82.777;
   private final double stationAngle = 75;
 
   public final Trigger canMoveElevator =
-      new Trigger(() -> tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100);
+      new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);
 
   public Arm() {
     tiltMotor =
@@ -45,6 +48,7 @@ public class Arm extends SubsystemBase implements Loggable {
               config.CurrentLimits.StatorCurrentLimitEnable = true;
               config.Feedback.SensorToMechanismRatio = (60 / 12.0) * (60.0 / 18) / 360;
               config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+              config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
               fx.getConfigurator().apply(config);
             },
             (FeedforwardSim sim) -> {
