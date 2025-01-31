@@ -55,22 +55,22 @@ public class Superstructure implements Loggable {
 
   public Command readyLevel1() {
     return arm.placeL1()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator()).andThen(elevator.level1()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level1()));
   }
 
   public Command readyLevel2() {
     return arm.placeL2()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator()).andThen(elevator.level2()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level2()));
   }
 
   public Command readyLevel3() {
     return arm.placeL3()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator()).andThen(elevator.level3()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level3()));
   }
 
   public Command readyLevel4() {
     return arm.placeL4()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator()).andThen(elevator.level4()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()));
   }
 
   public Command readyClimb() {
@@ -83,16 +83,20 @@ public class Superstructure implements Loggable {
 
   public Command intake() {
     return arm.stow()
-        .withDeadline(Commands.waitUntil(arm.canMoveElevator()).andThen(elevator.handoff()))
+        .withDeadline(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.handoff()))
         .andThen(arm.handoff())
         .andThen(placer.intake());
+  }
+
+  public Command shoot() {
+    return placer.eject().andThen(Commands.waitSeconds(0.5)).andThen(stow());
   }
 
   public Command stow() {
     return placer
         .stop()
         .andThen(arm.stow())
-        .alongWith(Commands.waitUntil(arm.canMoveElevator()).andThen(elevator.stow()))
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
         .andThen(climber.stow())
         .andThen(ramp.show());
   }

@@ -6,9 +6,11 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.PlacerWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.FeedforwardConstants;
@@ -22,10 +24,17 @@ import java.util.Optional;
 public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
 
+  private boolean hasPiece;
   private final double intakeSpeed = 2;
   private final double ejectSpeed = 2;
 
+  private LinearFilter errorFilter;
+
+  public final Trigger hasPieceTrigger = new Trigger(() -> hasPiece);
+
   public Placer() {
+    hasPiece = true;
+    errorFilter = LinearFilter.movingAverage(15);
     runMotor =
         Motor.fromTalonFX(
             PlacerWiring.PLACER_ID,
@@ -50,6 +59,13 @@ public class Placer extends SubsystemBase implements Loggable {
             Optional.of(new FeedforwardConstants(0, 0.47622, 0.12973, 0.01321)),
             TargetType.Velocity
         );
+  }
+
+  @Override
+  public void periodic() {
+    if (errorFilter.calculate(runMotor.getVelocity() - runMotor.getTarget()) > 3) {
+      hasPiece = true;
+    }
   }
 
   /**
@@ -90,6 +106,7 @@ public class Placer extends SubsystemBase implements Loggable {
   public Command eject() {
     return Commands.runOnce(
             () -> {
+              hasPiece = false;
               runMotor.setTarget(ejectSpeed);
             },
             this)
@@ -102,5 +119,6 @@ public class Placer extends SubsystemBase implements Loggable {
 
   public void log(String path) {
     HoundLog.log(path, "Speed Motor", runMotor);
+    HoundLog.log(path, "ErrorFilter", errorFilter.lastValue());
   }
 }

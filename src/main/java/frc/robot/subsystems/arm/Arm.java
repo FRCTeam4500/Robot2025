@@ -32,6 +32,9 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double handoffAngle = -100;
   private final double stationAngle = 75;
 
+  public final Trigger canMoveElevator =
+      new Trigger(() -> tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100);
+
   public Arm() {
     tiltMotor =
         Motor.fromTalonFX(
@@ -150,20 +153,10 @@ public class Arm extends SubsystemBase implements Loggable {
                 }));
   }
 
-  /**
-   * @return Trigger which governs whether or not it is safe to move the elevator given the arm's
-   *     current position.
-   */
-  public Trigger canMoveElevator() {
-    return new Trigger(
-        () -> {
-          return tiltMotor.getPosition() > -50 && tiltMotor.getPosition() < 100;
-        });
-  }
-
   @Override
   public void log(String path) {
     HoundLog.log(path, "Tilt Motor", tiltMotor);
+    HoundLog.log(path, "Can Move Elevator", canMoveElevator.getAsBoolean());
     mech.setAngle(tiltMotor.getPosition());
   }
 }
