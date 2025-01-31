@@ -51,7 +51,7 @@ public class Arm extends SubsystemBase implements Loggable {
             FeedbackController.fromPID(
                 new PIDController(0.01, 0, 0),
                 (PIDController pid) -> {
-                  pid.setTolerance(0.1);
+                  pid.setTolerance(2);
                 }),
             Optional.of(new FeedforwardConstants(1.016, 0.297, 0.0046134, 0.00075716)),
             TargetType.Degrees);

@@ -1,12 +1,17 @@
 package frc.robot.subsystems.placer;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.WiringConstants.PlacerWiring;
 import frc.robot.hardware.Motor;
+import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardSim;
@@ -24,16 +29,27 @@ public class Placer extends SubsystemBase implements Loggable {
     runMotor =
         Motor.fromTalonFX(
             PlacerWiring.PLACER_ID,
-            (TalonFX fx) -> {},
+            (TalonFX fx) -> {
+                TalonFXConfiguration config = new TalonFXConfiguration();
+                config.Audio.AllowMusicDurDisable = true;
+                config.CurrentLimits.StatorCurrentLimit = 40;
+                config.CurrentLimits.StatorCurrentLimitEnable = true;
+                config.CurrentLimits.SupplyCurrentLimitEnable = false;
+                config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+                config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+                fx.getConfigurator().apply(config);
+            },
             (FeedforwardSim sim) -> {},
             0,
             FeedbackController.fromPID(
-                new PIDController(1, 0, 0),
+                new PIDController(0, 0, 0),
                 (PIDController pid) -> {
-                  pid.setTolerance(1);
-                }),
-            Optional.empty(),
-            TargetType.Velocity);
+                    pid.setTolerance(0.5);
+                }
+            ),
+            Optional.of(new FeedforwardConstants(0, 0.47622, 0.12973, 0.01321)),
+            TargetType.Velocity
+        );
   }
 
   /**

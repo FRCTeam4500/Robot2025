@@ -24,6 +24,7 @@ public class ArmTest extends LoggedRobot {
             ArmWiring.ARM_ID,
             motor -> {
               TalonFXConfiguration config = new TalonFXConfiguration();
+              config.Audio.AllowMusicDurDisable = true;
               config.Feedback.SensorToMechanismRatio = (60 / 12.0) * (60.0 / 18) / 360;
               config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
               config.CurrentLimits.StatorCurrentLimit = 60;
