@@ -14,9 +14,13 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.hardware.Motor;
+import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.SysIDCommands;
+import frc.robot.utilities.logging.HoundLog;
+
 import java.util.Optional;
 
 public class SwerveSysID extends LoggedRobot {
@@ -44,7 +48,7 @@ public class SwerveSysID extends LoggedRobot {
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
               config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 0.1016 * Math.PI);
+                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -70,33 +74,7 @@ public class SwerveSysID extends LoggedRobot {
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
               config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 0.1016 * Math.PI);
-              StatusCode status = StatusCode.StatusCodeNotInitialized;
-              for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-                status = motor.getConfigurator().apply(config);
-              }
-            },
-            sim -> {},
-            0,
-            FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-            Optional.empty(),
-            Motor.TargetType.Velocity);
-
-    flDrive =
-        Motor.fromTalonFX(
-            11,
-            motor -> {
-              TalonFXConfiguration config = new TalonFXConfiguration();
-              config.CurrentLimits =
-                  new CurrentLimitsConfigs()
-                      .withSupplyCurrentLimit(40)
-                      .withSupplyCurrentLimitEnable(true);
-              config.MotorOutput =
-                  new MotorOutputConfigs()
-                      .withNeutralMode(NeutralModeValue.Brake)
-                      .withInverted(InvertedValue.Clockwise_Positive);
-              config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 0.1016 * Math.PI);
+                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -122,7 +100,7 @@ public class SwerveSysID extends LoggedRobot {
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
               config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 0.1016 * Math.PI);
+                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -148,7 +126,7 @@ public class SwerveSysID extends LoggedRobot {
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
               config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 0.1016 * Math.PI);
+                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -173,19 +151,16 @@ public class SwerveSysID extends LoggedRobot {
                   .velocityConversionFactor(1.0 / 25 / 60);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-              AnalogEncoder absoluteEncoder = new AnalogEncoder(0);
-              motor.getEncoder().setPosition(absoluteEncoder.get() - 0.805);
-              absoluteEncoder.close();
             },
             sim -> {},
-            0,
+            new AnalogEncoder(0).get() - 0.638,
             FeedbackController.fromPID(
                 new PIDController(0, 0, 0),
                 controller -> {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.empty(),
+            Optional.of(new FeedforwardConstants(0, 0.25179, 3.1033, 0.33929)),
             Motor.TargetType.Meters);
 
     frAngle =
@@ -201,19 +176,16 @@ public class SwerveSysID extends LoggedRobot {
                   .velocityConversionFactor(1.0 / 25 / 60);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-              AnalogEncoder absoluteEncoder = new AnalogEncoder(1);
-              motor.getEncoder().setPosition(absoluteEncoder.get() - 0.805);
-              absoluteEncoder.close();
             },
             sim -> {},
-            0,
+            new AnalogEncoder(1).get() - 0.612,
             FeedbackController.fromPID(
                 new PIDController(0, 0, 0),
                 controller -> {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.empty(),
+            Optional.of(new FeedforwardConstants(0, 0.36617, 3.2101, 0.26453)),
             Motor.TargetType.Meters);
 
     blAngle =
@@ -229,19 +201,16 @@ public class SwerveSysID extends LoggedRobot {
                   .velocityConversionFactor(1.0 / 25 / 60);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-              AnalogEncoder absoluteEncoder = new AnalogEncoder(2);
-              motor.getEncoder().setPosition(absoluteEncoder.get() - 0.805);
-              absoluteEncoder.close();
             },
             sim -> {},
-            0,
+            new AnalogEncoder(2).get() - 0.546,
             FeedbackController.fromPID(
                 new PIDController(0, 0, 0),
                 controller -> {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.empty(),
+            Optional.of(new FeedforwardConstants(0, 0.37473, 3.24, 0.24393)),
             Motor.TargetType.Meters);
 
     brAngle =
@@ -257,19 +226,16 @@ public class SwerveSysID extends LoggedRobot {
                   .velocityConversionFactor(1.0 / 25 / 60);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-              AnalogEncoder absoluteEncoder = new AnalogEncoder(3);
-              motor.getEncoder().setPosition(absoluteEncoder.get() - 0.805);
-              absoluteEncoder.close();
             },
             sim -> {},
-            0,
+            new AnalogEncoder(3).get() - 0.760,
             FeedbackController.fromPID(
                 new PIDController(0, 0, 0),
                 controller -> {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.empty(),
+            Optional.of(new FeedforwardConstants(0, 0.25159, 3.1999, 0.25259)),
             Motor.TargetType.Meters);
 
     SysIDCommands driveSysId = getDriveSysIDCommands();
@@ -282,6 +248,19 @@ public class SwerveSysID extends LoggedRobot {
     SmartDashboard.putData("Angle Dynamic Reverse", angleSysId.dynamicReverse());
     SmartDashboard.putData("Angle Quasistatic Forward", angleSysId.quasistaticForward());
     SmartDashboard.putData("Angle Quasistatic Reverse", angleSysId.quasistaticReverse());
+  }
+
+  @Override
+  public void robotPeriodic() {
+    HoundLog.log("Swerve/FLAngle", flAngle);
+    HoundLog.log("Swerve/FRAngle", frAngle);
+    HoundLog.log("Swerve/BLAngle", blAngle);
+    HoundLog.log("Swerve/BRAngle", brAngle);
+    HoundLog.log("Swerve/FLDrive", flDrive);
+    HoundLog.log("Swerve/FRDrive", frDrive);
+    HoundLog.log("Swerve/BLDrive", blDrive);
+    HoundLog.log("Swerve/BRDrive", brDrive);
+    CommandScheduler.getInstance().run();
   }
 
   public SysIDCommands getDriveSysIDCommands() {
