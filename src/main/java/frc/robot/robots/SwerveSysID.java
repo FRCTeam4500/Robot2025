@@ -23,6 +23,7 @@ import frc.robot.utilities.logging.HoundLog;
 
 import java.util.Optional;
 
+@SuppressWarnings("resource")
 public class SwerveSysID extends LoggedRobot {
   Motor flDrive;
   Motor flAngle;
