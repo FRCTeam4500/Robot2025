@@ -3,7 +3,6 @@ package frc.robot.hardware;
 import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -84,6 +83,17 @@ public class Motor extends SubsystemBase implements Loggable {
    * @param nextTarget the target position/velocity to go to
    */
   public void setTarget(double nextTarget) {
+    if (useVoltage || target != nextTarget) {
+      switch (type) {
+        case Degrees:
+        case Meters:
+          fb.reset(positionGetter.getAsDouble());
+          break;
+        default:
+          fb.reset(velocityGetter.getAsDouble());
+          break;
+      }
+    }
     target = nextTarget;
     useVoltage = false;
   }
@@ -549,7 +559,6 @@ public class Motor extends SubsystemBase implements Loggable {
       }
     }
     TalonSRX motor = new TalonSRX(canID);
-    motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 40, 0.1), 0);
     config.accept(motor);
     motor.setSelectedSensorPosition(initialPosition / conversionFactor);
     return new Motor(
@@ -653,7 +662,6 @@ public class Motor extends SubsystemBase implements Loggable {
       and element 2 is acceleration
     */
     double[] stateHolder = new double[] {initialPosition, 0, 0};
-    fb.reset(initialPosition);
     return new Motor(
         type,
         position -> stateHolder[0] = position,

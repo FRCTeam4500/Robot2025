@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.ElevatorWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.FeedforwardConstants;
@@ -24,6 +25,9 @@ public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
   public final MechanismLigament2d mech;
   public final MechanismLigament2d armHolder;
+  public final Trigger armCanIntake = new Trigger(() -> {
+    return upMotor.getPosition() > 0.6;
+  });
 
   private final double stowPosition = 0;
   private final double handoffPosition = .651;
