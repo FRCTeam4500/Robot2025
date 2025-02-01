@@ -20,7 +20,6 @@ import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.SysIDCommands;
 import frc.robot.utilities.logging.HoundLog;
-
 import java.util.Optional;
 
 public class SwerveSysID extends LoggedRobot {
@@ -47,8 +46,7 @@ public class SwerveSysID extends LoggedRobot {
                   new MotorOutputConfigs()
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
-              config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
+              config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -73,8 +71,7 @@ public class SwerveSysID extends LoggedRobot {
                   new MotorOutputConfigs()
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
-              config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
+              config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -99,8 +96,7 @@ public class SwerveSysID extends LoggedRobot {
                   new MotorOutputConfigs()
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
-              config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
+              config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -125,8 +121,7 @@ public class SwerveSysID extends LoggedRobot {
                   new MotorOutputConfigs()
                       .withNeutralMode(NeutralModeValue.Brake)
                       .withInverted(InvertedValue.Clockwise_Positive);
-              config.Feedback =
-                  new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
+              config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(5.14 * 31.75);
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
