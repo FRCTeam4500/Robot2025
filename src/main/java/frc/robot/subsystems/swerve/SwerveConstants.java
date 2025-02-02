@@ -93,7 +93,8 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              Optional.of(new FeedforwardConstants(0, 0.25179, 0.00862027777778, 0.000942472222222)),
+              Optional.of(
+                  new FeedforwardConstants(0, 0.25179, 0.00862027777778, 0.000942472222222)),
               TargetType.Degrees));
 
   public static final SwerveModule FRONT_RIGHT_MODULE =
@@ -142,7 +143,8 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              Optional.of(new FeedforwardConstants(0, 0.36617, 0.00891694444444, 0.000734805555556)),
+              Optional.of(
+                  new FeedforwardConstants(0, 0.36617, 0.00891694444444, 0.000734805555556)),
               TargetType.Degrees));
 
   public static final SwerveModule BACK_LEFT_MODULE =
@@ -240,6 +242,7 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              Optional.of(new FeedforwardConstants(0, 0.25159, 0.00888861111111, 0.000701638888889)),
+              Optional.of(
+                  new FeedforwardConstants(0, 0.25159, 0.00888861111111, 0.000701638888889)),
               TargetType.Degrees));
 }
