@@ -342,12 +342,15 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   public Command testDriveConversionFactor(double speed, double duration) {
     return Commands.run(
-      () -> {
-        drive(new ChassisSpeeds(0, 0, speed));
-        HoundLog.log("Swerve/Characterization/Gyro Speed", gyro.getAngularVelocity().getRadians());
-        HoundLog.log("Swerve/Characterization/Odometry Speed", getSpeeds().omegaRadiansPerSecond);
-      }, this
-    ).withTimeout(duration);
+            () -> {
+              drive(new ChassisSpeeds(0, 0, speed));
+              HoundLog.log(
+                  "Swerve/Characterization/Gyro Speed", gyro.getAngularVelocity().getRadians());
+              HoundLog.log(
+                  "Swerve/Characterization/Odometry Speed", getSpeeds().omegaRadiansPerSecond);
+            },
+            this)
+        .withTimeout(duration);
   }
 
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
