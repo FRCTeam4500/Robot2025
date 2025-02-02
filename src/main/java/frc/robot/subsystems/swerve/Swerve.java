@@ -340,6 +340,16 @@ public class Swerve extends SubsystemBase implements Loggable {
     return Commands.runOnce(() -> this.targetHeading = targetHeading);
   }
 
+  public Command testDriveConversionFactor(double speed, double duration) {
+    return Commands.run(
+      () -> {
+        drive(new ChassisSpeeds(0, 0, speed));
+        HoundLog.log("Swerve/Characterization/Gyro Speed", gyro.getAngularVelocity().getRadians());
+        HoundLog.log("Swerve/Characterization/Odometry Speed", getSpeeds().omegaRadiansPerSecond);
+      }, this
+    ).withTimeout(duration);
+  }
+
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
     double speedCoefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
     Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
@@ -370,16 +380,6 @@ public class Swerve extends SubsystemBase implements Loggable {
         Math.cos(angle) * speeds.vxMetersPerSecond - Math.sin(angle) * speeds.vyMetersPerSecond,
         Math.sin(angle) * speeds.vxMetersPerSecond + Math.cos(angle) * speeds.vyMetersPerSecond,
         speeds.omegaRadiansPerSecond);
-  }
-
-  public Command skewTest() {
-    return run(() -> {
-          ChassisSpeeds fieldRel = new ChassisSpeeds(3, 0, Math.PI);
-          drive(
-              ChassisSpeeds.fromFieldRelativeSpeeds(
-                  fieldRel, estimator.getEstimatedPosition().getRotation()));
-        })
-        .finallyDo(() -> drive(new ChassisSpeeds()));
   }
 
   private void drive(ChassisSpeeds speeds) {
