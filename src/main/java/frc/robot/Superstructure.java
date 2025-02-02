@@ -82,7 +82,9 @@ public class Superstructure implements Loggable {
   }
 
   public Command intake() {
-    return arm.stow().until(elevator.armCanIntake).andThen(arm.handoff())
+    return arm.stow()
+        .until(elevator.armCanIntake)
+        .andThen(arm.handoff())
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.handoff()))
         .andThen(placer.intake());
   }

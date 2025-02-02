@@ -25,9 +25,11 @@ public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
   public final MechanismLigament2d mech;
   public final MechanismLigament2d armHolder;
-  public final Trigger armCanIntake = new Trigger(() -> {
-    return upMotor.getPosition() > 0.6;
-  });
+  public final Trigger armCanIntake =
+      new Trigger(
+          () -> {
+            return upMotor.getPosition() > 0.6;
+          });
 
   private final double stowPosition = 0;
   private final double handoffPosition = .651;

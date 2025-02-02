@@ -19,33 +19,33 @@ public class SwerveModule implements Loggable {
     targetState =
         new SwerveModuleState(
             drive.getVelocity(),
-            Rotation2d.fromRotations(MathUtil.inputModulus(angle.getPosition(), 0, 1)));
+            Rotation2d.fromDegrees(MathUtil.inputModulus(angle.getPosition(), 0, 360)));
   }
 
   public void setTargetState(SwerveModuleState state) {
     targetState = new SwerveModuleState(state.speedMetersPerSecond, state.angle);
     targetState.optimize(
-        Rotation2d.fromRotations(MathUtil.inputModulus(angle.getPosition(), 0, 1)));
+        Rotation2d.fromDegrees(MathUtil.inputModulus(angle.getPosition(), 0, 360)));
   }
   ;
 
   public SwerveModuleState getCurrentState() {
     return new SwerveModuleState(
         drive.getVelocity(),
-        Rotation2d.fromRotations(MathUtil.inputModulus(angle.getPosition(), 0, 1)));
+        Rotation2d.fromDegrees(MathUtil.inputModulus(angle.getPosition(), 0, 360)));
   }
   ;
 
   public SwerveModulePosition getCurrentPosition() {
     return new SwerveModulePosition(
         drive.getPosition(),
-        Rotation2d.fromRotations(MathUtil.inputModulus(angle.getPosition(), 0, 1)));
+        Rotation2d.fromDegrees(MathUtil.inputModulus(angle.getPosition(), 0, 360)));
   }
 
   public void periodic() {
     targetState.cosineScale(getCurrentState().angle);
     drive.setTarget(targetState.speedMetersPerSecond);
-    angle.setTarget(targetState.angle.getRotations());
+    angle.setTarget(targetState.angle.getDegrees());
   }
   ;
 

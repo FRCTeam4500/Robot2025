@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.utilities.FeedbackController;
@@ -37,7 +36,6 @@ public class SwerveSysID extends LoggedRobot {
   private Motor blAngle;
   private Motor brDrive;
   private Motor brAngle;
-  private CommandXboxController xbox;
   private Sendable targetSetter;
   private double target;
 
@@ -242,20 +240,23 @@ public class SwerveSysID extends LoggedRobot {
             Optional.of(new FeedforwardConstants(0, 0.25159, 3.1999, 0.25259)),
             Motor.TargetType.Meters);
 
-
-    targetSetter = new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-          builder.addDoubleProperty("Target", () -> target, newTarget -> target = newTarget);
-      }
-    };
-    xbox = new CommandXboxController(2);
+    targetSetter =
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.addDoubleProperty("Target", () -> target, newTarget -> target = newTarget);
+          }
+        };
     SysIDCommands driveSysId = getDriveSysIDCommands();
     SysIDCommands angleSysId = getAngleSysIDCommands();
-    SmartDashboard.putData("Drive Dynamic Forward", driveSysId.dynamicForward().deadlineFor(testAnglePIDs()));
-    SmartDashboard.putData("Drive Dynamic Reverse", driveSysId.dynamicReverse().deadlineFor(testAnglePIDs()));
-    SmartDashboard.putData("Drive Quasistatic Forward", driveSysId.quasistaticForward().deadlineFor(testAnglePIDs()));
-    SmartDashboard.putData("Drive Quasistatic Reverse", driveSysId.quasistaticReverse().deadlineFor(testAnglePIDs()));
+    SmartDashboard.putData(
+        "Drive Dynamic Forward", driveSysId.dynamicForward().deadlineFor(testAnglePIDs()));
+    SmartDashboard.putData(
+        "Drive Dynamic Reverse", driveSysId.dynamicReverse().deadlineFor(testAnglePIDs()));
+    SmartDashboard.putData(
+        "Drive Quasistatic Forward", driveSysId.quasistaticForward().deadlineFor(testAnglePIDs()));
+    SmartDashboard.putData(
+        "Drive Quasistatic Reverse", driveSysId.quasistaticReverse().deadlineFor(testAnglePIDs()));
     SmartDashboard.putData("Angle Dynamic Forward", angleSysId.dynamicForward());
     SmartDashboard.putData("Angle Dynamic Reverse", angleSysId.dynamicReverse());
     SmartDashboard.putData("Angle Quasistatic Forward", angleSysId.quasistaticForward());
@@ -280,42 +281,44 @@ public class SwerveSysID extends LoggedRobot {
   }
 
   public Command fullSpeedAhead() {
-    return Commands.runOnce(() -> {
-      flDrive.setVoltage(12);
-      frDrive.setVoltage(12);
-      blDrive.setVoltage(12);
-      brDrive.setVoltage(12);
-
-    }).andThen(
-      Commands.waitSeconds(1)
-    ).andThen(
-      Commands.runOnce(() -> {
-        flDrive.setVoltage(0);
-        frDrive.setVoltage(0);
-        blDrive.setVoltage(0);
-        brDrive.setVoltage(0);
-      })
-    );
+    return Commands.runOnce(
+            () -> {
+              flDrive.setVoltage(12);
+              frDrive.setVoltage(12);
+              blDrive.setVoltage(12);
+              brDrive.setVoltage(12);
+            })
+        .andThen(Commands.waitSeconds(1))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  flDrive.setVoltage(0);
+                  frDrive.setVoltage(0);
+                  blDrive.setVoltage(0);
+                  brDrive.setVoltage(0);
+                }));
   }
 
   public Command testAnglePIDs() {
-    return Commands.run(() -> {
-      flAngle.setTarget(target);
-      frAngle.setTarget(target);
-      blAngle.setTarget(target);
-      brAngle.setTarget(target);
-    }).finallyDo(
-      () -> {
-        flAngle.setVoltage(0);
-        frAngle.setVoltage(0);
-        blAngle.setVoltage(0);
-        brAngle.setVoltage(0);
-      }
-    );
+    return Commands.run(
+            () -> {
+              flAngle.setTarget(target);
+              frAngle.setTarget(target);
+              blAngle.setTarget(target);
+              brAngle.setTarget(target);
+            })
+        .finallyDo(
+            () -> {
+              flAngle.setVoltage(0);
+              frAngle.setVoltage(0);
+              blAngle.setVoltage(0);
+              brAngle.setVoltage(0);
+            });
   }
 
   public SysIDCommands getDriveSysIDCommands() {
-    return frDrive.getSynchronizedSysIDCommands("Drive SysId", 1, 2.5, 3, flDrive, blDrive, brDrive);
+    return frDrive.getSynchronizedSysIDCommands(
+        "Drive SysId", 1, 2.5, 3, flDrive, blDrive, brDrive);
   }
 
   public SysIDCommands getAngleSysIDCommands() {

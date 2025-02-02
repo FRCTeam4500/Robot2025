@@ -1,9 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import static com.revrobotics.spark.SparkBase.PersistMode.*;
-import static com.revrobotics.spark.SparkBase.ResetMode.*;
-import static frc.robot.WiringConstants.SwerveWiring.*;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -25,6 +21,7 @@ import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
 import java.util.Optional;
 
+@SuppressWarnings("resource")
 public class SwerveConstants {
   /** The max speed the robot should travel at */
   public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(6, 6, 4);
@@ -52,197 +49,197 @@ public class SwerveConstants {
 
   public static final SwerveModule FRONT_LEFT_MODULE =
       new SwerveModule(
-        Motor.fromTalonFX(
-          11,
-          motor -> {
-            TalonFXConfiguration config = new TalonFXConfiguration();
-            config.CurrentLimits =
-                new CurrentLimitsConfigs()
-                    .withSupplyCurrentLimit(40)
-                    .withSupplyCurrentLimitEnable(true);
-            config.MotorOutput =
-                new MotorOutputConfigs()
-                    .withNeutralMode(NeutralModeValue.Brake)
-                    .withInverted(InvertedValue.Clockwise_Positive);
-            config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
-            StatusCode status = StatusCode.StatusCodeNotInitialized;
-            for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-              status = motor.getConfigurator().apply(config);
-            }
-          },
-          sim -> {},
-          0,
-          FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-          Optional.of(new FeedforwardConstants(0, 0.24571, 1.8141, 0.16798)),
-          Motor.TargetType.Velocity),
+          Motor.fromTalonFX(
+              11,
+              motor -> {
+                TalonFXConfiguration config = new TalonFXConfiguration();
+                config.CurrentLimits =
+                    new CurrentLimitsConfigs()
+                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimitEnable(true);
+                config.MotorOutput =
+                    new MotorOutputConfigs()
+                        .withNeutralMode(NeutralModeValue.Brake)
+                        .withInverted(InvertedValue.Clockwise_Positive);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                StatusCode status = StatusCode.StatusCodeNotInitialized;
+                for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                  status = motor.getConfigurator().apply(config);
+                }
+              },
+              sim -> {},
+              0,
+              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              Optional.of(new FeedforwardConstants(0, 0.24571, 1.8141, 0.16798)),
+              TargetType.Velocity),
           Motor.fromSparkMax(
-            9,
-            false,
-            motor -> {
-              SparkMaxConfig config = new SparkMaxConfig();
-              config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
-              motor.configure(
-                  config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-            },
-            sim -> {},
-            new AnalogEncoder(0).get() - 0.650,
-            FeedbackController.fromPID(
-                new PIDController(5, 0, 0),
-                controller -> {
-                  controller.enableContinuousInput(0, 1);
-                  controller.setTolerance(0.01);
-                }),
-            Optional.of(new FeedforwardConstants(0, 0.25179, 3.1033, 0.33929)),
-            Motor.TargetType.Meters));
+              9,
+              false,
+              motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config
+                    .encoder
+                    .positionConversionFactor(1.0 / 25 * 360)
+                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                motor.configure(
+                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+              },
+              sim -> {},
+              (new AnalogEncoder(0).get() - 0.650) * 360,
+              FeedbackController.fromPID(
+                  new PIDController(0.14, 0, 0),
+                  controller -> {
+                    controller.enableContinuousInput(0, 360);
+                    controller.setTolerance(1);
+                  }),
+              Optional.of(new FeedforwardConstants(0, 0.25179, 0.00862027777778, 0.000942472222222)),
+              TargetType.Degrees));
 
   public static final SwerveModule FRONT_RIGHT_MODULE =
       new SwerveModule(
-        Motor.fromTalonFX(
-          10,
-          motor -> {
-            TalonFXConfiguration config = new TalonFXConfiguration();
-            config.CurrentLimits =
-                new CurrentLimitsConfigs()
-                    .withSupplyCurrentLimit(40)
-                    .withSupplyCurrentLimitEnable(true);
-            config.MotorOutput =
-                new MotorOutputConfigs()
-                    .withNeutralMode(NeutralModeValue.Brake)
-                    .withInverted(InvertedValue.CounterClockwise_Positive);
-            config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
-            StatusCode status = StatusCode.StatusCodeNotInitialized;
-            for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-              status = motor.getConfigurator().apply(config);
-            }
-          },
-          sim -> {},
-          0,
-          FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-          Optional.of(new FeedforwardConstants(0, 0.19746, 1.7841, 0.21748)),
-          Motor.TargetType.Velocity),
+          Motor.fromTalonFX(
+              10,
+              motor -> {
+                TalonFXConfiguration config = new TalonFXConfiguration();
+                config.CurrentLimits =
+                    new CurrentLimitsConfigs()
+                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimitEnable(true);
+                config.MotorOutput =
+                    new MotorOutputConfigs()
+                        .withNeutralMode(NeutralModeValue.Brake)
+                        .withInverted(InvertedValue.CounterClockwise_Positive);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                StatusCode status = StatusCode.StatusCodeNotInitialized;
+                for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                  status = motor.getConfigurator().apply(config);
+                }
+              },
+              sim -> {},
+              0,
+              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              Optional.of(new FeedforwardConstants(0, 0.19746, 1.7841, 0.21748)),
+              TargetType.Velocity),
           Motor.fromSparkMax(
-            8,
-            false,
-            motor -> {
-              SparkMaxConfig config = new SparkMaxConfig();
-              config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
-              motor.configure(
-                  config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-            },
-            sim -> {},
-            new AnalogEncoder(1).get() - 0.906,
-            FeedbackController.fromPID(
-                new PIDController(5, 0, 0),
-                controller -> {
-                  controller.enableContinuousInput(0, 1);
-                  controller.setTolerance(0.01);
-                }),
-            Optional.of(new FeedforwardConstants(0, 0.36617, 3.2101, 0.26453)),
-            Motor.TargetType.Meters));
+              8,
+              false,
+              motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config
+                    .encoder
+                    .positionConversionFactor(1.0 / 25 * 360)
+                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                motor.configure(
+                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+              },
+              sim -> {},
+              (new AnalogEncoder(1).get() - 0.906) * 360,
+              FeedbackController.fromPID(
+                  new PIDController(0.14, 0, 0),
+                  controller -> {
+                    controller.enableContinuousInput(0, 360);
+                    controller.setTolerance(1);
+                  }),
+              Optional.of(new FeedforwardConstants(0, 0.36617, 0.00891694444444, 0.000734805555556)),
+              TargetType.Degrees));
 
   public static final SwerveModule BACK_LEFT_MODULE =
       new SwerveModule(
-        Motor.fromTalonFX(
-          19,
-          motor -> {
-            TalonFXConfiguration config = new TalonFXConfiguration();
-            config.CurrentLimits =
-                new CurrentLimitsConfigs()
-                    .withSupplyCurrentLimit(40)
-                    .withSupplyCurrentLimitEnable(true);
-            config.MotorOutput =
-                new MotorOutputConfigs()
-                    .withNeutralMode(NeutralModeValue.Brake)
-                    .withInverted(InvertedValue.Clockwise_Positive);
-            config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
-            StatusCode status = StatusCode.StatusCodeNotInitialized;
-            for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-              status = motor.getConfigurator().apply(config);
-            }
-          },
-          sim -> {},
-          0,
-          FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-          Optional.of(new FeedforwardConstants(0, 0.21224, 1.7981, 0.18871)),
-          Motor.TargetType.Velocity),
+          Motor.fromTalonFX(
+              19,
+              motor -> {
+                TalonFXConfiguration config = new TalonFXConfiguration();
+                config.CurrentLimits =
+                    new CurrentLimitsConfigs()
+                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimitEnable(true);
+                config.MotorOutput =
+                    new MotorOutputConfigs()
+                        .withNeutralMode(NeutralModeValue.Brake)
+                        .withInverted(InvertedValue.Clockwise_Positive);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                StatusCode status = StatusCode.StatusCodeNotInitialized;
+                for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                  status = motor.getConfigurator().apply(config);
+                }
+              },
+              sim -> {},
+              0,
+              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              Optional.of(new FeedforwardConstants(0, 0.21224, 1.7981, 0.18871)),
+              TargetType.Velocity),
           Motor.fromSparkMax(
-            18,
-            false,
-            motor -> {
-              SparkMaxConfig config = new SparkMaxConfig();
-              config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
-              motor.configure(
-                  config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-            },
-            sim -> {},
-            new AnalogEncoder(2).get() - 0.001,
-            FeedbackController.fromPID(
-                new PIDController(5, 0, 0),
-                controller -> {
-                  controller.enableContinuousInput(0, 1);
-                  controller.setTolerance(0.01);
-                }),
-            Optional.of(new FeedforwardConstants(0, 0.37473, 3.24, 0.24393)),
-            Motor.TargetType.Meters));
+              18,
+              false,
+              motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config
+                    .encoder
+                    .positionConversionFactor(1.0 / 25 * 360)
+                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                motor.configure(
+                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+              },
+              sim -> {},
+              (new AnalogEncoder(2).get() - 0.001) * 360,
+              FeedbackController.fromPID(
+                  new PIDController(0.14, 0, 0),
+                  controller -> {
+                    controller.enableContinuousInput(0, 360);
+                    controller.setTolerance(1);
+                  }),
+              Optional.of(new FeedforwardConstants(0, 0.37473, 0.009, 0.000677583333333)),
+              TargetType.Degrees));
 
   public static final SwerveModule BACK_RIGHT_MODULE =
       new SwerveModule(
-        Motor.fromTalonFX(
-          7,
-          motor -> {
-            TalonFXConfiguration config = new TalonFXConfiguration();
-            config.CurrentLimits =
-                new CurrentLimitsConfigs()
-                    .withSupplyCurrentLimit(40)
-                    .withSupplyCurrentLimitEnable(true);
-            config.MotorOutput =
-                new MotorOutputConfigs()
-                    .withNeutralMode(NeutralModeValue.Brake)
-                    .withInverted(InvertedValue.CounterClockwise_Positive);
-            config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
-            StatusCode status = StatusCode.StatusCodeNotInitialized;
-            for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-              status = motor.getConfigurator().apply(config);
-            }
-          },
-          sim -> {},
-          0,
-          FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-          Optional.of(new FeedforwardConstants(0, 0.2177, 1.8156, 0.12033)),
-          Motor.TargetType.Velocity),
+          Motor.fromTalonFX(
+              7,
+              motor -> {
+                TalonFXConfiguration config = new TalonFXConfiguration();
+                config.CurrentLimits =
+                    new CurrentLimitsConfigs()
+                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimitEnable(true);
+                config.MotorOutput =
+                    new MotorOutputConfigs()
+                        .withNeutralMode(NeutralModeValue.Brake)
+                        .withInverted(InvertedValue.CounterClockwise_Positive);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                StatusCode status = StatusCode.StatusCodeNotInitialized;
+                for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                  status = motor.getConfigurator().apply(config);
+                }
+              },
+              sim -> {},
+              0,
+              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              Optional.of(new FeedforwardConstants(0, 0.2177, 1.8156, 0.12033)),
+              TargetType.Velocity),
           Motor.fromSparkMax(
-            6,
-            false,
-            motor -> {
-              SparkMaxConfig config = new SparkMaxConfig();
-              config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
-              motor.configure(
-                  config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-            },
-            sim -> {},
-            new AnalogEncoder(3).get() - 0.854,
-            FeedbackController.fromPID(
-                new PIDController(5, 0, 0),
-                controller -> {
-                  controller.enableContinuousInput(0, 1);
-                  controller.setTolerance(0.01);
-                }),
-            Optional.of(new FeedforwardConstants(0, 0.25159, 3.1999, 0.25259)),
-            Motor.TargetType.Meters));
+              6,
+              false,
+              motor -> {
+                SparkMaxConfig config = new SparkMaxConfig();
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config
+                    .encoder
+                    .positionConversionFactor(1.0 / 25 * 360)
+                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                motor.configure(
+                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+              },
+              sim -> {},
+              (new AnalogEncoder(3).get() - 0.854) * 360,
+              FeedbackController.fromPID(
+                  new PIDController(0.14, 0, 0),
+                  controller -> {
+                    controller.enableContinuousInput(0, 360);
+                    controller.setTolerance(1);
+                  }),
+              Optional.of(new FeedforwardConstants(0, 0.25159, 0.00888861111111, 0.000701638888889)),
+              TargetType.Degrees));
 }
