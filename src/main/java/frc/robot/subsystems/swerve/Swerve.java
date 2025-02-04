@@ -342,17 +342,37 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   public Command testDriveConversionFactor(double speed, double duration) {
     return Commands.run(
-      () -> {
-        drive(new ChassisSpeeds(0, 0, speed));
-        HoundLog.log("Swerve/Characterization/Gyro Speed", Math.abs(gyro.getAngularVelocity().getRadians()));
-        HoundLog.log("Swerve/Characterization/Odometry Speed", Math.abs(getSpeeds().omegaRadiansPerSecond));
-        HoundLog.log("Swerve/Characterization/FL Speed", Math.abs(modules[0].getCurrentState().speedMetersPerSecond / FRONT_LEFT_TRANSLATION.getNorm()));
-        HoundLog.log("Swerve/Characterization/FR Speed", Math.abs(modules[1].getCurrentState().speedMetersPerSecond / FRONT_RIGHT_TRANSLATION.getNorm()));
-        HoundLog.log("Swerve/Characterization/BL Speed", Math.abs(modules[2].getCurrentState().speedMetersPerSecond / BACK_LEFT_TRANSLATION.getNorm()));
-        HoundLog.log("Swerve/Characterization/BR Speed", Math.abs(modules[3].getCurrentState().speedMetersPerSecond / BACK_RIGHT_TRANSLATION.getNorm()));
-    }, this
-  ).withTimeout(duration);
-
+            () -> {
+              drive(new ChassisSpeeds(0, 0, speed));
+              HoundLog.log(
+                  "Swerve/Characterization/Gyro Speed",
+                  Math.abs(gyro.getAngularVelocity().getRadians()));
+              HoundLog.log(
+                  "Swerve/Characterization/Odometry Speed",
+                  Math.abs(getSpeeds().omegaRadiansPerSecond));
+              HoundLog.log(
+                  "Swerve/Characterization/FL Speed",
+                  Math.abs(
+                      modules[0].getCurrentState().speedMetersPerSecond
+                          / FRONT_LEFT_TRANSLATION.getNorm()));
+              HoundLog.log(
+                  "Swerve/Characterization/FR Speed",
+                  Math.abs(
+                      modules[1].getCurrentState().speedMetersPerSecond
+                          / FRONT_RIGHT_TRANSLATION.getNorm()));
+              HoundLog.log(
+                  "Swerve/Characterization/BL Speed",
+                  Math.abs(
+                      modules[2].getCurrentState().speedMetersPerSecond
+                          / BACK_LEFT_TRANSLATION.getNorm()));
+              HoundLog.log(
+                  "Swerve/Characterization/BR Speed",
+                  Math.abs(
+                      modules[3].getCurrentState().speedMetersPerSecond
+                          / BACK_RIGHT_TRANSLATION.getNorm()));
+            },
+            this)
+        .withTimeout(duration);
   }
 
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {

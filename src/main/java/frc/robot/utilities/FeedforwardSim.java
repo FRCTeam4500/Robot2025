@@ -22,8 +22,7 @@ public class FeedforwardSim extends SubsystemBase implements Loggable {
    *     units are assumed to be degrees, with 0 being horizontal, and 0.25 pointing straight up.
    * @throws IllegalArgumentException if the feedforward's kV or kA is 0
    */
-  public FeedforwardSim(
-      FeedforwardController feedforward, double initialPosition) {
+  public FeedforwardSim(FeedforwardController feedforward, double initialPosition) {
     if (!feedforward.canSimulate()) {
       throw new IllegalArgumentException("The feedforward must be able to simulate acceleration!");
     }
