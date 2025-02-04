@@ -54,8 +54,7 @@ public class Placer extends SubsystemBase implements Loggable {
                 (PIDController pid) -> {
                   pid.setTolerance(0.5);
                 }),
-            // FeedforwardController.forConstantGravity(0, 0.47622, 0.12973, 0.01321),
-            FeedforwardController.forNone(),
+            FeedforwardController.forConstantGravity(0, 0.47622, 0.12973, 0.01321),
             TargetType.Velocity);
   }
 

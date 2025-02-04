@@ -194,7 +194,7 @@ public class Motor extends SubsystemBase implements Loggable {
       case Velocity:
         double velocity = getVelocity();
         fbVolts = fb.calculate(velocity, target);
-        ffVolts = ff.calculateVoltage(getPosition(), velocity, 0);
+        ffVolts = ff.calculateVoltage(getPosition(), target, 0);
         break;
       case Degrees:
         double position = getPosition();
