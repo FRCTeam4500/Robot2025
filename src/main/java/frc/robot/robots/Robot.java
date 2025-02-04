@@ -70,6 +70,8 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Intake", structure.intake());
     SmartDashboard.putData("Stow", structure.stow());
     SmartDashboard.putData("Shoot", structure.shoot());
+
+    SmartDashboard.putData("Swerve Characterization", swerve.testDriveConversionFactor(Math.PI, 10));
   }
 
   private void setupDriveController() {
