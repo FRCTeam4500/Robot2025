@@ -28,7 +28,7 @@ public class Climber extends SubsystemBase implements Loggable {
                 (ProfiledPIDController pid) -> {
                   pid.setTolerance(1);
                 }),
-            TargetType.Meters,
+            TargetType.Position,
             stowAngle);
     mech = new MechanismLigament2d("Climber", .3, stowAngle);
   }

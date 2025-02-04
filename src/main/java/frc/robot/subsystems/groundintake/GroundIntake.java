@@ -42,7 +42,7 @@ public class GroundIntake extends SubsystemBase implements Loggable {
                 (ProfiledPIDController pid) -> {
                   pid.setTolerance(0.1);
                 }),
-            TargetType.Degrees, // This motor goes to a position
+            TargetType.Position, // This motor goes to a position
             90 // The starting position of the motor is 90 units
             );
     runMotor =

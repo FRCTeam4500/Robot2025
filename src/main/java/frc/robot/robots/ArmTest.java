@@ -38,7 +38,7 @@ public class ArmTest extends LoggedRobot {
                 }),
             // FeedforwardController.forArmGravity(1.016, 0.297, 0.0046134, 0.00075716),
             FeedforwardController.forNone(),
-            TargetType.Degrees);
+            TargetType.Position);
     SmartDashboard.putData("Target: 90", Commands.runOnce(() -> motor.setTarget(90)));
     SmartDashboard.putData("Target: 0", Commands.runOnce(() -> motor.setTarget(0)));
     SmartDashboard.putData("Target: 45", Commands.runOnce(() -> motor.setTarget(45)));

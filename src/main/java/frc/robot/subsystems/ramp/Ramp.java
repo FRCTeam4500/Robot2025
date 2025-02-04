@@ -29,7 +29,7 @@ public class Ramp extends SubsystemBase implements Loggable {
                 (ProfiledPIDController pid) -> {
                   pid.setTolerance(1);
                 }),
-            TargetType.Degrees, // This motor goes to a position
+            TargetType.Position, // This motor goes to a position
             intakeAngle // The starting position of the motor is 0 units
             );
     mech = new MechanismLigament2d("Ramp", 0.4, intakeAngle);

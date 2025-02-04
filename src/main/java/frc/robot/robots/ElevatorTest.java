@@ -44,7 +44,7 @@ public class ElevatorTest extends LoggedRobot {
                   pid.setTolerance(0.05);
                 }),
             FeedforwardController.forConstantGravity(0.15472, 0.098108, 27.673, 3.4548),
-            TargetType.Meters);
+            TargetType.Position);
     SmartDashboard.putData("Target: 0", Commands.runOnce(() -> motor.setTarget(0)));
     SmartDashboard.putData("Target: 0.3", Commands.runOnce(() -> motor.setTarget(0.3)));
     SmartDashboard.putData("Target: 0.6", Commands.runOnce(() -> motor.setTarget(0.6)));

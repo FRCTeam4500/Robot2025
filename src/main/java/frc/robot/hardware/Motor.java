@@ -76,8 +76,7 @@ public class Motor extends SubsystemBase implements Loggable {
     this.ff = ff;
     this.motorInfo = motorInfo;
     switch (type) {
-      case Degrees:
-      case Meters:
+      case Position:
         fb.reset(positionGetter.getAsDouble());
         break;
       default:
@@ -94,8 +93,7 @@ public class Motor extends SubsystemBase implements Loggable {
   public void setTarget(double nextTarget) {
     if (useVoltage || target != nextTarget) {
       switch (type) {
-        case Degrees:
-        case Meters:
+        case Position:
           fb.reset(positionGetter.getAsDouble());
           break;
         default:
@@ -158,8 +156,7 @@ public class Motor extends SubsystemBase implements Loggable {
       return true;
     }
     switch (type) {
-      case Meters:
-      case Degrees:
+      case Position:
         fb.calculate(getPosition(), target);
         break;
       case Velocity:
@@ -187,19 +184,15 @@ public class Motor extends SubsystemBase implements Loggable {
     double fbVolts = 0;
     double ffVolts = 0;
     switch (type) {
-      case Meters:
-        fbVolts = fb.calculate(getPosition(), target);
-        ffVolts = ff.calcuateVoltage(getPosition(), fbVolts);
+      case Position:
+        double position = getPosition();
+        fbVolts = fb.calculate(position, target);
+        ffVolts = ff.calcuateVoltage(position, fbVolts);
         break;
       case Velocity:
         double velocity = getVelocity();
         fbVolts = fb.calculate(velocity, target);
         ffVolts = ff.calculateVoltage(getPosition(), target, 0);
-        break;
-      case Degrees:
-        double position = getPosition();
-        fbVolts = fb.calculate(position, target);
-        ffVolts = ff.calcuateVoltage(position, fbVolts);
         break;
     }
     voltageSetter.accept(fbVolts + ffVolts);
@@ -316,11 +309,9 @@ public class Motor extends SubsystemBase implements Loggable {
   /** The types of targets a motor can have as its goal */
   public static enum TargetType {
     /** Targets a position */
-    Meters,
+    Position,
     /** Targets a velocity */
-    Velocity,
-    /** Targets a vertical rotation, taking into account the changing gravitational force */
-    Degrees;
+    Velocity;
   }
 
   /**

@@ -59,7 +59,7 @@ public class Arm extends SubsystemBase implements Loggable {
                   pid.setTolerance(2);
                 }),
             FeedforwardController.forArmGravity(1.016, 0.297, 0.0046134, 0.00075716),
-            TargetType.Degrees);
+            TargetType.Position);
     mech = new MechanismLigament2d("Arm", .5, startAngle);
     mech.append(new MechanismLigament2d("Placer", 0.1, -90));
   }

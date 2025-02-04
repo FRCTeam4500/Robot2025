@@ -162,7 +162,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.setTolerance(0.01);
                 }),
             FeedforwardController.forConstantGravity(0, 0.25179, 3.1033, 0.33929),
-            Motor.TargetType.Meters);
+            Motor.TargetType.Position);
 
     frAngle =
         Motor.fromSparkMax(
@@ -187,7 +187,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.setTolerance(0.01);
                 }),
             FeedforwardController.forConstantGravity(0, 0.36617, 3.2101, 0.26453),
-            Motor.TargetType.Meters);
+            Motor.TargetType.Position);
 
     blAngle =
         Motor.fromSparkMax(
@@ -212,7 +212,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.setTolerance(0.01);
                 }),
             FeedforwardController.forConstantGravity(0, 0.37473, 3.24, 0.24393),
-            Motor.TargetType.Meters);
+            Motor.TargetType.Position);
 
     brAngle =
         Motor.fromSparkMax(
@@ -237,7 +237,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.setTolerance(0.01);
                 }),
             FeedforwardController.forConstantGravity(0, 0.25159, 3.1999, 0.25259),
-            Motor.TargetType.Meters);
+            Motor.TargetType.Position);
 
     targetSetter =
         new Sendable() {
