@@ -342,7 +342,7 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   public Command testDriveConversionFactor(double speed, double duration) {
     return Commands.run(
-      () -> {
+            () -> {
               drive(new ChassisSpeeds(0, 0, speed));
               HoundLog.log(
                   "Swerve/Characterization/Gyro Speed", gyro.getAngularVelocity().getRadians());
