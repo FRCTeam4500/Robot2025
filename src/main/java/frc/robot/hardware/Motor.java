@@ -75,6 +75,15 @@ public class Motor extends SubsystemBase implements Loggable {
     this.fb = fb;
     this.ff = ff;
     this.motorInfo = motorInfo;
+    switch (type) {
+      case Degrees:
+      case Meters:
+        fb.reset(positionGetter.getAsDouble());
+        break;
+      default:
+        fb.reset(velocityGetter.getAsDouble());
+        break;
+    }
   }
 
   /**
