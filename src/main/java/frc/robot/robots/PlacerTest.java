@@ -10,12 +10,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.PlacerWiring;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
-import java.util.Optional;
 
 public class PlacerTest extends LoggedRobot {
   private Motor motor;
@@ -41,7 +40,7 @@ public class PlacerTest extends LoggedRobot {
                 (PIDController pid) -> {
                   pid.setTolerance(0.5);
                 }),
-            Optional.of(new FeedforwardConstants(0, 0.47622, 0.12973, 0.01321)),
+            FeedforwardController.forConstantGravity(0, 0.47622, 0.12973, 0.01321),
             TargetType.Velocity);
 
     SmartDashboard.putData("Speed: 50", Commands.runOnce(() -> motor.setTarget(50)));

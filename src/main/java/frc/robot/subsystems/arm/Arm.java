@@ -12,13 +12,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.ArmWiring;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-import java.util.Optional;
 
 public class Arm extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
@@ -59,7 +58,7 @@ public class Arm extends SubsystemBase implements Loggable {
                 (PIDController pid) -> {
                   pid.setTolerance(2);
                 }),
-            Optional.of(new FeedforwardConstants(1.016, 0.297, 0.0046134, 0.00075716)),
+            FeedforwardController.forArmGravity(1.016, 0.297, 0.0046134, 0.00075716),
             TargetType.Degrees);
     mech = new MechanismLigament2d("Arm", .5, startAngle);
     mech.append(new MechanismLigament2d("Placer", 0.1, -90));

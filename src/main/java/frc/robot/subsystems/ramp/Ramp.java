@@ -1,5 +1,6 @@
 package frc.robot.subsystems.ramp;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
@@ -24,11 +25,15 @@ public class Ramp extends SubsystemBase implements Loggable {
   public Ramp() {
     tiltMotor =
         Motor.fromIdealSim( // Make an ideal sim
-            FeedbackController.fromProfiledPID(
-                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
-                (ProfiledPIDController pid) -> {
-                  pid.setTolerance(1);
-                }),
+            // FeedbackController.fromProfiledPID(
+            //     new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
+            //     (ProfiledPIDController pid) -> {
+            //       pid.setTolerance(1);
+            //     }),
+            FeedbackController.fromPID(
+              new PIDController(0, 0, 0),
+              pid -> {}
+            ),
             TargetType.Degrees, // This motor goes to a position
             intakeAngle // The starting position of the motor is 0 units
             );

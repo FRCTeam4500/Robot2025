@@ -20,11 +20,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.SysIDCommands;
 import frc.robot.utilities.logging.HoundLog;
-import java.util.Optional;
 
 @SuppressWarnings("resource")
 public class SwerveSysID extends LoggedRobot {
@@ -62,7 +61,7 @@ public class SwerveSysID extends LoggedRobot {
             sim -> {},
             0,
             FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-            Optional.of(new FeedforwardConstants(0, 0.24571, 1.8141, 0.16798)),
+            FeedforwardController.forConstantGravity(0, 0.24571, 1.8141, 0.16798),
             Motor.TargetType.Velocity);
 
     frDrive =
@@ -87,7 +86,7 @@ public class SwerveSysID extends LoggedRobot {
             sim -> {},
             0,
             FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-            Optional.of(new FeedforwardConstants(0, 0.19746, 1.7841, 0.21748)),
+            FeedforwardController.forConstantGravity(0, 0.19746, 1.7841, 0.21748),
             Motor.TargetType.Velocity);
 
     blDrive =
@@ -112,7 +111,7 @@ public class SwerveSysID extends LoggedRobot {
             sim -> {},
             0,
             FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-            Optional.of(new FeedforwardConstants(0, 0.21224, 1.7981, 0.18871)),
+            FeedforwardController.forConstantGravity(0, 0.21224, 1.7981, 0.18871),
             Motor.TargetType.Velocity);
 
     brDrive =
@@ -137,7 +136,7 @@ public class SwerveSysID extends LoggedRobot {
             sim -> {},
             0,
             FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-            Optional.of(new FeedforwardConstants(0, 0.2177, 1.8156, 0.12033)),
+            FeedforwardController.forConstantGravity(0, 0.2177, 1.8156, 0.12033),
             Motor.TargetType.Velocity);
 
     flAngle =
@@ -162,7 +161,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.of(new FeedforwardConstants(0, 0.25179, 3.1033, 0.33929)),
+            FeedforwardController.forConstantGravity(0, 0.25179, 3.1033, 0.33929),
             Motor.TargetType.Meters);
 
     frAngle =
@@ -187,7 +186,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.of(new FeedforwardConstants(0, 0.36617, 3.2101, 0.26453)),
+            FeedforwardController.forConstantGravity(0, 0.36617, 3.2101, 0.26453),
             Motor.TargetType.Meters);
 
     blAngle =
@@ -212,7 +211,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.of(new FeedforwardConstants(0, 0.37473, 3.24, 0.24393)),
+            FeedforwardController.forConstantGravity(0, 0.37473, 3.24, 0.24393),
             Motor.TargetType.Meters);
 
     brAngle =
@@ -237,7 +236,7 @@ public class SwerveSysID extends LoggedRobot {
                   controller.enableContinuousInput(0, 1);
                   controller.setTolerance(0.01);
                 }),
-            Optional.of(new FeedforwardConstants(0, 0.25159, 3.1999, 0.25259)),
+            FeedforwardController.forConstantGravity(0, 0.25159, 3.1999, 0.25259),
             Motor.TargetType.Meters);
 
     targetSetter =

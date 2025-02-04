@@ -16,10 +16,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
-import java.util.Optional;
+import frc.robot.utilities.FeedforwardController;
 
 @SuppressWarnings("resource")
 public class SwerveConstants {
@@ -70,7 +69,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              Optional.of(new FeedforwardConstants(0, 0.24571, 1.8141, 0.16798)),
+              FeedforwardController.forConstantGravity(0, 0.24571, 1.8141, 0.16798),
               TargetType.Velocity),
           Motor.fromSparkMax(
               9,
@@ -93,8 +92,7 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              Optional.of(
-                  new FeedforwardConstants(0, 0.25179, 0.00862027777778, 0.000942472222222)),
+              FeedforwardController.forConstantGravity(0, 0.25179, 0.00862027777778, 0.000942472222222),
               TargetType.Degrees));
 
   public static final SwerveModule FRONT_RIGHT_MODULE =
@@ -120,7 +118,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              Optional.of(new FeedforwardConstants(0, 0.19746, 1.7841, 0.21748)),
+              FeedforwardController.forConstantGravity(0, 0.19746, 1.7841, 0.21748),
               TargetType.Velocity),
           Motor.fromSparkMax(
               8,
@@ -143,8 +141,7 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              Optional.of(
-                  new FeedforwardConstants(0, 0.36617, 0.00891694444444, 0.000734805555556)),
+              FeedforwardController.forConstantGravity(0, 0.36617, 0.00891694444444, 0.000734805555556),
               TargetType.Degrees));
 
   public static final SwerveModule BACK_LEFT_MODULE =
@@ -170,7 +167,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              Optional.of(new FeedforwardConstants(0, 0.21224, 1.7981, 0.18871)),
+              FeedforwardController.forConstantGravity(0, 0.21224, 1.7981, 0.18871),
               TargetType.Velocity),
           Motor.fromSparkMax(
               18,
@@ -193,7 +190,7 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              Optional.of(new FeedforwardConstants(0, 0.37473, 0.009, 0.000677583333333)),
+              FeedforwardController.forConstantGravity(0, 0.37473, 0.009, 0.000677583333333),
               TargetType.Degrees));
 
   public static final SwerveModule BACK_RIGHT_MODULE =
@@ -219,7 +216,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              Optional.of(new FeedforwardConstants(0, 0.2177, 1.8156, 0.12033)),
+              FeedforwardController.forConstantGravity(0, 0.2177, 1.8156, 0.12033),
               TargetType.Velocity),
           Motor.fromSparkMax(
               6,
@@ -242,7 +239,6 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              Optional.of(
-                  new FeedforwardConstants(0, 0.25159, 0.00888861111111, 0.000701638888889)),
+              FeedforwardController.forConstantGravity(0, 0.25159, 0.00888861111111, 0.000701638888889),
               TargetType.Degrees));
 }

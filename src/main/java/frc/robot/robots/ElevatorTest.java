@@ -11,12 +11,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.ElevatorWiring;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
-import java.util.Optional;
 
 public class ElevatorTest extends LoggedRobot {
   private Motor motor;
@@ -44,7 +43,7 @@ public class ElevatorTest extends LoggedRobot {
                 (PIDController pid) -> {
                   pid.setTolerance(0.05);
                 }),
-            Optional.of(new FeedforwardConstants(0.15472, 0.098108, 27.673, 3.4548)),
+            FeedforwardController.forConstantGravity(0.15472, 0.098108, 27.673, 3.4548),
             TargetType.Meters);
     SmartDashboard.putData("Target: 0", Commands.runOnce(() -> motor.setTarget(0)));
     SmartDashboard.putData("Target: 0.3", Commands.runOnce(() -> motor.setTarget(0.3)));

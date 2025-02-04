@@ -13,13 +13,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.ElevatorWiring;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-import java.util.Optional;
 
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
@@ -66,7 +65,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                 (PIDController pid) -> {
                   pid.setTolerance(0.05);
                 }),
-            Optional.of(new FeedforwardConstants(0.15472, 0.098108, 27.673, 3.4548)),
+            FeedforwardController.forConstantGravity(0.15472, 0.098108, 27.673, 3.4548),
             TargetType.Meters);
     mech = new MechanismLigament2d("Elevator", 0, 90);
     armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);

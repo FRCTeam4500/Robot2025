@@ -11,14 +11,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.PlacerWiring;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.ExtendedMath;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-import java.util.Optional;
 
 public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
@@ -55,7 +54,8 @@ public class Placer extends SubsystemBase implements Loggable {
                 (PIDController pid) -> {
                   pid.setTolerance(0.5);
                 }),
-            Optional.of(new FeedforwardConstants(0, 0.47622, 0.12973, 0.01321)),
+            // FeedforwardController.forConstantGravity(0, 0.47622, 0.12973, 0.01321),
+            FeedforwardController.forNone(),
             TargetType.Velocity);
   }
 

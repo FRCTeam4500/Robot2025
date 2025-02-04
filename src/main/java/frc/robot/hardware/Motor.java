@@ -16,11 +16,11 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.SysIDCommands;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
@@ -35,7 +35,7 @@ public class Motor extends SubsystemBase implements Loggable {
   private DoubleSupplier positionGetter;
   private DoubleSupplier velocityGetter;
   private FeedbackController fb;
-  private FeedforwardConstants ff;
+  private FeedforwardController ff;
   private Loggable motorInfo;
 
   /**
@@ -63,7 +63,7 @@ public class Motor extends SubsystemBase implements Loggable {
       DoubleSupplier positionGetter,
       DoubleSupplier velocityGetter,
       FeedbackController fb,
-      Optional<FeedforwardConstants> ff,
+      FeedforwardController ff,
       Loggable motorInfo) {
     target = 0;
     useVoltage = true;
@@ -73,7 +73,7 @@ public class Motor extends SubsystemBase implements Loggable {
     this.positionGetter = positionGetter;
     this.velocityGetter = velocityGetter;
     this.fb = fb;
-    this.ff = ff.orElse(new FeedforwardConstants(0, 0, 0, 0));
+    this.ff = ff;
     this.motorInfo = motorInfo;
   }
 
@@ -180,17 +180,17 @@ public class Motor extends SubsystemBase implements Loggable {
     switch (type) {
       case Meters:
         fbVolts = fb.calculate(getPosition(), target);
-        ffVolts = ff.kG() + ff.kS() * Math.signum(fbVolts);
+        ffVolts = ff.calcuateVoltage(getPosition(), fbVolts);
         break;
       case Velocity:
         double velocity = getVelocity();
         fbVolts = fb.calculate(velocity, target);
-        ffVolts = ff.kS() * Math.signum(target) + ff.kV() * target;
+        ffVolts = ff.calculateVoltage(getPosition(), velocity, 0);
         break;
       case Degrees:
         double position = getPosition();
         fbVolts = fb.calculate(position, target);
-        ffVolts = ff.kS() * Math.signum(fbVolts) + ff.kG() * Math.cos(Math.toRadians(position));
+        ffVolts = ff.calcuateVoltage(position, fbVolts);
         break;
     }
     voltageSetter.accept(fbVolts + ffVolts);
@@ -329,7 +329,6 @@ public class Motor extends SubsystemBase implements Loggable {
    *     "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html#introduction-to-dc-motor-feedforward">
    *     Introduction to Feedforward
    */
-  public static record FeedforwardConstants(double kG, double kS, double kV, double kA) {}
 
   /**
    *
@@ -386,13 +385,13 @@ public class Motor extends SubsystemBase implements Loggable {
       Consumer<FeedforwardSim> simConfig,
       double initialPosition,
       FeedbackController fb,
-      Optional<FeedforwardConstants> ff,
+      FeedforwardController ff,
       TargetType type) {
     if (RobotBase.isSimulation()) {
-      if (ff.isEmpty()) {
+      if (!ff.canSimulate()) {
         return fromIdealSim(fb, type, initialPosition);
       } else {
-        return fromRealisticSim(simConfig, fb, ff.get(), type, initialPosition);
+        return fromRealisticSim(simConfig, fb, ff, type, initialPosition);
       }
     }
     TalonFX motor = new TalonFX(canID);
@@ -472,13 +471,13 @@ public class Motor extends SubsystemBase implements Loggable {
       Consumer<FeedforwardSim> simConfig,
       double initialPosition,
       FeedbackController fb,
-      Optional<FeedforwardConstants> ff,
+      FeedforwardController ff,
       TargetType type) {
     if (RobotBase.isSimulation()) {
-      if (ff.isEmpty()) {
+      if (!ff.canSimulate()) {
         return fromIdealSim(fb, type, initialPosition);
       } else {
-        return fromRealisticSim(simConfig, fb, ff.get(), type, initialPosition);
+        return fromRealisticSim(simConfig, fb, ff, type, initialPosition);
       }
     }
     SparkMax motor = new SparkMax(canID, brushed ? MotorType.kBrushed : MotorType.kBrushless);
@@ -549,13 +548,13 @@ public class Motor extends SubsystemBase implements Loggable {
       double conversionFactor,
       double initialPosition,
       FeedbackController fb,
-      Optional<FeedforwardConstants> ff,
+      FeedforwardController ff,
       TargetType type) {
     if (RobotBase.isSimulation()) {
-      if (ff.isEmpty()) {
+      if (!ff.canSimulate()) {
         return fromIdealSim(fb, type, initialPosition);
       } else {
-        return fromRealisticSim(simConfig, fb, ff.get(), type, initialPosition);
+        return fromRealisticSim(simConfig, fb, ff, type, initialPosition);
       }
     }
     TalonSRX motor = new TalonSRX(canID);
@@ -611,13 +610,13 @@ public class Motor extends SubsystemBase implements Loggable {
   public static Motor fromRealisticSim(
       Consumer<FeedforwardSim> config,
       FeedbackController fb,
-      FeedforwardConstants ff,
+      FeedforwardController ff,
       TargetType type,
       double inititalPosition) {
-    if (ff == null || ff.kV() == 0 || ff.kA() == 0) {
+    if (ff == null || !ff.canSimulate()) {
       return fromIdealSim(fb, type, inititalPosition);
     }
-    FeedforwardSim sim = new FeedforwardSim(ff, inititalPosition, type == TargetType.Degrees);
+    FeedforwardSim sim = new FeedforwardSim(ff, inititalPosition);
     config.accept(sim);
     return new Motor(
         type,
@@ -626,7 +625,7 @@ public class Motor extends SubsystemBase implements Loggable {
         () -> sim.getState().position(),
         () -> sim.getState().velocity(),
         fb,
-        Optional.of(ff),
+        ff,
         path -> {
           HoundLog.log(path, "Sim", sim);
         });
@@ -689,7 +688,7 @@ public class Motor extends SubsystemBase implements Loggable {
         () -> stateHolder[0],
         () -> stateHolder[1],
         fb,
-        Optional.empty(),
+        FeedforwardController.forNone(),
         path -> HoundLog.log(path, "Acceleration", stateHolder[2]));
   }
 }

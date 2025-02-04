@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.ArmWiring;
 import frc.robot.hardware.Motor;
-import frc.robot.hardware.Motor.FeedforwardConstants;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.logging.HoundLog;
-import java.util.Optional;
 
 public class ArmTest extends LoggedRobot {
   private Motor motor;
@@ -31,13 +30,14 @@ public class ArmTest extends LoggedRobot {
               motor.getConfigurator().apply(config);
             },
             sim -> {},
-            104,
+            90,
             FeedbackController.fromPID(
-                new PIDController(0.01, 0, 0),
+                new PIDController(0.005, 0.005, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(2);
                 }),
-            Optional.of(new FeedforwardConstants(1.016, 0.297, 0.0046134, 0.00075716)),
+            // FeedforwardController.forArmGravity(1.016, 0.297, 0.0046134, 0.00075716),
+            FeedforwardController.forNone(),
             TargetType.Degrees);
     SmartDashboard.putData("Target: 90", Commands.runOnce(() -> motor.setTarget(90)));
     SmartDashboard.putData("Target: 0", Commands.runOnce(() -> motor.setTarget(0)));
