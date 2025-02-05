@@ -7,8 +7,11 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -37,6 +40,7 @@ public class Motor extends SubsystemBase implements Loggable {
   private FeedbackController fb;
   private FeedforwardController ff;
   private Loggable motorInfo;
+  private DutyCycleEncoder encoder;
 
   /**
    * Creates a new motor where the given parameters are used to interface with the hardware or sim
@@ -164,6 +168,26 @@ public class Motor extends SubsystemBase implements Loggable {
         break;
     }
     return fb.atGoal();
+  }
+
+  public void changeEncoder(
+    DoubleConsumer positionSetter,
+    DoubleSupplier positionGetter,
+    DoubleSupplier velocityGetter
+  ) {
+    this.positionSetter = positionSetter;
+    this.positionGetter = positionGetter;
+    this.velocityGetter = velocityGetter;
+  }
+
+  @SuppressWarnings("resource")
+  public void useThroughBoreEncoder(int channel, boolean inverted, double zeroSignal) {
+    encoder = new DutyCycleEncoder(channel);
+    encoder.setInverted(inverted);
+    positionSetter = (newPosition) -> {};
+    positionGetter = () -> 360 * MathUtil.inputModulus(encoder.get() - zeroSignal, -0.5, 0.5);
+    velocityGetter = () -> 0;
+    
   }
 
   /**

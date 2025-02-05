@@ -9,6 +9,6 @@ import frc.robot.robots.*;
 
 public final class Main {
   public static void main(String... args) {
-    RobotBase.startRobot(ThroughboreTest::new);
+    RobotBase.startRobot(RampTest::new);
   }
 }
