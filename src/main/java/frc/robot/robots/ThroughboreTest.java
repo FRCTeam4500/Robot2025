@@ -19,9 +19,7 @@ import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.logging.HoundLog;
 
 public class ThroughboreTest extends LoggedRobot {
-  private Motor armMotor;
-  // private DutyCycleEncoder encoder;
-  private double voltage;
+  private DutyCycleEncoder encoder;
 
   public ThroughboreTest() {
     // encoder = new DutyCycleEncoder(0);
