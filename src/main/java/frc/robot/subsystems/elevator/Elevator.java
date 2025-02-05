@@ -61,7 +61,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             },
             0,
             FeedbackController.fromPID(
-                new PIDController(35, 0, 0),
+                new PIDController(200, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(0.05);
                 }),
