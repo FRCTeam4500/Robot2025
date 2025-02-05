@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -171,10 +170,7 @@ public class Motor extends SubsystemBase implements Loggable {
   }
 
   public void changeEncoder(
-    DoubleConsumer positionSetter,
-    DoubleSupplier positionGetter,
-    DoubleSupplier velocityGetter
-  ) {
+      DoubleConsumer positionSetter, DoubleSupplier positionGetter, DoubleSupplier velocityGetter) {
     this.positionSetter = positionSetter;
     this.positionGetter = positionGetter;
     this.velocityGetter = velocityGetter;
@@ -187,7 +183,6 @@ public class Motor extends SubsystemBase implements Loggable {
     positionSetter = (newPosition) -> {};
     positionGetter = () -> 360 * MathUtil.inputModulus(encoder.get() - zeroSignal, -0.5, 0.5);
     velocityGetter = () -> 0;
-    
   }
 
   /**
