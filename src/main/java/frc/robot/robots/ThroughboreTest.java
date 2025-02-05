@@ -5,9 +5,6 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,11 +16,8 @@ import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.logging.HoundLog;
 
 public class ThroughboreTest extends LoggedRobot {
-  private DutyCycleEncoder encoder;
-
+  private Motor armMotor;
   public ThroughboreTest() {
-    // encoder = new DutyCycleEncoder(0);
-    // encoder.setInverted(true);
     armMotor = Motor.fromTalonFX(
         ArmWiring.ARM_ID,
         motor -> {
@@ -48,17 +42,6 @@ public class ThroughboreTest extends LoggedRobot {
         // FeedforwardController.forNone(),
         TargetType.Position);
     armMotor.useThroughBoreEncoder(0, true, 0.81);
-    Sendable sendable = new Sendable() {
-
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Voltage", () -> {
-          return voltage;
-        }, (nextVoltage) -> voltage = nextVoltage);
-      }
-
-    };
-    SmartDashboard.putData("Voltage Setter", sendable);
     SmartDashboard.putData("Target: 90", Commands.runOnce(() -> armMotor.setTarget(90)));
     SmartDashboard.putData("Target: 70", Commands.runOnce(() -> armMotor.setTarget(70)));
     SmartDashboard.putData("Target: 45", Commands.runOnce(() -> armMotor.setTarget(45)));
