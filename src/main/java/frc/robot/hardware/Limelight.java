@@ -30,6 +30,7 @@ import frc.robot.utilities.logging.Loggable;
  */
 public class Limelight implements Loggable {
   private NetworkTable table;
+  private String name;
 
   /**
    * Make a limelight with the given name and pipeline
@@ -40,6 +41,7 @@ public class Limelight implements Loggable {
   public Limelight(String name, int pipeline) {
     table = NetworkTableInstance.getDefault().getTable(name);
     table.getEntry("pipline").setInteger(pipeline);
+    this.name = name;
   }
 
   /**
@@ -134,11 +136,15 @@ public class Limelight implements Loggable {
    * @return a {@link PoseEstimate} holding information about an estimated pose obtained using the
    *     megatag 2 algorithm.
    */
-  public PoseEstimate getPoseMT2(Rotation2d currentRotation) {
+  public PoseEstimate getPoseMT2(Rotation2d currentRotation, Rotation2d speedPerSec) {
     table
         .getEntry("robot_orientation_set")
         .setDoubleArray(new double[] {currentRotation.getDegrees(), 0, 0, 0, 0, 0});
     NetworkTableInstance.getDefault().flush();
+    return getPoseMT2();
+  }
+
+  private PoseEstimate getPoseMT2() {
     double[] raw = table.getEntry("botpose_orb_wpiblue").getDoubleArray(new double[11]);
     return new PoseEstimate(
         new Pose2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
@@ -151,11 +157,12 @@ public class Limelight implements Loggable {
 
   @Override
   public void log(String path) {
-    HoundLog.log(path, "Has Targets", hasTargets());
-    HoundLog.log(path, "Horizontal Angle", getTX());
-    HoundLog.log(path, "Vertical Angle", getTY());
-    HoundLog.log(path, "Area", getTA());
-    HoundLog.log(path, "Latency", getLatency());
+    HoundLog.log("MT1 Pose", getPoseMT1().pose());
+    HoundLog.log("MT2 Pose", getPoseMT2().pose());
+  }
+
+  public String getName() {
+    return name;
   }
 
   /** Holds an estimated position from a vison system. */

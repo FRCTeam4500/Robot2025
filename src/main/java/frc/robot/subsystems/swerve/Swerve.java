@@ -474,6 +474,9 @@ public class Swerve extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Back Left Module", modules[2]);
     HoundLog.log(path, "Back Right Module", modules[3]);
     HoundLog.log(path, "Gyro", gyro);
+    for (Limelight camera : tagCameras) {
+      HoundLog.log(path, camera.getName(), camera);
+    }
   }
 
   public static enum Alignment {
