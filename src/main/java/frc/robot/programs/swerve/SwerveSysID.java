@@ -147,10 +147,7 @@ public class SwerveSysID extends LoggedRobot {
             motor -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25);
+              config.encoder.positionConversionFactor(1.0 / 25).velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },
@@ -172,10 +169,7 @@ public class SwerveSysID extends LoggedRobot {
             motor -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25);
+              config.encoder.positionConversionFactor(1.0 / 25).velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },
@@ -197,10 +191,7 @@ public class SwerveSysID extends LoggedRobot {
             motor -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25);
+              config.encoder.positionConversionFactor(1.0 / 25).velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },
@@ -222,10 +213,7 @@ public class SwerveSysID extends LoggedRobot {
             motor -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
-              config
-                  .encoder
-                  .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25);
+              config.encoder.positionConversionFactor(1.0 / 25).velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },
