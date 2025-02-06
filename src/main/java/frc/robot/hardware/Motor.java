@@ -176,7 +176,6 @@ public class Motor extends SubsystemBase implements Loggable {
     this.velocityGetter = velocityGetter;
   }
 
-  @SuppressWarnings("resource")
   public void useThroughBoreEncoder(int channel, boolean inverted, double zeroSignal) {
     encoder = new DutyCycleEncoder(channel);
     encoder.setInverted(inverted);
