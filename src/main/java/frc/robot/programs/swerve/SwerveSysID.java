@@ -317,8 +317,7 @@ public class SwerveSysID extends LoggedRobot {
   }
 
   public SysIDCommands getDriveSysIDCommands() {
-    return frDrive.getSysIDCommands(
-        "Drive SysId", 1, 2.5, 3, flDrive, blDrive, brDrive);
+    return frDrive.getSysIDCommands("Drive SysId", 1, 2.5, 3, flDrive, blDrive, brDrive);
   }
 
   public SysIDCommands getAngleSysIDCommands() {

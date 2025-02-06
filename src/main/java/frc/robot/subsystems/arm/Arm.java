@@ -35,29 +35,29 @@ public class Arm extends SubsystemBase implements Loggable {
 
   public Arm() {
     tiltMotor =
-    Motor.fromTalonFX(
-      ArmWiring.ARM_ID,
-      motor -> {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.Audio.AllowMusicDurDisable = true;
-        config.Feedback.SensorToMechanismRatio = 55.0 / 360;
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        config.CurrentLimits.StatorCurrentLimit = 60;
-        config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        motor.getConfigurator().apply(config);
-      },
-      sim -> {
-        sim.withHardstops(handoffAngle, startAngle);
-      },
-      90,
-      FeedbackController.fromPID(
-          new PIDController(0.1, 0, 0),
-          (PIDController pid) -> {
-            pid.setTolerance(2);
-          }),
-      FeedforwardController.forArmGravity(0.35, 0.11, 0, 0),
-      TargetType.Position);
+        Motor.fromTalonFX(
+            ArmWiring.ARM_ID,
+            motor -> {
+              TalonFXConfiguration config = new TalonFXConfiguration();
+              config.Audio.AllowMusicDurDisable = true;
+              config.Feedback.SensorToMechanismRatio = 55.0 / 360;
+              config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+              config.CurrentLimits.StatorCurrentLimit = 60;
+              config.CurrentLimits.StatorCurrentLimitEnable = true;
+              config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+              motor.getConfigurator().apply(config);
+            },
+            sim -> {
+              sim.withHardstops(handoffAngle, startAngle);
+            },
+            90,
+            FeedbackController.fromPID(
+                new PIDController(0.1, 0, 0),
+                (PIDController pid) -> {
+                  pid.setTolerance(2);
+                }),
+            FeedforwardController.forArmGravity(0.35, 0.11, 0, 0),
+            TargetType.Position);
     mech = new MechanismLigament2d("Arm", .5, startAngle);
     mech.append(new MechanismLigament2d("Placer", 0.1, -90));
   }

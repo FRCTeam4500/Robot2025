@@ -260,7 +260,8 @@ public class Motor extends SubsystemBase implements Loggable {
             voltage -> {
               setVoltage(voltage.in(Volts) + ff.calcuateVoltage(getPosition(), 0));
               for (Motor motor : otherMotors) {
-                motor.setVoltage(voltage.in(Volts) + motor.ff.calcuateVoltage(motor.getPosition(), 0));
+                motor.setVoltage(
+                    voltage.in(Volts) + motor.ff.calcuateVoltage(motor.getPosition(), 0));
               }
             },
             log -> {
