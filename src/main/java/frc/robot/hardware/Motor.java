@@ -403,7 +403,7 @@ public class Motor extends SubsystemBase implements Loggable {
    *     config
    *       .encoder
    *       .positionConversionFactor(1.0 / 25) // One mechanism unit : 25 sensor units
-   *       .velocityConversionFactor(1.0 / 25/ 60) // Divide by 60 so rpm -> rps
+   *       .velocityConversionFactor(1.0 / 25) // Divide by 60 so rpm -> rps
    *     spark.configure(config, kResetSafeParameters, kPersistParameters)
    *   },
    *   sim -> {
@@ -459,7 +459,7 @@ public class Motor extends SubsystemBase implements Loggable {
         position -> motor.getEncoder().setPosition(position),
         motor::setVoltage,
         () -> motor.getEncoder().getPosition(),
-        () -> motor.getEncoder().getVelocity(),
+        () -> motor.getEncoder().getVelocity() / 60,
         fb,
         ff,
         path -> {

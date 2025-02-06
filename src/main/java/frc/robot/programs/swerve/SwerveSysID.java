@@ -150,7 +150,7 @@ public class SwerveSysID extends LoggedRobot {
               config
                   .encoder
                   .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
+                  .velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },
@@ -175,7 +175,7 @@ public class SwerveSysID extends LoggedRobot {
               config
                   .encoder
                   .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
+                  .velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },
@@ -200,7 +200,7 @@ public class SwerveSysID extends LoggedRobot {
               config
                   .encoder
                   .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
+                  .velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },
@@ -225,7 +225,7 @@ public class SwerveSysID extends LoggedRobot {
               config
                   .encoder
                   .positionConversionFactor(1.0 / 25)
-                  .velocityConversionFactor(1.0 / 25 / 60);
+                  .velocityConversionFactor(1.0 / 25);
               motor.configure(
                   config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
             },

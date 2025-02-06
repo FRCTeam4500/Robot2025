@@ -30,7 +30,7 @@ public class RampTest extends LoggedRobot {
               SparkMaxConfig config = new SparkMaxConfig();
               config.idleMode(IdleMode.kBrake);
               config.encoder.positionConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
-              config.encoder.velocityConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360 / 60);
+              config.encoder.velocityConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
               config.smartCurrentLimit(60);
               max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
             },

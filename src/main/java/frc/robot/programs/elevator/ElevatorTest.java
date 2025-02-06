@@ -30,7 +30,7 @@ public class ElevatorTest extends LoggedRobot {
               SparkMaxConfig config = new SparkMaxConfig();
               config.idleMode(IdleMode.kCoast);
               config.encoder.positionConversionFactor(1 / 216.5);
-              config.encoder.velocityConversionFactor(1 / 216.5 / 60);
+              config.encoder.velocityConversionFactor(1 / 216.5);
               config.smartCurrentLimit(60);
               spark.configure(
                   config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

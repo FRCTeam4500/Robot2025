@@ -80,7 +80,7 @@ public class SwerveConstants {
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
-                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                    .velocityConversionFactor(1.0 / 25 * 360);
                 motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
@@ -130,7 +130,7 @@ public class SwerveConstants {
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
-                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                    .velocityConversionFactor(1.0 / 25 * 360);
                 motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
@@ -180,7 +180,7 @@ public class SwerveConstants {
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
-                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                    .velocityConversionFactor(1.0 / 25 * 360);
                 motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
@@ -229,7 +229,7 @@ public class SwerveConstants {
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
-                    .velocityConversionFactor(1.0 / 25 * 360 / 60);
+                    .velocityConversionFactor(1.0 / 25 * 360);
                 motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
