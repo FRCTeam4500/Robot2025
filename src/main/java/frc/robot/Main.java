@@ -5,10 +5,10 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.programs.ramp.RampTest;
+import frc.robot.programs.arm.ArmTest;
 
 public final class Main {
   public static void main(String... args) {
-    RobotBase.startRobot(RampTest::new);
+    RobotBase.startRobot(ArmTest::new);
   }
 }
