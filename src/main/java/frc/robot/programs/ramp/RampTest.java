@@ -34,7 +34,9 @@ public class RampTest extends LoggedRobot {
               config.smartCurrentLimit(60);
               max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
             },
-            (FeedforwardSim jim) -> {},
+            (FeedforwardSim jim) -> {
+              jim.withHardstops(-90, 90);
+            },
             -105,
             FeedbackController.fromPID(
                 new PIDController(0.03, 0, 0),

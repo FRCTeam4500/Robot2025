@@ -40,7 +40,7 @@ public class ElevatorTest extends LoggedRobot {
             },
             0,
             FeedbackController.fromPID(
-                new PIDController(15, 0, 0),
+                new PIDController(200, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(0.05);
                 }),

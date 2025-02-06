@@ -32,7 +32,9 @@ public class ArmTest extends LoggedRobot {
               config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
               motor.getConfigurator().apply(config);
             },
-            sim -> {},
+            sim -> {
+              sim.withHardstops(-90, 90);
+            },
             90,
             FeedbackController.fromPID(
                 new PIDController(0.1, 0, 0),

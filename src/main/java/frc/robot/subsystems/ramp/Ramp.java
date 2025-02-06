@@ -1,14 +1,22 @@
 package frc.robot.subsystems.ramp;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.WiringConstants.RampWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
+import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
@@ -23,15 +31,29 @@ public class Ramp extends SubsystemBase implements Loggable {
   /** Creates a new Ramp subsystem. */
   public Ramp() {
     tiltMotor =
-        Motor.fromIdealSim( // Make an ideal sim
-            FeedbackController.fromProfiledPID(
-                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
-                (ProfiledPIDController pid) -> {
-                  pid.setTolerance(1);
+        Motor.fromSparkMax(
+            RampWiring.RAMP_ID,
+            false,
+            (SparkMax max) -> {
+              SparkMaxConfig config = new SparkMaxConfig();
+              config.idleMode(IdleMode.kBrake);
+              config.encoder.inverted(true);
+              config.encoder.positionConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
+              config.encoder.velocityConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360 / 60);
+              config.smartCurrentLimit(60);
+              max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            },
+            (FeedforwardSim jim) -> {
+              jim.withHardstops(90, 270);
+            },
+            -105,
+            FeedbackController.fromPID(
+                new PIDController(0.03, 0, 0),
+                (PIDController pid) -> {
+                  pid.setTolerance(5);
                 }),
-            TargetType.Position, // This motor goes to a position
-            intakeAngle // The starting position of the motor is 0 units
-            );
+            FeedforwardController.forArmGravity(0.31, 0.07, 0, 0),
+            TargetType.Position);
     mech = new MechanismLigament2d("Ramp", 0.4, intakeAngle);
   }
 
@@ -40,7 +62,7 @@ public class Ramp extends SubsystemBase implements Loggable {
    *
    * @param targetAngle the target angle in rad.
    */
-  public void moveRamp(double targetAngle) {
+  private void moveRamp(double targetAngle) {
     tiltMotor.setTarget(targetAngle);
   }
 
