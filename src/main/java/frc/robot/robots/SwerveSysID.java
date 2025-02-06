@@ -316,11 +316,11 @@ public class SwerveSysID extends LoggedRobot {
   }
 
   public SysIDCommands getDriveSysIDCommands() {
-    return frDrive.getSynchronizedSysIDCommands(
+    return frDrive.getSysIDCommands(
         "Drive SysId", 1, 2.5, 3, flDrive, blDrive, brDrive);
   }
 
   public SysIDCommands getAngleSysIDCommands() {
-    return frAngle.getSynchronizedSysIDCommands("AngleSysId", 1, 5, 5, flAngle, blAngle, brAngle);
+    return frAngle.getSysIDCommands("AngleSysId", 1, 5, 5, flAngle, blAngle, brAngle);
   }
 }

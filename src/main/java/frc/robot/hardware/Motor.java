@@ -232,39 +232,6 @@ public class Motor extends SubsystemBase implements Loggable {
   }
 
   /**
-   * Gets a set of sysID commands to run to characterize a mechanism
-   *
-   * @param name Mechanism name
-   * @param voltageRampRate The rate to increase volts at when running quasistatic tests, in
-   *     volts/sec
-   * @param stepVoltage The constant voltage to apply when running dynamic tests, in volts
-   * @param duration How long the tests should last, in seconds
-   * @return a set of SysIDCommands
-   */
-  public SysIDCommands getSysIDCommands(
-      String name, double voltageRampRate, double stepVoltage, double duration) {
-    Config config =
-        new Config(
-            Volts.of(voltageRampRate).per(Seconds), Volts.of(stepVoltage), Seconds.of(duration));
-    Mechanism mech =
-        new Mechanism(
-            voltage -> setVoltage(voltage.in(Volts)),
-            log ->
-                log.motor("Motor")
-                    .value("Position", getPosition(), "IDK")
-                    .value("Velocity", getVelocity(), "IDK")
-                    .value("Voltage", target, "Volts"),
-            this,
-            name);
-    SysIdRoutine routine = new SysIdRoutine(config, mech);
-    return new SysIDCommands(
-        routine.dynamic(Direction.kForward),
-        routine.dynamic(Direction.kReverse),
-        routine.quasistatic(Direction.kForward),
-        routine.quasistatic(Direction.kReverse));
-  }
-
-  /**
    * Very similar to {@link #getSysIDCommands getSysIDCommands} but for if you have multiple motors
    * in one mechanism that are linked
    *
@@ -279,7 +246,7 @@ public class Motor extends SubsystemBase implements Loggable {
    * @param otherMotors What other motors should also be synchronized for the test
    * @return The commands to run
    */
-  public SysIDCommands getSynchronizedSysIDCommands(
+  public SysIDCommands getSysIDCommands(
       String name,
       double voltageRampRate,
       double stepVoltage,
@@ -291,9 +258,9 @@ public class Motor extends SubsystemBase implements Loggable {
     Mechanism mech =
         new Mechanism(
             voltage -> {
-              setVoltage(voltage.in(Volts));
+              setVoltage(voltage.in(Volts) + ff.calcuateVoltage(getPosition(), 0));
               for (Motor motor : otherMotors) {
-                motor.setVoltage(voltage.in(Volts));
+                motor.setVoltage(voltage.in(Volts) + motor.ff.calcuateVoltage(motor.getPosition(), 0));
               }
             },
             log -> {
@@ -332,22 +299,6 @@ public class Motor extends SubsystemBase implements Loggable {
     /** Targets a velocity */
     Velocity;
   }
-
-  /**
-   * An object that holds feedforward gains
-   *
-   * <p>{@link #getSysIDCommands} can be used to obtain values for gains
-   *
-   * @param kG The voltage needed to hold the mechanism in place against gravity. For most
-   *     mechanisms, this is a constant value, but for mechanisms rotating vertically, this should
-   *     be the voltage to hold it up parallel to the ground
-   * @param kS The voltage needed to overcome static friction.
-   * @param kV The voltage needed to maintain a velocity of 1 unit/s
-   * @param kA The voltage needed to induce an acceleration of 1 unit/s^
-   * @see <a href =
-   *     "https://docs.wpilib.org/en/stable/docs/software/advanced-controls/introduction/introduction-to-feedforward.html#introduction-to-dc-motor-feedforward">
-   *     Introduction to Feedforward
-   */
 
   /**
    *
