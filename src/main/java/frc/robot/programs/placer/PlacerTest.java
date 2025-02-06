@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.PlacerWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
@@ -37,16 +38,16 @@ public class PlacerTest extends LoggedRobot {
             FeedbackController.empty(0.5),
             FeedforwardController.forConstantGravity(0, 0.47622, 0.12973, 0.01321),
             TargetType.Velocity);
-    SysIDCommands commands = motor.getSysIDCommands("Placer", 2, 8, 5);
-    SmartDashboard.putData("Placer Dynamic Forward", commands.dynamicForward());
-    SmartDashboard.putData("Placer Dynamic Reverse", commands.dynamicReverse());
-    SmartDashboard.putData("Placer Quasistatic Forward", commands.quasistaticForward());
-    SmartDashboard.putData("Placer Quasistatic Reverse", commands.quasistaticReverse());
-    // SmartDashboard.putData("Speed: 50", Commands.runOnce(() -> motor.setTarget(50)));
-    // SmartDashboard.putData("Speed: 25", Commands.runOnce(() -> motor.setTarget(25)));
-    // SmartDashboard.putData("Speed: 0", Commands.runOnce(() -> motor.setTarget(0)));
-    // SmartDashboard.putData("Speed: -25", Commands.runOnce(() -> motor.setTarget(-25)));
-    // SmartDashboard.putData("Speed: -50", Commands.runOnce(() -> motor.setTarget(-50)));
+    // SysIDCommands commands = motor.getSysIDCommands("Placer", 2, 8, 5);
+    // SmartDashboard.putData("Placer Dynamic Forward", commands.dynamicForward());
+    // SmartDashboard.putData("Placer Dynamic Reverse", commands.dynamicReverse());
+    // SmartDashboard.putData("Placer Quasistatic Forward", commands.quasistaticForward());
+    // SmartDashboard.putData("Placer Quasistatic Reverse", commands.quasistaticReverse());
+    SmartDashboard.putData("Speed: 50", Commands.runOnce(() -> motor.setTarget(50)));
+    SmartDashboard.putData("Speed: 25", Commands.runOnce(() -> motor.setTarget(25)));
+    SmartDashboard.putData("Speed: 0", Commands.runOnce(() -> motor.setTarget(0)));
+    SmartDashboard.putData("Speed: -25", Commands.runOnce(() -> motor.setTarget(-25)));
+    SmartDashboard.putData("Speed: -50", Commands.runOnce(() -> motor.setTarget(-50)));
   }
 
   @Override

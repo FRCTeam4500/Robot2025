@@ -39,6 +39,8 @@ public class Robot extends LoggedRobot {
     setupDriveController();
     setupOperatorController();
     setupAuto();
+
+    SmartDashboard.putData("SWERVE CHARACTERANDSTUFF", swerve.testDriveConversionFactor(Math.PI/2, 10));
   }
 
   private void setupOperatorController() {
@@ -70,6 +72,7 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Intake", structure.intake());
     SmartDashboard.putData("Stow", structure.stow());
     SmartDashboard.putData("Shoot", structure.shoot());
+    SmartDashboard.putData("Ground Intake", structure.groundIntake());
 
     SmartDashboard.putData(
         "Swerve Characterization", swerve.testDriveConversionFactor(Math.PI, 10));

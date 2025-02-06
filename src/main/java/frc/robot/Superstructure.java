@@ -81,11 +81,21 @@ public class Superstructure implements Loggable {
     return climber.climb();
   }
 
+  public Command groundIntake() {
+    return arm.stow()
+        .until(arm.canMoveElevator)
+        .andThen(elevator.stow())
+        .andThen(ramp.show())
+        .andThen(arm.ground())
+        .andThen(placer.intake());
+  }
+
   public Command intake() {
     return arm.stow()
-        .until(elevator.armCanIntake)
+        .until(arm.canMoveElevator)
+        .andThen(elevator.handoff())
+        .andThen(ramp.show())
         .andThen(arm.handoff())
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.handoff()))
         .andThen(placer.intake());
   }
 

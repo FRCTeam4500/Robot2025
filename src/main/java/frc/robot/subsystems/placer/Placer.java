@@ -42,7 +42,7 @@ public class Placer extends SubsystemBase implements Loggable {
               config.CurrentLimits.StatorCurrentLimitEnable = false;
               config.CurrentLimits.SupplyCurrentLimitEnable = false;
               config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-              config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+              config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
               fx.getConfigurator().apply(config);
             },
             (FeedforwardSim sim) -> {},

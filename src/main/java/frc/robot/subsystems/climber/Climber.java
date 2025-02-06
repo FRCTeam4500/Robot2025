@@ -12,6 +12,7 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
+// 🐹
 public class Climber extends SubsystemBase implements Loggable {
   private Motor tiltyMotor;
   public final MechanismLigament2d mech;

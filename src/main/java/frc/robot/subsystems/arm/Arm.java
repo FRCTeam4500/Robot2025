@@ -23,12 +23,13 @@ public class Arm extends SubsystemBase implements Loggable {
 
   private final double startAngle = 90.851;
   private final double stowAngle = 75;
-  private final double placeL4Angle = 70;
-  private final double placeL3Angle = 60;
-  private final double placeL2Angle = 60;
-  private final double placeL1Angle = 60;
-  private final double handoffAngle = -90;
+  private final double placeL4Angle = 69.326;
+  private final double placeL3Angle = 73.15;
+  private final double placeL2Angle = 73.15;
+  private final double placeL1Angle = 33.37915;
+  private final double handoffAngle = -85;
   private final double stationAngle = 75;
+  private final double groundAngle = -22;
 
   public final Trigger canMoveElevator =
       new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);
@@ -52,12 +53,14 @@ public class Arm extends SubsystemBase implements Loggable {
             },
             90,
             FeedbackController.fromPID(
-                new PIDController(0.1, 0, 0),
+                new PIDController(0.04, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(2);
                 }),
             FeedforwardController.forArmGravity(0.35, 0.11, 0, 0),
             TargetType.Position);
+    
+    tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
     mech = new MechanismLigament2d("Arm", .5, startAngle);
     mech.append(new MechanismLigament2d("Placer", 0.1, -90));
   }
@@ -66,6 +69,19 @@ public class Arm extends SubsystemBase implements Loggable {
     return Commands.runOnce(
             () -> {
               tiltMotor.setTarget(stowAngle);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return tiltMotor.atTarget();
+                }));
+  }
+
+  public Command ground() {
+    return Commands.runOnce(
+            () -> {
+              tiltMotor.setTarget(groundAngle);
             },
             this)
         .andThen(

@@ -24,7 +24,7 @@ public class Ramp extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
   public final MechanismLigament2d mech;
 
-  private double intakeAngle = 155;
+  private double intakeAngle = -235;
   private double stowAngle = 90;
 
   /** Creates a new Ramp subsystem. */
@@ -36,7 +36,7 @@ public class Ramp extends SubsystemBase implements Loggable {
             (SparkMax max) -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.idleMode(IdleMode.kBrake);
-              config.encoder.inverted(true);
+              config.inverted(true);
               config.encoder.positionConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
               config.encoder.velocityConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
               config.smartCurrentLimit(60);

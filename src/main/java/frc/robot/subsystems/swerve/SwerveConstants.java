@@ -60,7 +60,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.Clockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(21.322380803);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -110,7 +110,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.CounterClockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(16.3455480816);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -160,7 +160,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.Clockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(20.5568464957);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -209,7 +209,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.CounterClockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(15.5);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(21.1278700094);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
