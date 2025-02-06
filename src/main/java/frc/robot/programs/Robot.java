@@ -40,7 +40,8 @@ public class Robot extends LoggedRobot {
     setupOperatorController();
     setupAuto();
 
-    SmartDashboard.putData("SWERVE CHARACTERANDSTUFF", swerve.testDriveConversionFactor(Math.PI/2, 10));
+    SmartDashboard.putData(
+        "SWERVE CHARACTERANDSTUFF", swerve.testDriveConversionFactor(Math.PI / 2, 10));
   }
 
   private void setupOperatorController() {

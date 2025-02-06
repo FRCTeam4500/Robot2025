@@ -16,7 +16,6 @@ import frc.robot.programs.LoggedRobot;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
-import frc.robot.utilities.SysIDCommands;
 import frc.robot.utilities.logging.HoundLog;
 
 public class RampTest extends LoggedRobot {
@@ -46,7 +45,7 @@ public class RampTest extends LoggedRobot {
                 }),
             FeedforwardController.forArmGravity(0.31, 0.07, 0, 0),
             TargetType.Position);
-    
+
     // SysIDCommands commands = motor.getSysIDCommands("Ramp", 1, 3, 5);
     // SmartDashboard.putData("Ramp Dynamic Forward", commands.dynamicForward());
     // SmartDashboard.putData("Ramp Dynamic Reverse", commands.dynamicReverse());
