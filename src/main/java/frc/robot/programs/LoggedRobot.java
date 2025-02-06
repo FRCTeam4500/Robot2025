@@ -1,4 +1,4 @@
-package frc.robot.robots;
+package frc.robot.programs;
 
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DriverStation;

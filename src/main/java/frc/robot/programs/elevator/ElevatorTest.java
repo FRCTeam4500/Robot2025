@@ -1,4 +1,4 @@
-package frc.robot.robots;
+package frc.robot.programs.elevator;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.ElevatorWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.programs.LoggedRobot;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;

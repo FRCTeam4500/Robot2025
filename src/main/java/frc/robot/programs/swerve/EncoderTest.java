@@ -1,6 +1,7 @@
-package frc.robot.robots;
+package frc.robot.programs.swerve;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import frc.robot.programs.LoggedRobot;
 import frc.robot.utilities.logging.HoundLog;
 
 public class EncoderTest extends LoggedRobot {

@@ -5,7 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
-import frc.robot.robots.*;
+import frc.robot.programs.ramp.RampTest;
 
 public final class Main {
   public static void main(String... args) {

@@ -1,4 +1,4 @@
-package frc.robot.robots;
+package frc.robot.programs.arm;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -10,14 +10,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.ArmWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.programs.LoggedRobot;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.logging.HoundLog;
 
-public class ThroughboreTest extends LoggedRobot {
+public class ArmTest extends LoggedRobot {
   private Motor armMotor;
 
-  public ThroughboreTest() {
+  public ArmTest() {
     armMotor =
         Motor.fromTalonFX(
             ArmWiring.ARM_ID,
@@ -39,9 +40,8 @@ public class ThroughboreTest extends LoggedRobot {
                   pid.setTolerance(2);
                 }),
             FeedforwardController.forArmGravity(0.35, 0.11, 0, 0),
-            // FeedforwardController.forNone(),
             TargetType.Position);
-    armMotor.useThroughBoreEncoder(0, true, 0.81);
+    armMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
     SmartDashboard.putData("Target: 90", Commands.runOnce(() -> armMotor.setTarget(90)));
     SmartDashboard.putData("Target: 70", Commands.runOnce(() -> armMotor.setTarget(70)));
     SmartDashboard.putData("Target: 45", Commands.runOnce(() -> armMotor.setTarget(45)));
@@ -53,8 +53,5 @@ public class ThroughboreTest extends LoggedRobot {
   public void robotPeriodic() {
     HoundLog.log("Motor", armMotor);
     CommandScheduler.getInstance().run();
-    // HoundLog.log("Encoder stat", encoder.get());
   }
 }
-
-// cool :)

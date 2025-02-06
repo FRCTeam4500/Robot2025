@@ -1,4 +1,4 @@
-package frc.robot.robots;
+package frc.robot.programs.ramp;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.RampWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.programs.LoggedRobot;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
@@ -19,7 +20,6 @@ import frc.robot.utilities.logging.HoundLog;
 
 public class RampTest extends LoggedRobot {
   private Motor motor;
-  private double voltage;
 
   public RampTest() {
     motor =
@@ -52,6 +52,5 @@ public class RampTest extends LoggedRobot {
   public void robotPeriodic() {
     HoundLog.log("Motor", motor);
     CommandScheduler.getInstance().run();
-    // motor.setVoltage(voltage);
   }
 }
