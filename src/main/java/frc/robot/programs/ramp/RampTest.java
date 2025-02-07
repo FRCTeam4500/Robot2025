@@ -8,7 +8,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.WiringConstants.RampWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
@@ -16,9 +15,8 @@ import frc.robot.programs.LoggedRobot;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
-import frc.robot.utilities.logging.HoundLog;
-
 import frc.robot.utilities.SysIDCommands;
+import frc.robot.utilities.logging.HoundLog;
 
 public class RampTest extends LoggedRobot {
   private Motor motor;
@@ -48,14 +46,14 @@ public class RampTest extends LoggedRobot {
             FeedforwardController.forArmGravity(0.31, 0.07, 0, 0),
             TargetType.Position);
 
-    SysIDCommands  commands = motor.getSysIDCommands("Ramp", 0.2, 0.5, 4);
+    SysIDCommands commands = motor.getSysIDCommands("Ramp", 0.2, 0.5, 4);
     SmartDashboard.putData("Ramp Dynamic Forward", commands.dynamicForward());
     SmartDashboard.putData("Ramp Dynamic Reverse", commands.dynamicReverse());
     SmartDashboard.putData("Ramp Quasistatic Forward", commands.quasistaticForward());
     SmartDashboard.putData("Ramp Quasistatic Reverse", commands.quasistaticReverse());
-  //   SmartDashboard.putData("Target: -45", Commands.runOnce(() -> motor.setTarget(-45)));
-  //   SmartDashboard.putData("Target: 0", Commands.runOnce(() -> motor.setTarget(0)));
-  //   SmartDashboard.putData("Target: 45", Commands.runOnce(() -> motor.setTarget(45)));
+    //   SmartDashboard.putData("Target: -45", Commands.runOnce(() -> motor.setTarget(-45)));
+    //   SmartDashboard.putData("Target: 0", Commands.runOnce(() -> motor.setTarget(0)));
+    //   SmartDashboard.putData("Target: 45", Commands.runOnce(() -> motor.setTarget(45)));
   }
 
   @Override
