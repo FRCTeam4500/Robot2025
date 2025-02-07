@@ -59,7 +59,7 @@ public class Arm extends SubsystemBase implements Loggable {
                 }),
             FeedforwardController.forArmGravity(0.35, 0.11, 0, 0),
             TargetType.Position);
-    
+
     tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
     mech = new MechanismLigament2d("Arm", .5, startAngle);
     mech.append(new MechanismLigament2d("Placer", 0.1, -90));

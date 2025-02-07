@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
@@ -34,6 +35,8 @@ public class Superstructure implements Loggable {
     placer = new Placer();
 
     configureMech();
+
+    RobotModeTriggers.teleop().onTrue(stow());
   }
 
   private void configureMech() {
@@ -74,7 +77,10 @@ public class Superstructure implements Loggable {
   }
 
   public Command readyClimb() {
-    return stow().andThen(ramp.hide()).andThen(climber.ready());
+    return arm.stow()
+        .alongWith(placer.stop())
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
+        .alongWith(ramp.hide().andThen(climber.ready()));
   }
 
   public Command climb() {
@@ -82,20 +88,23 @@ public class Superstructure implements Loggable {
   }
 
   public Command groundIntake() {
-    return arm.stow()
+    return arm.ground()
         .until(arm.canMoveElevator)
-        .andThen(elevator.stow())
-        .andThen(ramp.show())
-        .andThen(arm.ground())
+        .andThen(elevator.groundPickup())
         .andThen(placer.intake());
   }
 
-  public Command intake() {
-    return arm.stow()
+  public Command passthroughIntake() {
+    return arm.ground()
+        .alongWith(ramp.show())
         .until(arm.canMoveElevator)
         .andThen(elevator.handoff())
-        .andThen(ramp.show())
-        .andThen(arm.handoff())
+        .andThen(arm.handoff().alongWith(placer.intake()));
+  }
+
+  public Command backwardsIntake() {
+    return arm.stationPickup()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stationPickup()))
         .andThen(placer.intake());
   }
 
@@ -108,7 +117,6 @@ public class Superstructure implements Loggable {
         .stop()
         .andThen(arm.stow())
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-        .andThen(climber.stow())
-        .andThen(ramp.show());
+        .alongWith(climber.stow().andThen(ramp.show()));
   }
 }

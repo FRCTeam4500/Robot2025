@@ -40,7 +40,8 @@ public class Robot extends LoggedRobot {
     setupOperatorController();
     setupAuto();
 
-    SmartDashboard.putData("SWERVE CHARACTERANDSTUFF", swerve.testDriveConversionFactor(Math.PI/2, 10));
+    SmartDashboard.putData(
+        "SWERVE CHARACTERANDSTUFF", swerve.testDriveConversionFactor(Math.PI / 2, 10));
   }
 
   private void setupOperatorController() {
@@ -59,7 +60,7 @@ public class Robot extends LoggedRobot {
     levelFour.onTrue(structure.readyLevel4());
     readyClimb.onTrue(structure.readyClimb());
     climb.onTrue(structure.climb());
-    coralIntake.onTrue(structure.intake());
+    coralIntake.onTrue(structure.passthroughIntake());
     coralIntake.onFalse(structure.stow());
     stowButton.onTrue(structure.stow());
 
@@ -69,7 +70,7 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Ready Level 4", structure.readyLevel4());
     SmartDashboard.putData("Ready Climb", structure.readyClimb());
     SmartDashboard.putData("Climb", structure.climb());
-    SmartDashboard.putData("Intake", structure.intake());
+    SmartDashboard.putData("Intake", structure.passthroughIntake());
     SmartDashboard.putData("Stow", structure.stow());
     SmartDashboard.putData("Shoot", structure.shoot());
     SmartDashboard.putData("Ground Intake", structure.groundIntake());
@@ -104,7 +105,7 @@ public class Robot extends LoggedRobot {
     rightStationIntake.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
     leftStationIntake.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
     rightStationIntake.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    rightStationIntake.or(leftStationIntake).onTrue(structure.intake());
+    rightStationIntake.or(leftStationIntake).onTrue(structure.passthroughIntake());
     rightStationIntake.or(leftStationIntake).onFalse(structure.stow());
   }
 
