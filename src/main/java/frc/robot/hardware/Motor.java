@@ -181,7 +181,7 @@ public class Motor extends SubsystemBase implements Loggable {
     encoder.setInverted(inverted);
     positionSetter = (newPosition) -> {};
     positionGetter = () -> 360 * MathUtil.inputModulus(encoder.get() - zeroSignal, -0.5, 0.5);
-    velocityGetter = () -> 0;
+    // velocityGetter = () -> 0;
   }
 
   /**
@@ -267,7 +267,7 @@ public class Motor extends SubsystemBase implements Loggable {
               log.motor("Motor0")
                   .value("Position", getPosition(), "IDK")
                   .value("Velocity", getVelocity(), "IDK")
-                  .value("Voltage", target, "Volts");
+                  .value("Voltage", target - ff.calcuateVoltage(getPosition(), 0), "Volts");
               for (int i = 0; i < otherMotors.length; i++) {
                 Motor motor = otherMotors[i];
                 log.motor("Motor" + (i + 1))

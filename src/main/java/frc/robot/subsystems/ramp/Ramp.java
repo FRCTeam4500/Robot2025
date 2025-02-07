@@ -24,8 +24,8 @@ public class Ramp extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
   public final MechanismLigament2d mech;
 
-  private double intakeAngle = -235;
-  private double stowAngle = 90;
+  private double intakeAngle = -205;
+  private double stowAngle = -250;
 
   /** Creates a new Ramp subsystem. */
   public Ramp() {
@@ -45,7 +45,7 @@ public class Ramp extends SubsystemBase implements Loggable {
             (FeedforwardSim jim) -> {
               jim.withHardstops(90, 270);
             },
-            -105,
+            -90,
             FeedbackController.fromPID(
                 new PIDController(0.03, 0, 0),
                 (PIDController pid) -> {

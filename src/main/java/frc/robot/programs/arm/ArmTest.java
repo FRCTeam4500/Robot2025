@@ -13,6 +13,7 @@ import frc.robot.hardware.Motor.TargetType;
 import frc.robot.programs.LoggedRobot;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
+import frc.robot.utilities.SysIDCommands;
 import frc.robot.utilities.logging.HoundLog;
 
 public class ArmTest extends LoggedRobot {
@@ -41,17 +42,17 @@ public class ArmTest extends LoggedRobot {
                 (PIDController pid) -> {
                   pid.setTolerance(2);
                 }),
-            FeedforwardController.forArmGravity(0.35, 0.11, 0, 0),
+            FeedforwardController.forArmGravity(0.35, 0.034937, 0.015511, 0.0042897),
             TargetType.Position);
     armMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
-    // SysIDCommands commands = armMotor.getSysIDCommands("Arm", 1, 3, 5);
-    // SmartDashboard.putData("Arm Dynamic Forward", commands.dynamicForward());
-    // SmartDashboard.putData("Arm Dynamic Reverse", commands.dynamicReverse());
-    // SmartDashboard.putData("Arm Quasistatic Forward", commands.quasistaticForward());
-    // SmartDashboard.putData("Arm Quasistatic Reverse", commands.quasistaticReverse());
-    SmartDashboard.putData("Target: 70", Commands.runOnce(() -> armMotor.setTarget(70)));
-    SmartDashboard.putData("Target: 0", Commands.runOnce(() -> armMotor.setTarget(0)));
-    SmartDashboard.putData("Target: 45", Commands.runOnce(() -> armMotor.setTarget(45)));
+    SysIDCommands commands = armMotor.getSysIDCommands("Arm", 0.25, 0.5, 4);
+    SmartDashboard.putData("Arm Dynamic Forward", commands.dynamicForward());
+    SmartDashboard.putData("Arm Dynamic Reverse", commands.dynamicReverse());
+    SmartDashboard.putData("Arm Quasistatic Forward", commands.quasistaticForward());
+    SmartDashboard.putData("Arm Quasistatic Reverse", commands.quasistaticReverse());
+    // SmartDashboard.putData("Target: 70", Commands.runOnce(() -> armMotor.setTarget(70)));
+    // SmartDashboard.putData("Target: 0", Commands.runOnce(() -> armMotor.setTarget(0)));
+    // SmartDashboard.putData("Target: 45", Commands.runOnce(() -> armMotor.setTarget(45)));
   }
 
   @Override

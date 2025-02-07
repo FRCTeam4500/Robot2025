@@ -23,12 +23,12 @@ public class Arm extends SubsystemBase implements Loggable {
 
   private final double startAngle = 90.851;
   private final double stowAngle = 75;
-  private final double placeL4Angle = 69.326;
-  private final double placeL3Angle = 73.15;
+  private final double placeL4Angle = 60;
+  private final double placeL3Angle = 60;
   private final double placeL2Angle = 73.15;
   private final double placeL1Angle = 33.37915;
   private final double handoffAngle = -85;
-  private final double stationAngle = 75;
+  private final double stationAngle = 70;
   private final double groundAngle = -22;
 
   public final Trigger canMoveElevator =
@@ -57,7 +57,7 @@ public class Arm extends SubsystemBase implements Loggable {
                 (PIDController pid) -> {
                   pid.setTolerance(2);
                 }),
-            FeedforwardController.forArmGravity(0.35, 0.11, 0, 0),
+                FeedforwardController.forArmGravity(0.35, 0.034937, 0.015511, 0.0042897),
             TargetType.Position);
 
     tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
