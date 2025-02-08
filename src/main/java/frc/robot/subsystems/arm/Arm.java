@@ -43,7 +43,7 @@ public class Arm extends SubsystemBase implements Loggable {
               config.Audio.AllowMusicDurDisable = true;
               config.Feedback.SensorToMechanismRatio = 55.0 / 360;
               config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-              
+
               config.CurrentLimits.StatorCurrentLimit = 60;
               config.CurrentLimits.StatorCurrentLimitEnable = true;
               config.MotorOutput.NeutralMode = NeutralModeValue.Brake;

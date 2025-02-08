@@ -103,8 +103,7 @@ public class Robot extends LoggedRobot {
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
     faceForwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(
-      Rotation2d.fromDegrees(0)));
+    faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     alignReefLeft.whileTrue(
         swerve.alignToReef(Alignment.Left).alongWith(structure.readyNextLevel()));
@@ -114,10 +113,16 @@ public class Robot extends LoggedRobot {
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
-    shoot.onTrue(structure.shoot().andThen(swerve.backup()).andThen(Commands.runOnce(() ->
-    structure.stow().schedule())));
+    shoot.onTrue(
+        structure
+            .shoot()
+            .andThen(swerve.backup())
+            .andThen(Commands.runOnce(() -> structure.stow().schedule())));
     passthroughIntake.onTrue(structure.passthroughIntake());
-    passthroughIntake.and(onBlue).and(swerve.closerToRight).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
+    passthroughIntake
+        .and(onBlue)
+        .and(swerve.closerToRight)
+        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
     passthroughIntake
         .and(onBlue)
         .and(swerve.closerToRight.negate())
