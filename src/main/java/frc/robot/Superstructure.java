@@ -121,9 +121,8 @@ public class Superstructure implements Loggable {
 
   public Command groundIntake() {
     return arm.ground()
-        .until(arm.canMoveElevator)
-        .andThen(elevator.groundPickup())
-        .andThen(placer.intake());
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundPickup()))
+        .alongWith(placer.intake());
   }
 
   public Command passthroughIntake() {

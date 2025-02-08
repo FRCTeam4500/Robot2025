@@ -87,7 +87,7 @@ public class SwerveConstants {
               sim -> {},
               (new AnalogEncoder(0).get() - 0.650) * 360,
               FeedbackController.fromPID(
-                  new PIDController(0.14, 0, 0),
+                  new PIDController(0.1, 0, 0),
                   controller -> {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
@@ -137,7 +137,7 @@ public class SwerveConstants {
               sim -> {},
               (new AnalogEncoder(1).get() - 0.906) * 360,
               FeedbackController.fromPID(
-                  new PIDController(0.14, 0, 0),
+                  new PIDController(0.1, 0, 0),
                   controller -> {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
@@ -187,7 +187,7 @@ public class SwerveConstants {
               sim -> {},
               (new AnalogEncoder(2).get() - 0.001) * 360,
               FeedbackController.fromPID(
-                  new PIDController(0.14, 0, 0),
+                  new PIDController(0.1, 0, 0),
                   controller -> {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
@@ -236,7 +236,7 @@ public class SwerveConstants {
               sim -> {},
               (new AnalogEncoder(3).get() - 0.854) * 360,
               FeedbackController.fromPID(
-                  new PIDController(0.14, 0, 0),
+                  new PIDController(0.1, 0, 0),
                   controller -> {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);

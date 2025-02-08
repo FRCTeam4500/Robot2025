@@ -12,6 +12,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -82,7 +83,8 @@ public class Swerve extends SubsystemBase implements Loggable {
             BACK_RIGHT_TRANSLATION);
     estimator =
         new SwerveDrivePoseEstimator(
-            kinematics, gyro.getAngle(), getModulePositions(), new Pose2d());
+            kinematics, gyro.getAngle(), getModulePositions(), new Pose2d(), VecBuilder.fill(0.5, 0.5, 0.5),
+            VecBuilder.fill(5, 5, 5));
     targetHeading = new Rotation2d();
     headingPID = new PIDController(5, 0, 0);
     headingPID.enableContinuousInput(-Math.PI, Math.PI);
@@ -188,9 +190,9 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   @SuppressWarnings("resource")
   public Command poseCentric(Pose2d target) {
-    PIDController forwardPID = new PIDController(3, 0, 0);
-    PIDController sidewaysPID = new PIDController(3, 0, 0);
-    PIDController rotationalPID = new PIDController(8, 0, 0);
+    PIDController forwardPID = new PIDController(1, 0, 0);
+    PIDController sidewaysPID = new PIDController(1, 0, 0);
+    PIDController rotationalPID = new PIDController(6, 0, 0);
     rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
     return Commands.run(
         () -> {
@@ -213,115 +215,115 @@ public class Swerve extends SubsystemBase implements Loggable {
     // 6 areas; 30 to -30,30 to 90,etc.
     return Commands.defer(
         () -> {
-          return Commands.none();
-          // Translation2d robert = estimator.getEstimatedPosition().getTranslation();
-          // Translation2d reef;
-          // Command poseCentricCommand = Commands.none();
-          // switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
-          //   case Blue:
-          //     reef = new Translation2d(4.5, 4);
-          //     double angle = robert.minus(reef).getAngle().getDegrees();
-          //     angle = MathUtil.inputModulus(angle, -30, 330);
-          //     if (angle <= 30 && angle >= -30) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(ScoringLocations.H);
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(ScoringLocations.H.interpolate(ScoringLocations.G, 0.5));
-          //       else poseCentricCommand = poseCentric(ScoringLocations.G);
-          //     } else if (angle <= 90 && angle >= 30) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(ScoringLocations.J);
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(ScoringLocations.J.interpolate(ScoringLocations.I, 0.5));
-          //       else poseCentricCommand = poseCentric(ScoringLocations.I);
-          //     } else if (angle <= 150 && angle >= 90) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(ScoringLocations.L);
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(ScoringLocations.L.interpolate(ScoringLocations.K, 0.5));
-          //       else poseCentricCommand = poseCentric(ScoringLocations.K);
-          //     } else if (angle <= 210 && angle >= 150) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(ScoringLocations.B);
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(ScoringLocations.B.interpolate(ScoringLocations.A, 0.5));
-          //       else poseCentricCommand = poseCentric(ScoringLocations.A);
-          //     } else if (angle <= 270 && angle >= 210) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(ScoringLocations.D);
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(ScoringLocations.D.interpolate(ScoringLocations.C, 0.5));
-          //       else poseCentricCommand = poseCentric(ScoringLocations.C);
-          //     } else {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(ScoringLocations.F);
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(ScoringLocations.F.interpolate(ScoringLocations.E, 0.5));
-          //       else poseCentricCommand = poseCentric(ScoringLocations.E);
-          //     }
-          //     break;
-          //   case Red:
-          //     reef = new Translation2d(13.1, 4);
-          //     double angleRed = robert.minus(reef).getAngle().getDegrees();
-          //     angleRed = MathUtil.inputModulus(angleRed, -30, 330);
-          //     if (angleRed <= 30 && angleRed >= -30) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(flip(ScoringLocations.B));
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(
-          //                 flip(ScoringLocations.B).interpolate(flip(ScoringLocations.A), 0.5));
-          //       else poseCentricCommand = poseCentric(flip(ScoringLocations.A));
-          //     } else if (angleRed <= 90 && angleRed >= 30) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(flip(ScoringLocations.D));
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(
-          //                 flip(ScoringLocations.D).interpolate(flip(ScoringLocations.C), 0.5));
-          //       else poseCentricCommand = poseCentric(flip(ScoringLocations.C));
-          //     } else if (angleRed <= 150 && angleRed >= 90) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(flip(ScoringLocations.F));
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(
-          //                 flip(ScoringLocations.F).interpolate(flip(ScoringLocations.E), 0.5));
-          //       else poseCentricCommand = poseCentric(flip(ScoringLocations.E));
-          //     } else if (angleRed <= 210 && angleRed >= 150) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(flip(ScoringLocations.H));
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(
-          //                 flip(ScoringLocations.H).interpolate(flip(ScoringLocations.G), 0.5));
-          //       else poseCentricCommand = poseCentric(flip(ScoringLocations.G));
-          //     } else if (angleRed <= 270 && angleRed >= 210) {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(flip(ScoringLocations.J));
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(
-          //                 flip(ScoringLocations.J).interpolate(flip(ScoringLocations.I), 0.5));
-          //       else poseCentricCommand = poseCentric(flip(ScoringLocations.I));
-          //     } else {
-          //       if (position == Alignment.Right)
-          //         poseCentricCommand = poseCentric(flip(ScoringLocations.L));
-          //       else if (position == Alignment.Middle)
-          //         poseCentricCommand =
-          //             poseCentric(
-          //                 flip(ScoringLocations.L).interpolate(flip(ScoringLocations.K), 0.5));
-          //       else poseCentricCommand = poseCentric(flip(ScoringLocations.K));
-          //     }
-          //     break;
-          // }
-          // return poseCentricCommand;
+          // return Commands.none();
+          Translation2d robert = estimator.getEstimatedPosition().getTranslation();
+          Translation2d reef;
+          Command poseCentricCommand = Commands.none();
+          switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
+            case Blue:
+              reef = new Translation2d(4.5, 4);
+              double angle = robert.minus(reef).getAngle().getDegrees();
+              angle = MathUtil.inputModulus(angle, -30, 330);
+              if (angle <= 30 && angle >= -30) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.H);
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(ScoringLocations.H.interpolate(ScoringLocations.G, 0.5));
+                else poseCentricCommand = poseCentric(ScoringLocations.G);
+              } else if (angle <= 90 && angle >= 30) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.J);
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(ScoringLocations.J.interpolate(ScoringLocations.I, 0.5));
+                else poseCentricCommand = poseCentric(ScoringLocations.I);
+              } else if (angle <= 150 && angle >= 90) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.L);
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(ScoringLocations.L.interpolate(ScoringLocations.K, 0.5));
+                else poseCentricCommand = poseCentric(ScoringLocations.K);
+              } else if (angle <= 210 && angle >= 150) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.B);
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(ScoringLocations.B.interpolate(ScoringLocations.A, 0.5));
+                else poseCentricCommand = poseCentric(ScoringLocations.A);
+              } else if (angle <= 270 && angle >= 210) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.D);
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(ScoringLocations.D.interpolate(ScoringLocations.C, 0.5));
+                else poseCentricCommand = poseCentric(ScoringLocations.C);
+              } else {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(ScoringLocations.F);
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(ScoringLocations.F.interpolate(ScoringLocations.E, 0.5));
+                else poseCentricCommand = poseCentric(ScoringLocations.E);
+              }
+              break;
+            case Red:
+              reef = new Translation2d(13.1, 4);
+              double angleRed = robert.minus(reef).getAngle().getDegrees();
+              angleRed = MathUtil.inputModulus(angleRed, -30, 330);
+              if (angleRed <= 30 && angleRed >= -30) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.B));
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(
+                          flip(ScoringLocations.B).interpolate(flip(ScoringLocations.A), 0.5));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.A));
+              } else if (angleRed <= 90 && angleRed >= 30) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.D));
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(
+                          flip(ScoringLocations.D).interpolate(flip(ScoringLocations.C), 0.5));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.C));
+              } else if (angleRed <= 150 && angleRed >= 90) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.F));
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(
+                          flip(ScoringLocations.F).interpolate(flip(ScoringLocations.E), 0.5));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.E));
+              } else if (angleRed <= 210 && angleRed >= 150) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.H));
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(
+                          flip(ScoringLocations.H).interpolate(flip(ScoringLocations.G), 0.5));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.G));
+              } else if (angleRed <= 270 && angleRed >= 210) {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.J));
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(
+                          flip(ScoringLocations.J).interpolate(flip(ScoringLocations.I), 0.5));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.I));
+              } else {
+                if (position == Alignment.Right)
+                  poseCentricCommand = poseCentric(flip(ScoringLocations.L));
+                else if (position == Alignment.Middle)
+                  poseCentricCommand =
+                      poseCentric(
+                          flip(ScoringLocations.L).interpolate(flip(ScoringLocations.K), 0.5));
+                else poseCentricCommand = poseCentric(flip(ScoringLocations.K));
+              }
+              break;
+          }
+          return poseCentricCommand;
         },
         Set.of(this));
   }
@@ -406,6 +408,9 @@ public class Swerve extends SubsystemBase implements Loggable {
                     * 0.02);
     double rotational =
         headingPID.calculate(currentHeading.getRadians(), targetHeading.getRadians());
+    if (headingPID.atSetpoint()) {
+      rotational = 0;
+    }
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
       speedCoefficient *= -1;
     }
@@ -474,7 +479,7 @@ public class Swerve extends SubsystemBase implements Loggable {
           && speedLimit
           && (estimate.tagCount() > 1 || estimate.averageDistance() < 4))
         estimator.addVisionMeasurement(
-            estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
+            estimate.pose(), Timer.getFPGATimestamp()-estimate.latencySeconds());
     }
     for (SwerveModule module : modules) {
       module.periodic();

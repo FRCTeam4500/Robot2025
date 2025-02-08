@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double placeL1Angle = 33.37915;
   private final double handoffAngle = -85;
   private final double stationAngle = 70;
-  private final double groundAngle = -22;
+  private final double groundAngle = -30;
 
   public final Trigger canMoveElevator =
       new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);
@@ -43,6 +43,7 @@ public class Arm extends SubsystemBase implements Loggable {
               config.Audio.AllowMusicDurDisable = true;
               config.Feedback.SensorToMechanismRatio = 55.0 / 360;
               config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+              
               config.CurrentLimits.StatorCurrentLimit = 60;
               config.CurrentLimits.StatorCurrentLimitEnable = true;
               config.MotorOutput.NeutralMode = NeutralModeValue.Brake;

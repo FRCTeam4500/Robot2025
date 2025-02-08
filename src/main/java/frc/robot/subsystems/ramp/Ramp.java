@@ -47,7 +47,7 @@ public class Ramp extends SubsystemBase implements Loggable {
             },
             -90,
             FeedbackController.fromPID(
-                new PIDController(0.03, 0, 0),
+                new PIDController(0.015, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(5);
                 }),

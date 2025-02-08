@@ -36,6 +36,7 @@ public class Robot extends LoggedRobot {
   public Robot() {
     DriverStation.silenceJoystickConnectionWarning(true);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
+    // swerve.setDefaultCommand(swerve.robotCentric(xbox.getHID()));
 
     setupDriveController();
     setupOperatorController();
@@ -87,10 +88,10 @@ public class Robot extends LoggedRobot {
     Trigger faceForwards = new Trigger(() -> xbox.getRightY() < -0.5);
     Trigger faceBackwards = new Trigger(() -> xbox.getRightY() > 0.5);
     Trigger resetHeading = xbox.a();
-    Trigger passthroughIntake = xbox.povUp();
-    Trigger backwardsIntake = xbox.povLeft();
-    Trigger algaeGroundIntake = xbox.povRight();
-    Trigger coralGroundIntake = xbox.povDown();
+    Trigger passthroughIntake = xbox.povRight();
+    Trigger backwardsIntake = xbox.povUp();
+    Trigger algaeGroundIntake = xbox.povDown();
+    Trigger coralGroundIntake = xbox.povLeft();
     Trigger alignReefLeft = xbox.leftBumper();
     Trigger alignReefMiddle = xbox.leftStick();
     Trigger alignReefRight = xbox.rightBumper();
@@ -102,7 +103,8 @@ public class Robot extends LoggedRobot {
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
     faceForwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
+    faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(
+      Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     alignReefLeft.whileTrue(swerve.alignToReef(Alignment.Left).alongWith(structure.readyNextLevel()));
     alignReefMiddle.whileTrue(swerve.alignToReef(Alignment.Middle));
@@ -110,10 +112,10 @@ public class Robot extends LoggedRobot {
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
-    // shoot.onTrue(structure.shoot().andThen(swerve.backup()).andThen(Commands.runOnce(() -> structure.stow().schedule())));
-    shoot.onTrue(structure.shoot().andThen(Commands.runOnce(() -> structure.stow().schedule())));
+    shoot.onTrue(structure.shoot().andThen(swerve.backup()).andThen(Commands.runOnce(() -> structure.stow().schedule())));
+    // shoot.onTrue(structure.shoot().andThen(Commands.runOnce(() -> structure.stow().schedule())));
     passthroughIntake.onTrue(structure.passthroughIntake());
-    // passthroughIntake.and(onBlue).and(swerve.closerToRight).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
+    passthroughIntake.and(onBlue).and(swerve.closerToRight).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
     passthroughIntake.and(onBlue).and(swerve.closerToRight.negate()).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
     passthroughIntake.and(onRed).and(swerve.closerToRight).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
     passthroughIntake.and(onRed).and(swerve.closerToRight.negate()).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
@@ -121,7 +123,7 @@ public class Robot extends LoggedRobot {
     backwardsIntake.onTrue(structure.backwardsIntake());
     backwardsIntake.onFalse(structure.stow());
     coralGroundIntake.onTrue(structure.groundIntake());
-    coralGroundIntake.onTrue(structure.stow());
+    coralGroundIntake.onFalse(structure.stow());
     algaeGroundIntake.onTrue(structure.algaeGroundIntake());
     algaeGroundIntake.onFalse(structure.stow());
   }

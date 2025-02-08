@@ -37,7 +37,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double l2Position = 0; // 0.129
   private final double l1Position = 0;
   private final double stationPosition = 0.15; // intake from coral station
-  private final double groundPosition = 0; // ground intake?
+  private final double groundPosition = 0.05; // ground intake?
   private final double processingPosition = 0; // algae processor
   private final double lowAlgaePosition = 0; // between l2 and l3
   private final double highAlgaePosition = 0; // between l3 and l4

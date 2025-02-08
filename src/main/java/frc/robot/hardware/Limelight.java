@@ -124,7 +124,7 @@ public class Limelight implements Loggable {
     double[] raw = table.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
     return new PoseEstimate(
         new Pose2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
-        raw[6] * 1000,
+        raw[6] / 1000,
         (int) raw[7],
         raw[9],
         raw[10],
@@ -157,8 +157,9 @@ public class Limelight implements Loggable {
 
   @Override
   public void log(String path) {
-    HoundLog.log("MT1 Pose", getPoseMT1().pose());
-    HoundLog.log("MT2 Pose", getPoseMT2().pose());
+    HoundLog.log(path, "MT1 Pose", getPoseMT1().pose());
+    HoundLog.log(path, "MT2 Pose", getPoseMT2().pose());
+    HoundLog.log(path, "Estimate Seconds", getPoseMT1().latencySeconds);
   }
 
   public String getName() {
