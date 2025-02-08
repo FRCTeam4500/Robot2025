@@ -6,8 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.programs.Robot;
-import frc.robot.programs.arm.ArmTest;
-import frc.robot.programs.ramp.RampTest;
 
 public final class Main {
   public static void main(String... args) {

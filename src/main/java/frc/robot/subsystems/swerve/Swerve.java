@@ -3,7 +3,6 @@ package frc.robot.subsystems.swerve;
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
 import static frc.robot.utilities.ScoringLocations.allianceFlip;
-import static frc.robot.utilities.ScoringLocations.flip;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -11,13 +10,15 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+<<<<<<< HEAD
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+=======
+>>>>>>> origin/dev
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -54,14 +55,16 @@ public class Swerve extends SubsystemBase implements Loggable {
   private Rotation2d targetHeading;
   private PIDController headingPID;
 
-  public final Trigger closerToRight = new Trigger(() -> {
-    switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
-      case Blue:
-        return estimator.getEstimatedPosition().getY() < 4;
-      default:
-        return estimator.getEstimatedPosition().getY() > 4;
-    }
-  });
+  public final Trigger closerToRight =
+      new Trigger(
+          () -> {
+            switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
+              case Blue:
+                return estimator.getEstimatedPosition().getY() < 4;
+              default:
+                return estimator.getEstimatedPosition().getY() > 4;
+            }
+          });
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
@@ -389,11 +392,11 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   public Command backup() {
     return Commands.run(
-      () -> {
-        drive(new ChassisSpeeds(-2, 0, 0));
-      },
-      this
-    ).withTimeout(.25);
+            () -> {
+              drive(new ChassisSpeeds(-2, 0, 0));
+            },
+            this)
+        .withTimeout(.25);
   }
 
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {

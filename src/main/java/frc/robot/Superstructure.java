@@ -1,7 +1,5 @@
 package frc.robot;
 
-import java.util.Set;
-
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -14,6 +12,7 @@ import frc.robot.subsystems.placer.Placer;
 import frc.robot.subsystems.ramp.Ramp;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.Set;
 
 /**
  * A class that holds together the top half of our robot. Basically everything except the
@@ -67,21 +66,21 @@ public class Superstructure implements Loggable {
   }
 
   public Command readyNextLevel() {
-    return Commands.defer(() -> {
-        switch (nextState) {
-          case L1:
-            return readyLevel1();
-          case L2:
-            return readyLevel2();
-          case L3:
-            return readyLevel3();
-          case L4:
-            return readyLevel4();
-        }
-        return Commands.none();
-      }, 
-      Set.of()
-    );
+    return Commands.defer(
+        () -> {
+          switch (nextState) {
+            case L1:
+              return readyLevel1();
+            case L2:
+              return readyLevel2();
+            case L3:
+              return readyLevel3();
+            case L4:
+              return readyLevel4();
+          }
+          return Commands.none();
+        },
+        Set.of());
   }
 
   public Command readyLevel1() {
@@ -152,6 +151,9 @@ public class Superstructure implements Loggable {
   }
 
   public static enum CoralState {
-    L1, L2, L3, L4;
+    L1,
+    L2,
+    L3,
+    L4;
   }
 }
