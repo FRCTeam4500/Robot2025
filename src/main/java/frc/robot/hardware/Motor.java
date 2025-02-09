@@ -177,6 +177,9 @@ public class Motor extends SubsystemBase implements Loggable {
   }
 
   public void useThroughBoreEncoder(int channel, boolean inverted, double zeroSignal) {
+    if (RobotBase.isSimulation()) {
+      return;
+    }
     encoder = new DutyCycleEncoder(channel);
     encoder.setInverted(inverted);
     positionSetter = (newPosition) -> {};

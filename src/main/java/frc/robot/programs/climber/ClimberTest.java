@@ -43,7 +43,7 @@ public class ClimberTest extends LoggedRobot {
             null,
             TargetType.Position);
 
-    SysIDCommands commands = climberMotor.getSysIDCommands("climber", 1, 1, 5, null);
+    SysIDCommands commands = climberMotor.getSysIDCommands("climber", 1, 1, 5);
     SmartDashboard.putData("climberQuasistaticForward", commands.quasistaticForward());
     SmartDashboard.putData("climberQuasistaticReverse", commands.quasistaticReverse());
     SmartDashboard.putData("climberDyanamicForward", commands.dynamicForward());

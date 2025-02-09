@@ -88,4 +88,8 @@ public class Ramp extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Motor", tiltMotor);
     mech.setAngle(tiltMotor.getPosition());
   }
+
+  public double getAngle() {
+    return tiltMotor.getPosition();
+  }
 }

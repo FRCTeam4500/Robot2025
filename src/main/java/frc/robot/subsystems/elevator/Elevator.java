@@ -253,4 +253,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Up Motor", upMotor);
     mech.setLength(upMotor.getPosition() + 0.1);
   }
+
+  public double getExtension() {
+    return upMotor.getPosition();
+  }
 }

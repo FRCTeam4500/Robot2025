@@ -176,4 +176,8 @@ public class Arm extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Can Move Elevator", canMoveElevator.getAsBoolean());
     mech.setAngle(tiltMotor.getPosition());
   }
+
+  public double getAngle() {
+    return tiltMotor.getPosition();
+  }
 }
