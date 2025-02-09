@@ -46,7 +46,7 @@ public class Superstructure implements Loggable {
   }
 
   private void configureMech() {
-    robotMech.getRoot("Climber Root", 1, 0.1).append(climber.mech);
+    robotMech.getRoot("Climber Root", 1.05, 0.3).append(climber.mech);
     elevator.armHolder.append(arm.mech);
     robotMech.getRoot("Elevator Root", 1.7, 0.1).append(elevator.mech);
     robotMech.getRoot("Ramp Root", 1.6, 0.3).append(ramp.mech);
@@ -62,23 +62,25 @@ public class Superstructure implements Loggable {
     HoundLog.log(path, "Arm", arm);
     HoundLog.log(path, "Next State", nextState);
 
+    double percentUp = elevator.getExtension() / 0.95;
     Pose3d elevatorStagePose =
-        new Pose3d(0.09, 0, 0.14 + elevator.getExtension() / 2, new Rotation3d());
-    Pose3d carriagePose = new Pose3d(0.09, 0, 0.25 + elevator.getExtension(), new Rotation3d());
+        new Pose3d(0.09, 0, 0.14 + .8 * percentUp, new Rotation3d());
+    Pose3d carriagePose = new Pose3d(0.09, 0, 0.2 + 1.38 * percentUp, new Rotation3d());
     Pose3d armPose =
         new Pose3d(
             0.167,
             0,
-            0.46 + elevator.getExtension(),
+            0.41 + 1.38 * percentUp,
             new Rotation3d(0, Math.toRadians(-arm.getAngle()), 0));
     Pose3d rampPose =
-        new Pose3d(-0.02, 0, 0.61, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
+        new Pose3d(0, 0, 0.62, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
     Pose3d climberPose =
-        new Pose3d(-0.4, 0, 0.26, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
+        new Pose3d(-0.407, 0, 0.255, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
     HoundLog.log(
         path,
         "Component Poses",
-        new Pose3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose});
+        new Pose3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose}
+      );
   }
 
   public Command setNextState(CoralState state) {
