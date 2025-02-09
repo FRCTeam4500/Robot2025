@@ -61,14 +61,25 @@ public class Superstructure implements Loggable {
     HoundLog.log(path, "Ramp", ramp);
     HoundLog.log(path, "Arm", arm);
     HoundLog.log(path, "Next State", nextState);
-    
-    Pose3d elevatorStagePose = new Pose3d(0.09, 0, 0.14 + elevator.getExtension() / 2, new Rotation3d());
-    Pose3d carriagePose = new Pose3d(0.09, 0, 0.25 + elevator.getExtension() , new Rotation3d());
-    Pose3d armPose = new Pose3d(0.167, 0, 0.46 + elevator.getExtension(), new Rotation3d(0, Math.toRadians(-arm.getAngle()), 0));
-    Pose3d rampPose = new Pose3d(-0.02, 0, 0.61, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
-    Pose3d climberPose = new Pose3d(-0.4, 0, 0.26, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
-    HoundLog.log(path, "Component Poses", new Pose3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose});
-}
+
+    Pose3d elevatorStagePose =
+        new Pose3d(0.09, 0, 0.14 + elevator.getExtension() / 2, new Rotation3d());
+    Pose3d carriagePose = new Pose3d(0.09, 0, 0.25 + elevator.getExtension(), new Rotation3d());
+    Pose3d armPose =
+        new Pose3d(
+            0.167,
+            0,
+            0.46 + elevator.getExtension(),
+            new Rotation3d(0, Math.toRadians(-arm.getAngle()), 0));
+    Pose3d rampPose =
+        new Pose3d(-0.02, 0, 0.61, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
+    Pose3d climberPose =
+        new Pose3d(-0.4, 0, 0.26, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
+    HoundLog.log(
+        path,
+        "Component Poses",
+        new Pose3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose});
+  }
 
   public Command setNextState(CoralState state) {
     return Commands.runOnce(() -> nextState = state);
