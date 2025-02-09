@@ -84,7 +84,11 @@ public class Swerve extends SubsystemBase implements Loggable {
             BACK_RIGHT_TRANSLATION);
     estimator =
         new SwerveDrivePoseEstimator(
-            kinematics, gyro.getAngle(), getModulePositions(), new Pose2d(), VecBuilder.fill(0.5, 0.5, 0.5),
+            kinematics,
+            gyro.getAngle(),
+            getModulePositions(),
+            new Pose2d(),
+            VecBuilder.fill(0.5, 0.5, 0.5),
             VecBuilder.fill(5, 5, 5));
     targetHeading = new Rotation2d();
     headingPID = new PIDController(5, 0, 0);
@@ -279,7 +283,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                 else if (position == Alignment.Middle)
                   poseCentricCommand =
                       poseCentric(
-                          allianceFlip(ScoringLocations.B).interpolate(allianceFlip(ScoringLocations.A), 0.5));
+                          allianceFlip(ScoringLocations.B)
+                              .interpolate(allianceFlip(ScoringLocations.A), 0.5));
                 else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.A));
               } else if (angleRed <= 90 && angleRed >= 30) {
                 if (position == Alignment.Right)
@@ -287,7 +292,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                 else if (position == Alignment.Middle)
                   poseCentricCommand =
                       poseCentric(
-                          allianceFlip(ScoringLocations.D).interpolate(allianceFlip(ScoringLocations.C), 0.5));
+                          allianceFlip(ScoringLocations.D)
+                              .interpolate(allianceFlip(ScoringLocations.C), 0.5));
                 else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.C));
               } else if (angleRed <= 150 && angleRed >= 90) {
                 if (position == Alignment.Right)
@@ -295,7 +301,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                 else if (position == Alignment.Middle)
                   poseCentricCommand =
                       poseCentric(
-                          allianceFlip(ScoringLocations.F).interpolate(allianceFlip(ScoringLocations.E), 0.5));
+                          allianceFlip(ScoringLocations.F)
+                              .interpolate(allianceFlip(ScoringLocations.E), 0.5));
                 else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.E));
               } else if (angleRed <= 210 && angleRed >= 150) {
                 if (position == Alignment.Right)
@@ -303,7 +310,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                 else if (position == Alignment.Middle)
                   poseCentricCommand =
                       poseCentric(
-                          allianceFlip(ScoringLocations.H).interpolate(allianceFlip(ScoringLocations.G), 0.5));
+                          allianceFlip(ScoringLocations.H)
+                              .interpolate(allianceFlip(ScoringLocations.G), 0.5));
                 else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.G));
               } else if (angleRed <= 270 && angleRed >= 210) {
                 if (position == Alignment.Right)
@@ -311,7 +319,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                 else if (position == Alignment.Middle)
                   poseCentricCommand =
                       poseCentric(
-                          allianceFlip(ScoringLocations.J).interpolate(allianceFlip(ScoringLocations.I), 0.5));
+                          allianceFlip(ScoringLocations.J)
+                              .interpolate(allianceFlip(ScoringLocations.I), 0.5));
                 else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.I));
               } else {
                 if (position == Alignment.Right)
@@ -319,7 +328,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                 else if (position == Alignment.Middle)
                   poseCentricCommand =
                       poseCentric(
-                          allianceFlip(ScoringLocations.L).interpolate(allianceFlip(ScoringLocations.K), 0.5));
+                          allianceFlip(ScoringLocations.L)
+                              .interpolate(allianceFlip(ScoringLocations.K), 0.5));
                 else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.K));
               }
               break;
@@ -480,7 +490,7 @@ public class Swerve extends SubsystemBase implements Loggable {
           && speedLimit
           && (estimate.tagCount() > 1 || estimate.averageDistance() < 4))
         estimator.addVisionMeasurement(
-            estimate.pose(), Timer.getFPGATimestamp()-estimate.latencySeconds());
+            estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
     }
     for (SwerveModule module : modules) {
       module.periodic();
