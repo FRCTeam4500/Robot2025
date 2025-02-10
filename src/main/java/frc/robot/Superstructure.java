@@ -80,12 +80,12 @@ public class Superstructure implements Loggable {
     Transform3d rampPose =
         new Transform3d(0, 0, 0.62, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
     Transform3d climberPose =
-        new Transform3d(-0.407, 0, 0.255, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
+        new Transform3d(
+            -0.407, 0, 0.255, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
     HoundLog.log(
         path,
         "Component Poses",
-        new Transform3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose}
-      );
+        new Transform3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose});
 
     Pose3d robot = new Pose3d(robotPose.get());
     Transform3d piece = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, Math.PI / 2, 0));
