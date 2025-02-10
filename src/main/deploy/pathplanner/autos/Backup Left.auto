@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "4-H"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "4-H"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Ready L4"
+                }
+              }
+            ]
           }
         },
         {
@@ -15,9 +28,22 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "sequential",
                 "data": {
-                  "waitTime": 1.0
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Ready L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "shoot"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -27,6 +53,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow"
           }
         }
       ]
