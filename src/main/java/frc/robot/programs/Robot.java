@@ -5,11 +5,10 @@
 
 package frc.robot.programs;
 
-import java.util.Set;
+import static frc.robot.utilities.ScoringLocations.allianceFlip;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -30,8 +29,7 @@ import frc.robot.subsystems.swerve.Swerve.Alignment;
 import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
-
-import static frc.robot.utilities.ScoringLocations.allianceFlip;
+import java.util.Set;
 
 public class Robot extends LoggedRobot {
   private Swerve swerve;
@@ -139,29 +137,41 @@ public class Robot extends LoggedRobot {
 
   public void setupAuto() {
     NamedCommands.registerCommand(
-        "To A", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.A)), Set.of(swerve)));
+        "To A",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.A)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To B", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.B)), Set.of(swerve)));
+        "To B",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.B)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To C", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.C)), Set.of(swerve)));
+        "To C",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.C)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To D", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.D)), Set.of(swerve)));
+        "To D",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.D)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To E", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.E)), Set.of(swerve)));
+        "To E",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.E)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To F", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.F)), Set.of(swerve)));
+        "To F",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.F)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To G", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.G)), Set.of(swerve)));
+        "To G",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.G)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To H", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.H)), Set.of(swerve)));
+        "To H",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.H)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To I", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.I)), Set.of(swerve)));
+        "To I",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.I)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To J", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.J)), Set.of(swerve)));
+        "To J",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.J)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To K", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.K)), Set.of(swerve)));
+        "To K",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.K)), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To L", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.L)), Set.of(swerve)));
+        "To L",
+        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.L)), Set.of(swerve)));
     NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.passthroughIntake());
