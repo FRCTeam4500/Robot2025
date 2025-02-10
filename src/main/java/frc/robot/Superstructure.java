@@ -1,7 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,6 +17,7 @@ import frc.robot.subsystems.ramp.Ramp;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A class that holds together the top half of our robot. Basically everything except the
@@ -28,16 +31,18 @@ public class Superstructure implements Loggable {
   private Ramp ramp;
   private Arm arm;
   private Placer placer;
+  private Supplier<Pose2d> robotPose;
 
   private CoralState nextState;
 
-  public Superstructure() {
+  public Superstructure(Supplier<Pose2d> robotPose) {
     robotMech = new Mechanism2d(3, 3);
     climber = new Climber();
     elevator = new Elevator();
     ramp = new Ramp();
     arm = new Arm();
     placer = new Placer();
+    this.robotPose = robotPose;
     nextState = CoralState.L4;
 
     configureMech();
@@ -63,24 +68,30 @@ public class Superstructure implements Loggable {
     HoundLog.log(path, "Next State", nextState);
 
     double percentUp = elevator.getExtension() / 0.95;
-    Pose3d elevatorStagePose =
-        new Pose3d(0.09, 0, 0.14 + .8 * percentUp, new Rotation3d());
-    Pose3d carriagePose = new Pose3d(0.09, 0, 0.2 + 1.38 * percentUp, new Rotation3d());
-    Pose3d armPose =
-        new Pose3d(
+    Transform3d elevatorStagePose =
+        new Transform3d(0.09, 0, 0.14 + .55 * percentUp, new Rotation3d());
+    Transform3d carriagePose = new Transform3d(0.09, 0, 0.2 + 1.13 * percentUp, new Rotation3d());
+    Transform3d armPose =
+        new Transform3d(
             0.167,
             0,
-            0.41 + 1.38 * percentUp,
+            0.41 + 1.13 * percentUp,
             new Rotation3d(0, Math.toRadians(-arm.getAngle()), 0));
-    Pose3d rampPose =
-        new Pose3d(0, 0, 0.62, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
-    Pose3d climberPose =
-        new Pose3d(-0.407, 0, 0.255, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
+    Transform3d rampPose =
+        new Transform3d(0, 0, 0.62, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
+    Transform3d climberPose =
+        new Transform3d(-0.407, 0, 0.255, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
     HoundLog.log(
         path,
         "Component Poses",
-        new Pose3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose}
+        new Transform3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose}
       );
+
+    Pose3d robot = new Pose3d(robotPose.get());
+    Transform3d piece = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, Math.PI / 2, 0));
+    Transform3d pieceSideways = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, 0, Math.PI / 2));
+    HoundLog.log("Held Piece", robot.transformBy(armPose).transformBy(piece));
+    HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
   }
 
   public Command setNextState(CoralState state) {

@@ -5,7 +5,11 @@
 
 package frc.robot.programs;
 
+import java.util.Set;
+
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -23,27 +27,30 @@ import frc.robot.Superstructure;
 import frc.robot.Superstructure.CoralState;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.Swerve.Alignment;
+import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 
+import static frc.robot.utilities.ScoringLocations.allianceFlip;
+
 public class Robot extends LoggedRobot {
-  private Swerve swerve = new Swerve();
-  private Superstructure structure = new Superstructure();
-  private CommandXboxController xbox = new CommandXboxController(2);
-  private CommandJoystick stick = new CommandJoystick(1);
+  private Swerve swerve;
+  private Superstructure structure;
+  private CommandXboxController xbox;
+  private CommandJoystick stick;
 
   /** make a robot */
   public Robot() {
+    swerve = new Swerve();
+    structure = new Superstructure(swerve::getPose);
     DriverStation.silenceJoystickConnectionWarning(true);
+    xbox = new CommandXboxController(2);
+    stick = new CommandJoystick(1);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
-    // swerve.setDefaultCommand(swerve.robotCentric(xbox.getHID()));
 
     setupDriveController();
     setupOperatorController();
     setupAuto();
-
-    SmartDashboard.putData(
-        "SWERVE CHARACTERANDSTUFF", swerve.testDriveConversionFactor(Math.PI / 2, 10));
   }
 
   private void setupOperatorController() {
@@ -65,20 +72,6 @@ public class Robot extends LoggedRobot {
     coralIntake.onTrue(structure.passthroughIntake());
     coralIntake.onFalse(structure.stow());
     stowButton.onTrue(structure.stow());
-
-    SmartDashboard.putData("Ready Level 1", structure.readyLevel1());
-    SmartDashboard.putData("Ready Level 2", structure.readyLevel2());
-    SmartDashboard.putData("Ready Level 3", structure.readyLevel3());
-    SmartDashboard.putData("Ready Level 4", structure.readyLevel4());
-    SmartDashboard.putData("Ready Climb", structure.readyClimb());
-    SmartDashboard.putData("Climb", structure.climb());
-    SmartDashboard.putData("Intake", structure.passthroughIntake());
-    SmartDashboard.putData("Stow", structure.stow());
-    SmartDashboard.putData("Shoot", structure.shoot());
-    SmartDashboard.putData("Ground Intake", structure.groundIntake());
-
-    SmartDashboard.putData(
-        "Swerve Characterization", swerve.testDriveConversionFactor(Math.PI, 10));
   }
 
   private void setupDriveController() {
@@ -145,6 +138,35 @@ public class Robot extends LoggedRobot {
   }
 
   public void setupAuto() {
+    NamedCommands.registerCommand(
+        "To A", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.A)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To B", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.B)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To C", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.C)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To D", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.D)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To E", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.E)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To F", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.F)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To G", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.G)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To H", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.H)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To I", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.I)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To J", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.J)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To K", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.K)), Set.of(swerve)));
+    NamedCommands.registerCommand(
+        "To L", Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.L)), Set.of(swerve)));
+    NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
+    NamedCommands.registerCommand("Shoot", structure.shoot());
+    NamedCommands.registerCommand("Intake", structure.passthroughIntake());
+    NamedCommands.registerCommand("Stow", structure.stow());
+
     SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
