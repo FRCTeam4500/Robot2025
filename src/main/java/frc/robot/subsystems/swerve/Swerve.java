@@ -35,7 +35,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
-import frc.robot.utilities.ExtendedMath;
 import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
@@ -65,7 +64,7 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
-    tagCameras = new Limelight[] {new Limelight("limelight-hehehe")};
+    tagCameras = new Limelight[] {new Limelight("limelight-hehehe"), new Limelight("limelight-hihihi")};
     if (RobotBase.isReal()) { // running on hardware robot
       gyro = Gyro.fromNavX(navx -> {});
     } else { // running robot simulation
@@ -458,16 +457,15 @@ public class Swerve extends SubsystemBase implements Loggable {
   @Override
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
-    boolean speedLimit =
-        (ExtendedMath.within(getSpeeds(), new ChassisSpeeds(), new ChassisSpeeds(1, 1, 2 * Math.PI))
-            || !DriverStation.isAutonomous());
     for (Limelight camera : tagCameras) {
-      PoseEstimate estimate = camera.getPoseMT1();
-      if (estimate.exists()
-          && speedLimit
-          && (estimate.tagCount() > 1 || estimate.averageDistance() < 4))
+      PoseEstimate estimate = camera.getPoseMT2(estimator.getEstimatedPosition().getRotation(), Rotation2d.fromDegrees(getSpeeds().omegaRadiansPerSecond));
+      if (DriverStation.isDisabled()) {
+        estimate = camera.getPoseMT1();
+      }
+      if (estimate.exists() && (estimate.tagCount() > 1 || estimate.averageDistance() < 4)) {
         estimator.addVisionMeasurement(
-            estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
+          estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
+      }
     }
     for (SwerveModule module : modules) {
       module.periodic();
