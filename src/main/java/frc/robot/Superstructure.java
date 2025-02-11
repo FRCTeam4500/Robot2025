@@ -34,7 +34,8 @@ public class Superstructure implements Loggable {
   private Placer placer;
   private Supplier<Pose2d> robotPose;
 
-  private CoralState nextState;
+  private CoralState nextCoral;
+  private AlgaeState nextAlgae;
 
   public Superstructure(Supplier<Pose2d> robotPose) {
     robotMech = new Mechanism2d(3, 3);
@@ -44,7 +45,8 @@ public class Superstructure implements Loggable {
     arm = new Arm();
     placer = new Placer();
     this.robotPose = robotPose;
-    nextState = CoralState.L4;
+    nextCoral = CoralState.L4;
+    nextAlgae = AlgaeState.HIGH;
 
     configureMech();
 
@@ -66,8 +68,8 @@ public class Superstructure implements Loggable {
     HoundLog.log(path, "Placer", placer);
     HoundLog.log(path, "Ramp", ramp);
     HoundLog.log(path, "Arm", arm);
-    HoundLog.log(path, "Next State/Name", nextState);
-    HoundLog.log(path, "Next State/Color", nextState.color);
+    HoundLog.log(path, "Next State/Name", nextCoral);
+    HoundLog.log(path, "Next State/Color", nextCoral.color);
 
     double percentUp = elevator.getExtension() / 0.95;
     Transform3d elevatorStagePose =
@@ -96,14 +98,18 @@ public class Superstructure implements Loggable {
     HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
   }
 
-  public Command setNextState(CoralState state) {
-    return Commands.runOnce(() -> nextState = state);
+  public Command setNextCoral(CoralState state) {
+    return Commands.runOnce(() -> nextCoral = state);
   }
 
-  public Command readyNextLevel() {
+  public Command setNextAlgae(AlgaeState state) {
+    return Commands.runOnce(() -> nextAlgae = state);
+  }
+
+  public Command readyNextCoral() {
     return Commands.defer(
         () -> {
-          switch (nextState) {
+          switch (nextCoral) {
             case L1:
               return readyLevel1();
             case L2:
@@ -112,6 +118,20 @@ public class Superstructure implements Loggable {
               return readyLevel3();
             case L4:
               return readyLevel4();
+          }
+          return Commands.none();
+        },
+        Set.of());
+  }
+
+  public Command readyNextAlgae() {
+    return Commands.defer(
+        () -> {
+          switch (nextAlgae) {
+            case LOW:
+              return readyAlgaeLow();
+            case HIGH:
+              return readyAlgaeHigh();
           }
           return Commands.none();
         },
@@ -136,6 +156,18 @@ public class Superstructure implements Loggable {
   public Command readyLevel4() {
     return arm.placeL4()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()));
+  }
+
+  public Command readyAlgaeHigh() {
+    return arm.dislodge()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.highAlgae()))
+        .alongWith(placer.eject());
+  }
+
+  public Command readyAlgaeLow() {
+    return arm.dislodge()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.lowAlgae()))
+        .alongWith(placer.eject());
   }
 
   public Command readyClimb() {
@@ -196,5 +228,10 @@ public class Superstructure implements Loggable {
     private CoralState(Color color) {
       this.color = color.toHexString();
     }
+  }
+
+  public static enum AlgaeState {
+    LOW,
+    HIGH;
   }
 }

@@ -30,6 +30,7 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double handoffAngle = -85;
   private final double stationAngle = 70;
   private final double groundAngle = -30;
+  private final double dislodgeAngle = 40;
 
   public final Trigger canMoveElevator =
       new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);
@@ -83,6 +84,19 @@ public class Arm extends SubsystemBase implements Loggable {
     return Commands.runOnce(
             () -> {
               tiltMotor.setTarget(groundAngle);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return tiltMotor.atTarget();
+                }));
+  }
+
+  public Command dislodge() {
+    return Commands.runOnce(
+            () -> {
+              tiltMotor.setTarget(dislodgeAngle);
             },
             this)
         .andThen(
