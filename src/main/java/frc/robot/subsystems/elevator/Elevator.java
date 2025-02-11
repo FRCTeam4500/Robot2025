@@ -65,7 +65,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                 (PIDController pid) -> {
                   pid.setTolerance(0.05);
                 }),
-                FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
+            FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
             TargetType.Position);
     mech = new MechanismLigament2d("Elevator", 0, 90);
     armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);

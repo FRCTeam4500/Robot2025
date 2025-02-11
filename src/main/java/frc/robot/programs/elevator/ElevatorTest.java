@@ -59,15 +59,20 @@ public class ElevatorTest extends LoggedRobot {
     SmartDashboard.putData("elevatorQuasistaticReverse", commands.quasistaticReverse());
     SmartDashboard.putData("elevatorDyanamicForward", commands.dynamicForward());
     SmartDashboard.putData("elevatorDynamicReverse", commands.dynamicReverse());
-    Sendable sendable = new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Voltage", () -> {return voltage;}, (double nextVoltage) -> {
-          voltage = nextVoltage;
-        });
-      }
-      
-    };
+    Sendable sendable =
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.addDoubleProperty(
+                "Voltage",
+                () -> {
+                  return voltage;
+                },
+                (double nextVoltage) -> {
+                  voltage = nextVoltage;
+                });
+          }
+        };
     SmartDashboard.putData("Voltage Setter", sendable);
   }
 

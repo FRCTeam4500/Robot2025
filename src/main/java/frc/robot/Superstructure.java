@@ -192,6 +192,7 @@ public class Superstructure implements Loggable {
     L4(Color.kRed);
 
     public final String color;
+
     private CoralState(Color color) {
       this.color = color.toHexString();
     }
