@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "3-J"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "3-J"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Ready L4"
+                }
+              }
+            ]
           }
         },
         {
@@ -15,9 +28,22 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "sequential",
                 "data": {
-                  "waitTime": 1.0
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Ready L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -30,15 +56,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "J-CSL"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "J-CSL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "CSL-K"
+            "waitTime": 0.5
           }
         },
         {
@@ -46,9 +85,41 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "path",
                 "data": {
-                  "waitTime": 1.0
+                  "pathName": "CSL-K"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Ready L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Ready L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -61,15 +132,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "K-CSL"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "K-CSL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "CSL-L"
+            "waitTime": 0.5
           }
         },
         {
@@ -77,9 +161,41 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "path",
                 "data": {
-                  "waitTime": 1.0
+                  "pathName": "CSL-L"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Ready L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Ready L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -92,15 +208,28 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "L-CSL"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "L-CSL"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "CSL-A"
+            "waitTime": 0.5
           }
         },
         {
@@ -108,9 +237,41 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "path",
                 "data": {
-                  "waitTime": 1.0
+                  "pathName": "CSL-A"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Ready L4"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Ready L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Shoot"
+                      }
+                    }
+                  ]
                 }
               },
               {
@@ -120,6 +281,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Stow"
           }
         }
       ]
