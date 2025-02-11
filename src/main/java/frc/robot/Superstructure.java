@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -65,7 +66,8 @@ public class Superstructure implements Loggable {
     HoundLog.log(path, "Placer", placer);
     HoundLog.log(path, "Ramp", ramp);
     HoundLog.log(path, "Arm", arm);
-    HoundLog.log(path, "Next State", nextState);
+    HoundLog.log(path, "Next State/Name", nextState);
+    HoundLog.log(path, "Next State/Color", nextState.color);
 
     double percentUp = elevator.getExtension() / 0.95;
     Transform3d elevatorStagePose =
@@ -184,9 +186,14 @@ public class Superstructure implements Loggable {
   }
 
   public static enum CoralState {
-    L1,
-    L2,
-    L3,
-    L4;
+    L1(Color.kYellow),
+    L2(Color.kSkyBlue),
+    L3(Color.kLimeGreen),
+    L4(Color.kRed);
+
+    public final String color;
+    private CoralState(Color color) {
+      this.color = color.toHexString();
+    }
   }
 }
