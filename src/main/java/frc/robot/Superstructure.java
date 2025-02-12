@@ -182,7 +182,9 @@ public class Superstructure implements Loggable {
   }
 
   public Command algaeGroundIntake() {
-    return Commands.none();
+    return arm.algaeGround()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
+        .alongWith(placer.eject());
   }
 
   public Command groundIntake() {
