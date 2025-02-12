@@ -139,7 +139,8 @@ public class Limelight implements Loggable {
   public PoseEstimate getPoseMT2(Rotation2d currentRotation, Rotation2d speedPerSec) {
     table
         .getEntry("robot_orientation_set")
-        .setDoubleArray(new double[] {currentRotation.getDegrees(), speedPerSec.getDegrees(), 0, 0, 0, 0});
+        .setDoubleArray(
+            new double[] {currentRotation.getDegrees(), speedPerSec.getDegrees(), 0, 0, 0, 0});
     NetworkTableInstance.getDefault().flush();
     return getPoseMT2();
   }

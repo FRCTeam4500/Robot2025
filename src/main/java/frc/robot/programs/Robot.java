@@ -103,7 +103,8 @@ public class Robot extends LoggedRobot {
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     alignReefLeft.whileTrue(
         swerve.alignToReef(Alignment.Left).alongWith(structure.readyNextCoral()));
-    alignReefMiddle.whileTrue(swerve.alignToReef(Alignment.Middle).alongWith(structure.readyNextAlgae()));
+    alignReefMiddle.whileTrue(
+        swerve.alignToReef(Alignment.Middle).alongWith(structure.readyNextAlgae()));
     alignReefRight.whileTrue(
         swerve.alignToReef(Alignment.Right).alongWith(structure.readyNextCoral()));
     stow.onTrue(structure.stow());
