@@ -45,7 +45,7 @@ public class Robot extends LoggedRobot {
     DriverStation.silenceJoystickConnectionWarning(true);
     xbox = new CommandXboxController(2);
     stick = new CommandJoystick(1);
-    swerve.setDefaultCommand(swerve.robotCentric(xbox.getHID()));
+    swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
 
     setupDriveController();
     setupOperatorController();
@@ -75,6 +75,18 @@ public class Robot extends LoggedRobot {
     coralIntake.onTrue(structure.passthroughIntake());
     coralIntake.onFalse(structure.stow());
     stowButton.onTrue(structure.stow());
+
+    SmartDashboard.putData("Target L1", structure.setNextCoral(CoralState.L1));
+    SmartDashboard.putData("Target L2", structure.setNextCoral(CoralState.L2));
+    SmartDashboard.putData("Target L3", structure.setNextCoral(CoralState.L3));
+    SmartDashboard.putData("Target L4", structure.setNextCoral(CoralState.L4));
+    SmartDashboard.putData("Target High Algae", structure.setNextAlgae(AlgaeState.HIGH));
+    SmartDashboard.putData("Target Low Algae", structure.setNextAlgae(AlgaeState.LOW));
+    SmartDashboard.putData("Ready Climb", structure.readyClimb());
+    SmartDashboard.putData("Climb", structure.climb());
+    SmartDashboard.putData("Intake", structure.passthroughIntake());
+    SmartDashboard.putData("Stow", structure.stow());
+
   }
 
   private void setupDriveController() {
