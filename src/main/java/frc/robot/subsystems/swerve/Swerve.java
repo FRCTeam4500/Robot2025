@@ -35,6 +35,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
+import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
@@ -49,7 +51,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   private SwerveDrivePoseEstimator estimator;
   private Limelight[] tagCameras;
   private Rotation2d targetHeading;
-  private PIDController headingPID;
+  private FeedbackController headingFeedback;
+  private PoseFeedbackController poseFeedback;
 
   public final Trigger closerToRight =
       new Trigger(
@@ -90,10 +93,19 @@ public class Swerve extends SubsystemBase implements Loggable {
             VecBuilder.fill(0.5, 0.5, 0.5),
             VecBuilder.fill(5, 5, 5));
     targetHeading = new Rotation2d();
-    headingPID = new PIDController(5, 0, 0);
-    headingPID.enableContinuousInput(-Math.PI, Math.PI);
-    headingPID.setTolerance(Math.PI / 32, Math.PI / 32);
-    headingPID.setSetpoint(0);
+    headingFeedback = FeedbackController.fromPD(5, 0, pid -> {
+      pid.enableContinuousInput(-Math.PI, Math.PI);
+      pid.setTolerance(Math.PI / 32, Math.PI / 32);
+      pid.setSetpoint(0);
+    });
+
+    poseFeedback = new PoseFeedbackController(
+      FeedbackController.fromPD(1, 0, pid -> {}), 
+      FeedbackController.fromPD(1, 0, pid -> {}), 
+      FeedbackController.fromPD(6, 0, pid -> {
+        pid.enableContinuousInput(0, 360);
+      })
+    );
 
     GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
 
@@ -166,24 +178,23 @@ public class Swerve extends SubsystemBase implements Loggable {
         this);
   }
 
-  @SuppressWarnings("resource")
   public Command poseCentric(Pose2d target) {
-    PIDController forwardPID = new PIDController(1, 0, 0);
-    PIDController sidewaysPID = new PIDController(1, 0, 0);
-    PIDController rotationalPID = new PIDController(6, 0, 0);
-    rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
+    // PIDController forwardPID = new PIDController(1, 0, 0);
+    // PIDController sidewaysPID = new PIDController(1, 0, 0);
+    // PIDController rotationalPID = new PIDController(6, 0, 0);
+    // rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
     return Commands.run(
         () -> {
           Pose2d current = estimator.getEstimatedPosition();
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  forwardPID.calculate(current.getX(), target.getX()),
-                  sidewaysPID.calculate(current.getY(), target.getY()),
-                  rotationalPID.calculate(
-                      current.getRotation().getRadians(), target.getRotation().getRadians()));
+          ChassisSpeeds speeds = poseFeedback.calculate(current, target);
+              // new ChassisSpeeds(
+              //     forwardPID.calculate(current.getX(), target.getX()),
+              //     sidewaysPID.calculate(current.getY(), target.getY()),
+              //     rotationalPID.calculate(
+              //         current.getRotation().getRadians(), target.getRotation().getRadians()));
           drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
         },
-        this);
+        this).beforeStarting(() -> poseFeedback.reset(estimator.getEstimatedPosition()));
   }
 
   public Command alignToReef(Alignment position) {
@@ -391,8 +402,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                     * MAX_SPEEDS.omegaRadiansPerSecond
                     * 0.02);
     double rotational =
-        headingPID.calculate(currentHeading.getRadians(), targetHeading.getRadians());
-    if (headingPID.atSetpoint()) {
+        headingFeedback.calculate(currentHeading.getRadians(), targetHeading.getRadians());
+    if (headingFeedback.atGoal()) {
       rotational = 0;
     }
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {

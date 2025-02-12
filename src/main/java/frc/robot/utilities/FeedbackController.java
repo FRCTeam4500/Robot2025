@@ -2,6 +2,7 @@ package frc.robot.utilities;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import java.util.function.Consumer;
 
@@ -73,6 +74,10 @@ public interface FeedbackController {
     };
   }
 
+  public static FeedbackController fromPD(double kP, double kD, Consumer<PIDController> config) {
+    return fromPID(new PIDController(kP, 0, kD), config);
+  }
+
   /**
    * The fancy version of {@link FeedbackController#fromPID fromPID}, that allows for profiling
    * (changing the setpoint over time)
@@ -111,6 +116,10 @@ public interface FeedbackController {
         pid.reset(measurement);
       }
     };
+  }
+
+  public static FeedbackController fromProfiledPD(double kP, double kD, Constraints constraints, Consumer<ProfiledPIDController> config) {
+    return fromProfiledPID(new ProfiledPIDController(kP, 0, kD, constraints), config);
   }
 
   public static FeedbackController empty(double tolerance) {
