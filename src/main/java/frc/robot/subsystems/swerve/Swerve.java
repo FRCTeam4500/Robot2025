@@ -64,7 +64,8 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
-    tagCameras = new Limelight[] {new Limelight("limelight-hehehe"), new Limelight("limelight-hihihi")};
+    tagCameras =
+        new Limelight[] {new Limelight("limelight-hehehe"), new Limelight("limelight-hihihi")};
     if (RobotBase.isReal()) { // running on hardware robot
       gyro = Gyro.fromNavX(navx -> {});
     } else { // running robot simulation
@@ -458,13 +459,16 @@ public class Swerve extends SubsystemBase implements Loggable {
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
-      PoseEstimate estimate = camera.getPoseMT2(estimator.getEstimatedPosition().getRotation(), Rotation2d.fromDegrees(getSpeeds().omegaRadiansPerSecond));
+      PoseEstimate estimate =
+          camera.getPoseMT2(
+              estimator.getEstimatedPosition().getRotation(),
+              Rotation2d.fromDegrees(getSpeeds().omegaRadiansPerSecond));
       if (DriverStation.isDisabled()) {
         estimate = camera.getPoseMT1();
       }
       if (estimate.exists() && (estimate.tagCount() > 1 || estimate.averageDistance() < 4)) {
         estimator.addVisionMeasurement(
-          estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
+            estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }
     }
     for (SwerveModule module : modules) {
