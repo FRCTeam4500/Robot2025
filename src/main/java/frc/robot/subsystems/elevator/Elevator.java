@@ -34,13 +34,13 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double handoffPosition = .67;
   private final double l4Position = .95;
   private final double l3Position = 0.45;
-  private final double l2Position = 0; // 0.129
+  private final double l2Position = 0;
   private final double l1Position = 0;
   private final double stationPosition = 0.15; // intake from coral station
   private final double groundPosition = 0.05; // ground intake?
   private final double processingPosition = 0; // algae processor
-  private final double lowAlgaePosition = 0; // between l2 and l3
-  private final double highAlgaePosition = 0; // between l3 and l4
+  private final double lowAlgaePosition = 0.2; // between l2 and l3
+  private final double highAlgaePosition = 0.7; // between l3 and l4
 
   public Elevator() {
     upMotor =
@@ -50,8 +50,8 @@ public class Elevator extends SubsystemBase implements Loggable {
             (SparkMax spark) -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.idleMode(IdleMode.kCoast);
-              config.encoder.positionConversionFactor(1 / 216.5);
-              config.encoder.velocityConversionFactor(1 / 216.5);
+              config.encoder.positionConversionFactor(1 / 63.1167979003);
+              config.encoder.velocityConversionFactor(1 / 63.1167979003);
               config.smartCurrentLimit(60);
               spark.configure(
                   config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -61,11 +61,11 @@ public class Elevator extends SubsystemBase implements Loggable {
             },
             0,
             FeedbackController.fromPID(
-                new PIDController(200, 0, 0),
+                new PIDController(75, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(0.05);
                 }),
-            FeedforwardController.forConstantGravity(0.15472, 0.098108, 27.673, 3.4548),
+            FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
             TargetType.Position);
     mech = new MechanismLigament2d("Elevator", 0, 90);
     armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);

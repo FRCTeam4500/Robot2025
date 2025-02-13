@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
@@ -33,7 +34,8 @@ public class Superstructure implements Loggable {
   private Placer placer;
   private Supplier<Pose2d> robotPose;
 
-  private CoralState nextState;
+  private CoralState nextCoral;
+  private AlgaeState nextAlgae;
 
   public Superstructure(Supplier<Pose2d> robotPose) {
     robotMech = new Mechanism2d(3, 3);
@@ -43,7 +45,8 @@ public class Superstructure implements Loggable {
     arm = new Arm();
     placer = new Placer();
     this.robotPose = robotPose;
-    nextState = CoralState.L4;
+    nextCoral = CoralState.L4;
+    nextAlgae = AlgaeState.HIGH;
 
     configureMech();
 
@@ -65,7 +68,8 @@ public class Superstructure implements Loggable {
     HoundLog.log(path, "Placer", placer);
     HoundLog.log(path, "Ramp", ramp);
     HoundLog.log(path, "Arm", arm);
-    HoundLog.log(path, "Next State", nextState);
+    HoundLog.log(path, "Next State/Name", nextCoral);
+    HoundLog.log(path, "Next State/Color", nextCoral.color);
 
     double percentUp = elevator.getExtension() / 0.95;
     Transform3d elevatorStagePose =
@@ -94,14 +98,18 @@ public class Superstructure implements Loggable {
     HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
   }
 
-  public Command setNextState(CoralState state) {
-    return Commands.runOnce(() -> nextState = state);
+  public Command setNextCoral(CoralState state) {
+    return Commands.runOnce(() -> nextCoral = state);
   }
 
-  public Command readyNextLevel() {
+  public Command setNextAlgae(AlgaeState state) {
+    return Commands.runOnce(() -> nextAlgae = state);
+  }
+
+  public Command readyNextCoral() {
     return Commands.defer(
         () -> {
-          switch (nextState) {
+          switch (nextCoral) {
             case L1:
               return readyLevel1();
             case L2:
@@ -110,6 +118,20 @@ public class Superstructure implements Loggable {
               return readyLevel3();
             case L4:
               return readyLevel4();
+          }
+          return Commands.none();
+        },
+        Set.of());
+  }
+
+  public Command readyNextAlgae() {
+    return Commands.defer(
+        () -> {
+          switch (nextAlgae) {
+            case LOW:
+              return readyAlgaeLow();
+            case HIGH:
+              return readyAlgaeHigh();
           }
           return Commands.none();
         },
@@ -136,6 +158,18 @@ public class Superstructure implements Loggable {
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()));
   }
 
+  public Command readyAlgaeHigh() {
+    return arm.dislodge()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.highAlgae()))
+        .alongWith(placer.eject());
+  }
+
+  public Command readyAlgaeLow() {
+    return arm.dislodge()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.lowAlgae()))
+        .alongWith(placer.eject());
+  }
+
   public Command readyClimb() {
     return arm.stow()
         .alongWith(placer.stop())
@@ -148,7 +182,9 @@ public class Superstructure implements Loggable {
   }
 
   public Command algaeGroundIntake() {
-    return Commands.none();
+    return arm.algaeGround()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
+        .alongWith(placer.eject());
   }
 
   public Command groundIntake() {
@@ -184,9 +220,20 @@ public class Superstructure implements Loggable {
   }
 
   public static enum CoralState {
-    L1,
-    L2,
-    L3,
-    L4;
+    L1(Color.kYellow),
+    L2(Color.kSkyBlue),
+    L3(Color.kLimeGreen),
+    L4(Color.kRed);
+
+    public final String color;
+
+    private CoralState(Color color) {
+      this.color = color.toHexString();
+    }
+  }
+
+  public static enum AlgaeState {
+    LOW,
+    HIGH;
   }
 }

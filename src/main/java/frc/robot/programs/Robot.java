@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Superstructure;
+import frc.robot.Superstructure.AlgaeState;
 import frc.robot.Superstructure.CoralState;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.Swerve.Alignment;
@@ -44,7 +45,7 @@ public class Robot extends LoggedRobot {
     DriverStation.silenceJoystickConnectionWarning(true);
     xbox = new CommandXboxController(2);
     stick = new CommandJoystick(1);
-    swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
+    swerve.setDefaultCommand(swerve.robotCentric(xbox.getHID()));
 
     setupDriveController();
     setupOperatorController();
@@ -56,15 +57,19 @@ public class Robot extends LoggedRobot {
     Trigger levelTwo = stick.button(9);
     Trigger levelThree = stick.button(7);
     Trigger levelFour = stick.button(8);
-    Trigger readyClimb = stick.button(5);
-    Trigger climb = stick.button(6);
+    Trigger algaeHigh = stick.button(6);
+    Trigger algaeLow = stick.button(5);
+    Trigger readyClimb = stick.povUp();
+    Trigger climb = stick.povDown();
     Trigger stowButton = stick.button(11);
     Trigger coralIntake = stick.button(4);
 
-    levelOne.onTrue(structure.setNextState(CoralState.L1));
-    levelTwo.onTrue(structure.setNextState(CoralState.L2));
-    levelThree.onTrue(structure.setNextState(CoralState.L3));
-    levelFour.onTrue(structure.setNextState(CoralState.L4));
+    levelOne.onTrue(structure.setNextCoral(CoralState.L1));
+    levelTwo.onTrue(structure.setNextCoral(CoralState.L2));
+    levelThree.onTrue(structure.setNextCoral(CoralState.L3));
+    levelFour.onTrue(structure.setNextCoral(CoralState.L4));
+    algaeHigh.onTrue(structure.setNextAlgae(AlgaeState.HIGH));
+    algaeLow.onTrue(structure.setNextAlgae(AlgaeState.LOW));
     readyClimb.onTrue(structure.readyClimb());
     climb.onTrue(structure.climb());
     coralIntake.onTrue(structure.passthroughIntake());
@@ -97,10 +102,11 @@ public class Robot extends LoggedRobot {
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     alignReefLeft.whileTrue(
-        swerve.alignToReef(Alignment.Left).alongWith(structure.readyNextLevel()));
-    alignReefMiddle.whileTrue(swerve.alignToReef(Alignment.Middle));
+        swerve.alignToReef(Alignment.Left).alongWith(structure.readyNextCoral()));
+    alignReefMiddle.whileTrue(
+        swerve.alignToReef(Alignment.Middle).alongWith(structure.readyNextAlgae()));
     alignReefRight.whileTrue(
-        swerve.alignToReef(Alignment.Right).alongWith(structure.readyNextLevel()));
+        swerve.alignToReef(Alignment.Right).alongWith(structure.readyNextCoral()));
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
