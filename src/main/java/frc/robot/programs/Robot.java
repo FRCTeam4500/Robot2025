@@ -86,7 +86,6 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Climb", structure.climb());
     SmartDashboard.putData("Intake", structure.passthroughIntake());
     SmartDashboard.putData("Stow", structure.stow());
-
   }
 
   private void setupDriveController() {

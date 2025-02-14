@@ -91,7 +91,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             getModulePositions(),
             new Pose2d(),
             VecBuilder.fill(0.5, 0.5, 0.5),
-            VecBuilder.fill(5, 5, 5));
+            VecBuilder.fill(50, 50, 50));
     targetHeading = new Rotation2d();
     headingFeedback = FeedbackController.fromPD(5, 0, pid -> {
       pid.enableContinuousInput(-Math.PI, Math.PI);
@@ -100,8 +100,8 @@ public class Swerve extends SubsystemBase implements Loggable {
     });
 
     poseFeedback = new PoseFeedbackController(
-      FeedbackController.fromPD(1, 0, pid -> {}), 
-      FeedbackController.fromPD(1, 0, pid -> {}), 
+      FeedbackController.fromPD(1.5, 0, pid -> {}), 
+      FeedbackController.fromPD(1.5, 0, pid -> {}), 
       FeedbackController.fromPD(6, 0, pid -> {
         pid.enableContinuousInput(0, 360);
       })
@@ -470,15 +470,9 @@ public class Swerve extends SubsystemBase implements Loggable {
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
-      PoseEstimate estimate =
-          camera.getPoseMT2(
-              estimator.getEstimatedPosition().getRotation(),
-              Rotation2d.fromDegrees(getSpeeds().omegaRadiansPerSecond));
-      if (DriverStation.isDisabled()) {
-        estimate = camera.getPoseMT1();
-      }
+        PoseEstimate estimate = camera.getPoseMT1();
       if (estimate.exists() && (estimate.tagCount() > 1 || estimate.averageDistance() < 4)) {
-        estimator.addVisionMeasurement(
+          estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }
     }
