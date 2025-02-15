@@ -6,6 +6,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -22,6 +23,7 @@ import frc.robot.utilities.logging.Loggable;
 
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
+  private DigitalInput zeroingSwitch;
   public final MechanismLigament2d mech;
   public final MechanismLigament2d armHolder;
   public final Trigger armCanIntake =
@@ -30,6 +32,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             return upMotor.getPosition() > 0.6;
           });
 
+  private final double zeroedPosition = 0;
   private final double stowPosition = 0;
   private final double handoffPosition = .67;
   private final double l4Position = .95;
@@ -41,6 +44,8 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double processingPosition = 0; // algae processor
   private final double lowAlgaePosition = 0.2; // between l2 and l3
   private final double highAlgaePosition = 0.7; // between l3 and l4
+
+  private final Trigger zeroed;
 
   public Elevator() {
     upMotor =
@@ -70,6 +75,9 @@ public class Elevator extends SubsystemBase implements Loggable {
     mech = new MechanismLigament2d("Elevator", 0, 90);
     armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);
     mech.append(armHolder);
+    zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
+    zeroed = new Trigger(zeroingSwitch::get).negate();
+    zeroed.onTrue(Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)));
   }
 
   /**
@@ -251,6 +259,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Up Motor", upMotor);
+    HoundLog.log(path, "Zeroing Switch", zeroingSwitch.get());
     mech.setLength(upMotor.getPosition() + 0.1);
   }
 
