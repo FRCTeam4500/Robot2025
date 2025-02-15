@@ -112,12 +112,12 @@ public class Robot extends LoggedRobot {
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    alignReefLeft.whileTrue(
-        swerve.alignToReef(Alignment.Left).alongWith(structure.readyNextCoral()));
-    alignReefMiddle.whileTrue(
-        swerve.alignToReef(Alignment.Middle).alongWith(structure.readyNextAlgae()));
-    alignReefRight.whileTrue(
-        swerve.alignToReef(Alignment.Right).alongWith(structure.readyNextCoral()));
+    alignReefLeft.onTrue(structure.readyNextCoral());
+    alignReefLeft.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Left));
+    alignReefMiddle.onTrue(structure.readyNextAlgae());
+    alignReefMiddle.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Middle));
+    alignReefRight.onTrue(structure.readyNextCoral());
+    alignReefRight.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Right));
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));

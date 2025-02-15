@@ -30,7 +30,7 @@ public class Placer extends SubsystemBase implements Loggable {
                 return runMotor.getTarget() != 0
                     && ExtendedMath.within(runMotor.getVelocity(), 0, 5);
               })
-          .debounce(2);
+          .debounce(1);
 
   public Placer() {
     runMotor =
