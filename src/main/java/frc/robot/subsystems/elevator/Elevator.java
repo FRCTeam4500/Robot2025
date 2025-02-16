@@ -77,7 +77,13 @@ public class Elevator extends SubsystemBase implements Loggable {
     mech.append(armHolder);
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
     zeroed = new Trigger(zeroingSwitch::get).negate();
-    zeroed.onTrue(Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)));
+  }
+
+  @Override
+  public void periodic() {
+      if (!zeroingSwitch.get()) {
+        upMotor.resetPosition(zeroedPosition);
+      }
   }
 
   /**
@@ -259,7 +265,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Up Motor", upMotor);
-    HoundLog.log(path, "Zeroing Switch", zeroingSwitch.get());
+    HoundLog.log(path, "Zeroing Switch", !zeroingSwitch.get());
     mech.setLength(upMotor.getPosition() + 0.1);
   }
 
