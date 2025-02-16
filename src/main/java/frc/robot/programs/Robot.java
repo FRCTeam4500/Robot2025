@@ -63,6 +63,7 @@ public class Robot extends LoggedRobot {
     Trigger climb = stick.povDown();
     Trigger stowButton = stick.button(11);
     Trigger coralIntake = stick.button(4);
+    Trigger confirmIntake = stick.button(2);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));
     levelTwo.onTrue(structure.setNextCoral(CoralState.L2));
@@ -75,6 +76,8 @@ public class Robot extends LoggedRobot {
     coralIntake.onTrue(structure.passthroughIntake());
     coralIntake.onFalse(structure.stow());
     stowButton.onTrue(structure.stow());
+    confirmIntake.onTrue(structure.confirmIntake());
+    confirmIntake.onFalse(structure.stow());
 
     SmartDashboard.putData("Target L1", structure.setNextCoral(CoralState.L1));
     SmartDashboard.putData("Target L2", structure.setNextCoral(CoralState.L2));

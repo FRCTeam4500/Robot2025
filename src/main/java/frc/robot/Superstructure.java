@@ -98,6 +98,10 @@ public class Superstructure implements Loggable {
     HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
   }
 
+  public Command confirmIntake() {
+    return placer.intake();
+  }
+
   public Command setNextCoral(CoralState state) {
     return Commands.runOnce(() -> nextCoral = state);
   }
