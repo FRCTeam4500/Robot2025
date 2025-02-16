@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,7 +18,6 @@ import frc.robot.utilities.logging.Loggable;
 
 public class Arm extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
-  public final MechanismLigament2d mech;
 
   private final double startAngle = 90.851;
   private final double stowAngle = 75;
@@ -64,8 +62,6 @@ public class Arm extends SubsystemBase implements Loggable {
             TargetType.Position);
 
     tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
-    mech = new MechanismLigament2d("Arm", .5, startAngle);
-    mech.append(new MechanismLigament2d("Placer", 0.1, -90));
   }
 
   public Command stow() {
@@ -202,7 +198,6 @@ public class Arm extends SubsystemBase implements Loggable {
   public void log(String path) {
     HoundLog.log(path, "Tilt Motor", tiltMotor);
     HoundLog.log(path, "Can Move Elevator", canMoveElevator.getAsBoolean());
-    mech.setAngle(tiltMotor.getPosition());
   }
 
   public double getAngle() {

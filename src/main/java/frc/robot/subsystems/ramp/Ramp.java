@@ -6,7 +6,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,7 +21,6 @@ import frc.robot.utilities.logging.Loggable;
 /** The Ramp subsystem is used by the robot to intake game pieces. */
 public class Ramp extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
-  public final MechanismLigament2d mech;
 
   private double intakeAngle = -185;
   private double stowAngle = -250;
@@ -53,7 +51,6 @@ public class Ramp extends SubsystemBase implements Loggable {
                 }),
             FeedforwardController.forArmGravity(0.31, 0.07, 0, 0),
             TargetType.Position);
-    mech = new MechanismLigament2d("Ramp", 0.4, intakeAngle);
   }
 
   /**
@@ -86,7 +83,6 @@ public class Ramp extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Motor", tiltMotor);
-    mech.setAngle(tiltMotor.getPosition());
   }
 
   public double getAngle() {

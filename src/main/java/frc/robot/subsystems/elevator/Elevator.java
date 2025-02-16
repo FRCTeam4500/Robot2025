@@ -7,7 +7,6 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,8 +23,6 @@ import frc.robot.utilities.logging.Loggable;
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
   private DigitalInput zeroingSwitch;
-  public final MechanismLigament2d mech;
-  public final MechanismLigament2d armHolder;
   public final Trigger armCanIntake =
       new Trigger(
           () -> {
@@ -70,9 +67,6 @@ public class Elevator extends SubsystemBase implements Loggable {
                 }),
             FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
             TargetType.Position);
-    mech = new MechanismLigament2d("Elevator", 0, 90);
-    armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);
-    mech.append(armHolder);
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
   }
 
@@ -263,7 +257,6 @@ public class Elevator extends SubsystemBase implements Loggable {
   public void log(String path) {
     HoundLog.log(path, "Up Motor", upMotor);
     HoundLog.log(path, "Zeroing Switch", !zeroingSwitch.get());
-    mech.setLength(upMotor.getPosition() + 0.1);
   }
 
   public double getExtension() {
