@@ -45,8 +45,6 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double lowAlgaePosition = 0.2; // between l2 and l3
   private final double highAlgaePosition = 0.7; // between l3 and l4
 
-  private final Trigger zeroed;
-
   public Elevator() {
     upMotor =
         Motor.fromSparkMax(
@@ -76,7 +74,6 @@ public class Elevator extends SubsystemBase implements Loggable {
     armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);
     mech.append(armHolder);
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
-    zeroed = new Trigger(zeroingSwitch::get).negate();
   }
 
   @Override
