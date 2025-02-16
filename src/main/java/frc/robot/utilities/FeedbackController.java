@@ -44,6 +44,7 @@ public interface FeedbackController {
    * @apiNote the setpoint will have the PID's goal position and zero velocity.
    */
   public static FeedbackController fromPID(PIDController pid, Consumer<PIDController> config) {
+    pid.setTolerance(0);
     config.accept(pid);
     return new FeedbackController() {
       @Override

@@ -103,8 +103,12 @@ public class Swerve extends SubsystemBase implements Loggable {
 
     poseFeedback =
         new PoseFeedbackController(
-            FeedbackController.fromPD(3, 0, 0, pid -> {}),
-            FeedbackController.fromPD(3, 0, 0, pid -> {}),
+            FeedbackController.fromPD(3, 0, 0, pid -> {
+              pid.setTolerance(0.01);
+            }),
+            FeedbackController.fromPD(3, 0, 0, pid -> {
+              pid.setTolerance(0.01);
+            }),
             FeedbackController.fromPD(
                 6,
                 0,
@@ -418,6 +422,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Back Left Module", modules[2]);
     HoundLog.log(path, "Back Right Module", modules[3]);
     HoundLog.log(path, "Gyro", gyro);
+    HoundLog.log(path, "At Target Pose", poseFeedback.atTarget());
     HoundLog.log(path, "Target Pose", targetPose);
     for (Limelight camera : tagCameras) {
       HoundLog.log(path, camera.getName(), camera);
