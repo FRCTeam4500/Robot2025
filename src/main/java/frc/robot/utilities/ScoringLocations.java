@@ -15,7 +15,7 @@ public class ScoringLocations {
   private static Pose2d blueB = new Pose2d(2.99, 3.86, Rotation2d.fromDegrees(0));
   private static Translation2d blueCenter = new Translation2d(4.48, 4.03);
 
-  private static Pose2d redA = new Pose2d(14.56, 3.86, Rotation2d.fromDegrees(180)); 
+  private static Pose2d redA = new Pose2d(14.56, 3.86, Rotation2d.fromDegrees(180));
   private static Pose2d redB = new Pose2d(14.56, 4.19, Rotation2d.fromDegrees(180));
   private static Translation2d redCenter = new Translation2d(13.07, 4.025);
 
@@ -24,23 +24,26 @@ public class ScoringLocations {
   public static Translation2d center;
 
   static {
-    Trigger isBlue = new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue));
-    isBlue.onTrue(Commands.runOnce(
-      () -> {
-        center = blueCenter;
-        A = blueA;
-        B = blueB;
-        System.out.println(center);
-      } 
-      ).ignoringDisable(true));
-      isBlue.onFalse(Commands.runOnce(
-        () -> {
-          center = redCenter;
-          A = redA;
-          B = redB;
-          System.out.println(center);
-      }
-    ).ignoringDisable(true));
+    Trigger isBlue =
+        new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue));
+    isBlue.onTrue(
+        Commands.runOnce(
+                () -> {
+                  center = blueCenter;
+                  A = blueA;
+                  B = blueB;
+                  System.out.println(center);
+                })
+            .ignoringDisable(true));
+    isBlue.onFalse(
+        Commands.runOnce(
+                () -> {
+                  center = redCenter;
+                  A = redA;
+                  B = redB;
+                  System.out.println(center);
+                })
+            .ignoringDisable(true));
     if (isBlue.getAsBoolean()) {
       center = blueCenter;
       A = blueA;
@@ -69,61 +72,61 @@ public class ScoringLocations {
     angle = MathUtil.inputModulus(angle, -30, 330);
     switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
       case Red:
-      if (angle <= 30) {
-        switch (alignment) {
-          case Left:
-            return getA();
-          case Right:
-            return getB();
-          case Middle:
-            return getA().interpolate(getB(), 0.5);
+        if (angle <= 30) {
+          switch (alignment) {
+            case Left:
+              return getA();
+            case Right:
+              return getB();
+            case Middle:
+              return getA().interpolate(getB(), 0.5);
+          }
+        } else if (angle <= 90) {
+          switch (alignment) {
+            case Left:
+              return getC();
+            case Right:
+              return getD();
+            case Middle:
+              return getC().interpolate(getD(), 0.5);
+          }
+        } else if (angle <= 150) {
+          switch (alignment) {
+            case Left:
+              return getE();
+            case Right:
+              return getF();
+            case Middle:
+              return getE().interpolate(getF(), 0.5);
+          }
+        } else if (angle <= 210) {
+          switch (alignment) {
+            case Left:
+              return getG();
+            case Right:
+              return getH();
+            case Middle:
+              return getG().interpolate(getH(), 0.5);
+          }
+        } else if (angle <= 270) {
+          switch (alignment) {
+            case Left:
+              return getI();
+            case Right:
+              return getJ();
+            case Middle:
+              return getI().interpolate(getJ(), 0.5);
+          }
+        } else {
+          switch (alignment) {
+            case Left:
+              return getK();
+            case Right:
+              return getL();
+            case Middle:
+              return getK().interpolate(getL(), 0.5);
+          }
         }
-      } else if (angle <= 90) {
-        switch (alignment) {
-          case Left:
-            return getC();
-          case Right:
-            return getD();
-          case Middle:
-            return getC().interpolate(getD(), 0.5);
-        }
-      } else if (angle <= 150) {
-        switch (alignment) {
-          case Left:
-            return getE();
-          case Right:
-            return getF();
-          case Middle:
-            return getE().interpolate(getF(), 0.5);
-        }
-      } else if (angle <= 210) {
-        switch (alignment) {
-          case Left:
-            return getG();
-          case Right:
-            return getH();
-          case Middle:
-            return getG().interpolate(getH(), 0.5);
-        }
-      } else if (angle <= 270) {
-        switch (alignment) {
-          case Left:
-            return getI();
-          case Right:
-            return getJ();
-          case Middle:
-            return getI().interpolate(getJ(), 0.5);
-        }
-      } else {
-        switch (alignment) {
-          case Left:
-            return getK();
-          case Right:
-            return getL();
-          case Middle:
-            return getK().interpolate(getL(), 0.5);
-        }
-      }
       default:
         if (angle <= 30) {
           switch (alignment) {
@@ -214,7 +217,7 @@ public class ScoringLocations {
   public static Pose2d getA() {
     return A;
   }
-  
+
   public static Pose2d getB() {
     return B;
   }

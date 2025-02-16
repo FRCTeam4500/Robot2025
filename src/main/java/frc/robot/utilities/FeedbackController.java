@@ -74,7 +74,8 @@ public interface FeedbackController {
     };
   }
 
-  public static FeedbackController fromPD(double kP,double kI, double kD, Consumer<PIDController> config) {
+  public static FeedbackController fromPD(
+      double kP, double kI, double kD, Consumer<PIDController> config) {
     return fromPID(new PIDController(kP, kI, kD), config);
   }
 
@@ -118,7 +119,12 @@ public interface FeedbackController {
     };
   }
 
-  public static FeedbackController fromProfiledPD(double kP, double kI, double kD, Constraints constraints, Consumer<ProfiledPIDController> config) {
+  public static FeedbackController fromProfiledPD(
+      double kP,
+      double kI,
+      double kD,
+      Constraints constraints,
+      Consumer<ProfiledPIDController> config) {
     return fromProfiledPID(new ProfiledPIDController(kP, kI, kD, constraints), config);
   }
 

@@ -37,7 +37,6 @@ import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-
 import java.util.Set;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
@@ -91,20 +90,29 @@ public class Swerve extends SubsystemBase implements Loggable {
             VecBuilder.fill(0.5, 0.5, 0.5),
             VecBuilder.fill(50, 50, 50));
     targetHeading = new Rotation2d();
-    headingFeedback = FeedbackController.fromPD(5, 0, 0, pid -> {
-      pid.enableContinuousInput(-Math.PI, Math.PI);
-      pid.setTolerance(Math.PI / 32, Math.PI / 32);
-      pid.setSetpoint(0);
-    });
+    headingFeedback =
+        FeedbackController.fromPD(
+            5,
+            0,
+            0,
+            pid -> {
+              pid.enableContinuousInput(-Math.PI, Math.PI);
+              pid.setTolerance(Math.PI / 32, Math.PI / 32);
+              pid.setSetpoint(0);
+            });
 
-    poseFeedback = new PoseFeedbackController(
-      FeedbackController.fromPD(3, 0, 0, pid -> {}), 
-      FeedbackController.fromPD(3, 0, 0, pid -> {}), 
-      FeedbackController.fromPD(6, 0, 0, pid -> {
-        pid.enableContinuousInput(0, 360);
-        pid.setTolerance(2);
-      })
-    );
+    poseFeedback =
+        new PoseFeedbackController(
+            FeedbackController.fromPD(3, 0, 0, pid -> {}),
+            FeedbackController.fromPD(3, 0, 0, pid -> {}),
+            FeedbackController.fromPD(
+                6,
+                0,
+                0,
+                pid -> {
+                  pid.enableContinuousInput(0, 360);
+                  pid.setTolerance(2);
+                }));
     targetPose = new Pose2d();
 
     GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
@@ -184,22 +192,26 @@ public class Swerve extends SubsystemBase implements Loggable {
     // PIDController rotationalPID = new PIDController(6, 0, 0);
     // rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
     return Commands.run(
-        () -> {
-          Pose2d current = estimator.getEstimatedPosition();
-          ChassisSpeeds speeds = poseFeedback.calculate(current, target);
+            () -> {
+              Pose2d current = estimator.getEstimatedPosition();
+              ChassisSpeeds speeds = poseFeedback.calculate(current, target);
               // new ChassisSpeeds(
               //     forwardPID.calculate(current.getX(), target.getX()),
               //     sidewaysPID.calculate(current.getY(), target.getY()),
               //     rotationalPID.calculate(
               //         current.getRotation().getRadians(), target.getRotation().getRadians()));
-          drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
-        },
-        this).beforeStarting(() -> {
-          poseFeedback.reset(estimator.getEstimatedPosition());
-          this.targetPose = target;
-        }).finallyDo(() -> {
-          this.targetPose = new Pose2d();
-        });
+              drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
+            },
+            this)
+        .beforeStarting(
+            () -> {
+              poseFeedback.reset(estimator.getEstimatedPosition());
+              this.targetPose = target;
+            })
+        .finallyDo(
+            () -> {
+              this.targetPose = new Pose2d();
+            });
   }
 
   public Command alignToReef(Alignment position) {
@@ -209,13 +221,14 @@ public class Swerve extends SubsystemBase implements Loggable {
     // 6 areas; 30 to -30,30 to 90,etc.
     return Commands.defer(
         () -> {
-          return poseCentric(ScoringLocations.getDriveTarget(
-            estimator.getEstimatedPosition().getTranslation(), position));
+          return poseCentric(
+              ScoringLocations.getDriveTarget(
+                  estimator.getEstimatedPosition().getTranslation(), position));
           // return Commands.none();
           // Translation2d robert = estimator.getEstimatedPosition().getTranslation();
           // Translation2d reef;
           // Command poseCentricCommand = Commands.none();
-          
+
           // return poseCentricCommand;
         },
         Set.of(this));
@@ -254,46 +267,44 @@ public class Swerve extends SubsystemBase implements Loggable {
     }
     CharacterizationState state = new CharacterizationState();
     return Commands.runOnce(
-      () -> {
-        drive(new ChassisSpeeds(0, 0, speed));
-      }, 
-      this
-    ).andThen(
-      Commands.waitSeconds(1)
-    ).andThen(
-      Commands.runOnce(
-        () -> {
-          state.startAngle = gyro.getAngle().getRadians();
-          state.startPositions = new double[] {
-            modules[0].getCurrentPosition().distanceMeters,
-            modules[1].getCurrentPosition().distanceMeters,
-            modules[2].getCurrentPosition().distanceMeters,
-            modules[3].getCurrentPosition().distanceMeters
-          };
-        }
-      )
-    ).andThen(
-      Commands.waitSeconds(duration)
-    ).andThen(
-      Commands.runOnce(
-        () -> {
-          state.endAngle = gyro.getAngle().getRadians();
-          state.endPositions = new double[] {
-            modules[0].getCurrentPosition().distanceMeters,
-            modules[1].getCurrentPosition().distanceMeters,
-            modules[2].getCurrentPosition().distanceMeters,
-            modules[3].getCurrentPosition().distanceMeters
-          };
-          double gyroDelta = Math.abs(state.endAngle - state.startAngle);
-          for (int i = 0; i < modules.length; i++) {
-            double wheelDelta = Math.abs(state.endPositions[i] - state.startPositions[i]);
-            wheelDelta /= SwerveConstants.BACK_LEFT_TRANSLATION.getNorm();
-            System.out.println("Module " + (i + 1) + " Coefficient: " + gyroDelta / wheelDelta);
-          }
-          System.out.println();
-        }
-      )
-    );
+            () -> {
+              drive(new ChassisSpeeds(0, 0, speed));
+            },
+            this)
+        .andThen(Commands.waitSeconds(1))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  state.startAngle = gyro.getAngle().getRadians();
+                  state.startPositions =
+                      new double[] {
+                        modules[0].getCurrentPosition().distanceMeters,
+                        modules[1].getCurrentPosition().distanceMeters,
+                        modules[2].getCurrentPosition().distanceMeters,
+                        modules[3].getCurrentPosition().distanceMeters
+                      };
+                }))
+        .andThen(Commands.waitSeconds(duration))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  state.endAngle = gyro.getAngle().getRadians();
+                  state.endPositions =
+                      new double[] {
+                        modules[0].getCurrentPosition().distanceMeters,
+                        modules[1].getCurrentPosition().distanceMeters,
+                        modules[2].getCurrentPosition().distanceMeters,
+                        modules[3].getCurrentPosition().distanceMeters
+                      };
+                  double gyroDelta = Math.abs(state.endAngle - state.startAngle);
+                  for (int i = 0; i < modules.length; i++) {
+                    double wheelDelta = Math.abs(state.endPositions[i] - state.startPositions[i]);
+                    wheelDelta /= SwerveConstants.BACK_LEFT_TRANSLATION.getNorm();
+                    System.out.println(
+                        "Module " + (i + 1) + " Coefficient: " + gyroDelta / wheelDelta);
+                  }
+                  System.out.println();
+                }));
   }
 
   public Command backup() {
@@ -384,9 +395,9 @@ public class Swerve extends SubsystemBase implements Loggable {
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
-        PoseEstimate estimate = camera.getPoseMT1();
+      PoseEstimate estimate = camera.getPoseMT1();
       if (estimate.exists() && (estimate.tagCount() > 1 || estimate.averageDistance() < 4)) {
-          estimator.addVisionMeasurement(
+        estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }
     }

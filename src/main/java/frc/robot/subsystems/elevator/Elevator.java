@@ -78,9 +78,9 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   @Override
   public void periodic() {
-      if (!zeroingSwitch.get()) {
-        upMotor.resetPosition(zeroedPosition);
-      }
+    if (!zeroingSwitch.get()) {
+      upMotor.resetPosition(zeroedPosition);
+    }
   }
 
   /**
