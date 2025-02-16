@@ -346,39 +346,55 @@ public class Swerve extends SubsystemBase implements Loggable {
     return Commands.runOnce(() -> this.targetHeading = targetHeading);
   }
 
-  public Command testDriveConversionFactor(double speed, double duration) {
-    return Commands.run(
-            () -> {
-              drive(new ChassisSpeeds(0, 0, speed));
-              HoundLog.log(
-                  "Swerve/Characterization/Gyro Speed",
-                  Math.abs(gyro.getAngularVelocity().getRadians()));
-              HoundLog.log(
-                  "Swerve/Characterization/Odometry Speed",
-                  Math.abs(getSpeeds().omegaRadiansPerSecond));
-              HoundLog.log(
-                  "Swerve/Characterization/FL Speed",
-                  Math.abs(
-                      modules[0].getCurrentState().speedMetersPerSecond
-                          / FRONT_LEFT_TRANSLATION.getNorm()));
-              HoundLog.log(
-                  "Swerve/Characterization/FR Speed",
-                  Math.abs(
-                      modules[1].getCurrentState().speedMetersPerSecond
-                          / FRONT_RIGHT_TRANSLATION.getNorm()));
-              HoundLog.log(
-                  "Swerve/Characterization/BL Speed",
-                  Math.abs(
-                      modules[2].getCurrentState().speedMetersPerSecond
-                          / BACK_LEFT_TRANSLATION.getNorm()));
-              HoundLog.log(
-                  "Swerve/Characterization/BR Speed",
-                  Math.abs(
-                      modules[3].getCurrentState().speedMetersPerSecond
-                          / BACK_RIGHT_TRANSLATION.getNorm()));
-            },
-            this)
-        .withTimeout(duration);
+  public Command driveConversionFinder(double speed, double duration) {
+    class CharacterizationState {
+      double[] startPositions = new double[4];
+      double[] endPositions = new double[4];
+      double startAngle = 0;
+      double endAngle = 0;
+    }
+    CharacterizationState state = new CharacterizationState();
+    return Commands.runOnce(
+      () -> {
+        drive(new ChassisSpeeds(0, 0, speed));
+      }, 
+      this
+    ).andThen(
+      Commands.waitSeconds(1)
+    ).andThen(
+      Commands.runOnce(
+        () -> {
+          state.startAngle = gyro.getAngle().getRadians();
+          state.startPositions = new double[] {
+            modules[0].getCurrentPosition().distanceMeters,
+            modules[1].getCurrentPosition().distanceMeters,
+            modules[2].getCurrentPosition().distanceMeters,
+            modules[3].getCurrentPosition().distanceMeters
+          };
+        }
+      )
+    ).andThen(
+      Commands.waitSeconds(duration)
+    ).andThen(
+      Commands.runOnce(
+        () -> {
+          state.endAngle = gyro.getAngle().getRadians();
+          state.endPositions = new double[] {
+            modules[0].getCurrentPosition().distanceMeters,
+            modules[1].getCurrentPosition().distanceMeters,
+            modules[2].getCurrentPosition().distanceMeters,
+            modules[3].getCurrentPosition().distanceMeters
+          };
+          double gyroDelta = Math.abs(state.endAngle - state.startAngle);
+          for (int i = 0; i < modules.length; i++) {
+            double wheelDelta = Math.abs(state.endPositions[i] - state.startPositions[i]);
+            wheelDelta /= SwerveConstants.BACK_LEFT_TRANSLATION.getNorm();
+            System.out.println("Module " + (i + 1) + " Coefficient: " + gyroDelta / wheelDelta);
+          }
+          System.out.println();
+        }
+      )
+    );
   }
 
   public Command backup() {
