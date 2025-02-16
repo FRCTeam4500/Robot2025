@@ -40,6 +40,7 @@ import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+
 import java.util.Set;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
@@ -52,6 +53,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   private Rotation2d targetHeading;
   private FeedbackController headingFeedback;
   private PoseFeedbackController poseFeedback;
+  private Pose2d targetPose;
 
   public final Trigger closerToRight =
       new Trigger(
@@ -92,19 +94,21 @@ public class Swerve extends SubsystemBase implements Loggable {
             VecBuilder.fill(0.5, 0.5, 0.5),
             VecBuilder.fill(50, 50, 50));
     targetHeading = new Rotation2d();
-    headingFeedback = FeedbackController.fromPD(5, 0, pid -> {
+    headingFeedback = FeedbackController.fromPD(5, 0, 0, pid -> {
       pid.enableContinuousInput(-Math.PI, Math.PI);
       pid.setTolerance(Math.PI / 32, Math.PI / 32);
       pid.setSetpoint(0);
     });
 
     poseFeedback = new PoseFeedbackController(
-      FeedbackController.fromPD(1.5, 0, pid -> {}), 
-      FeedbackController.fromPD(1.5, 0, pid -> {}), 
-      FeedbackController.fromPD(6, 0, pid -> {
+      FeedbackController.fromPD(30, 0, 0, pid -> {}), 
+      FeedbackController.fromPD(30, 0, 0, pid -> {}), 
+      FeedbackController.fromPD(6, 0, 0, pid -> {
         pid.enableContinuousInput(0, 360);
+        pid.setTolerance(2);
       })
     );
+    targetPose = new Pose2d();
 
     GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
 
@@ -193,7 +197,12 @@ public class Swerve extends SubsystemBase implements Loggable {
               //         current.getRotation().getRadians(), target.getRotation().getRadians()));
           drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
         },
-        this).beforeStarting(() -> poseFeedback.reset(estimator.getEstimatedPosition()));
+        this).beforeStarting(() -> {
+          poseFeedback.reset(estimator.getEstimatedPosition());
+          this.targetPose = target;
+        }).finallyDo(() -> {
+          this.targetPose = new Pose2d();
+        });
   }
 
   public Command alignToReef(Alignment position) {
@@ -508,6 +517,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Back Left Module", modules[2]);
     HoundLog.log(path, "Back Right Module", modules[3]);
     HoundLog.log(path, "Gyro", gyro);
+    HoundLog.log(path, "Target Pose", targetPose);
     for (Limelight camera : tagCameras) {
       HoundLog.log(path, camera.getName(), camera);
     }
