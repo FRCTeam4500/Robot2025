@@ -47,7 +47,14 @@ public class SwerveModule implements Loggable {
     drive.setTarget(targetState.speedMetersPerSecond);
     angle.setTarget(targetState.angle.getDegrees());
   }
-  ;
+  
+  public Motor getDriveMotor() {
+    return drive;
+  }
+
+  public Motor getAngleMotor() {
+    return angle;
+  }
 
   @Override
   public void log(String path) {
