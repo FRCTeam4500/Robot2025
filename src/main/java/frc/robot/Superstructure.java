@@ -4,8 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -26,7 +24,6 @@ import java.util.function.Supplier;
  */
 public class Superstructure implements Loggable {
   // Create objects for all non-drivebase subsystems
-  private Mechanism2d robotMech;
   private Climber climber;
   private Elevator elevator;
   private Ramp ramp;
@@ -38,7 +35,6 @@ public class Superstructure implements Loggable {
   private AlgaeState nextAlgae;
 
   public Superstructure(Supplier<Pose2d> robotPose) {
-    robotMech = new Mechanism2d(3, 3);
     climber = new Climber();
     elevator = new Elevator();
     ramp = new Ramp();
@@ -48,17 +44,7 @@ public class Superstructure implements Loggable {
     nextCoral = CoralState.L4;
     nextAlgae = AlgaeState.HIGH;
 
-    configureMech();
-
     RobotModeTriggers.teleop().onTrue(stow());
-  }
-
-  private void configureMech() {
-    robotMech.getRoot("Climber Root", 1.05, 0.3).append(climber.mech);
-    elevator.armHolder.append(arm.mech);
-    robotMech.getRoot("Elevator Root", 1.7, 0.1).append(elevator.mech);
-    robotMech.getRoot("Ramp Root", 1.6, 0.3).append(ramp.mech);
-    SmartDashboard.putData("Robot Mech", robotMech);
   }
 
   public void log(String path) {
@@ -96,6 +82,10 @@ public class Superstructure implements Loggable {
     Transform3d pieceSideways = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, 0, Math.PI / 2));
     HoundLog.log("Held Piece", robot.transformBy(armPose).transformBy(piece));
     HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
+  }
+
+  public Command confirmIntake() {
+    return placer.intake();
   }
 
   public Command setNextCoral(CoralState state) {

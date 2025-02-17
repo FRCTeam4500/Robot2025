@@ -36,6 +36,7 @@ public class WiringConstants {
 
   public static class ElevatorWiring {
     public static final int ELEVATOR_ID = 17;
+    public static final int ZEROING_CHANNEL = 3;
   }
 
   public static class ClimberWiring {

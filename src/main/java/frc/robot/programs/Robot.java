@@ -5,10 +5,9 @@
 
 package frc.robot.programs;
 
-import static frc.robot.utilities.ScoringLocations.allianceFlip;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -45,7 +44,19 @@ public class Robot extends LoggedRobot {
     DriverStation.silenceJoystickConnectionWarning(true);
     xbox = new CommandXboxController(2);
     stick = new CommandJoystick(1);
-    swerve.setDefaultCommand(swerve.robotCentric(xbox.getHID()));
+    swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
+
+    ScoringLocations.setupBlue(
+        new Pose2d(2.99, 4.19, Rotation2d.fromDegrees(0)),
+        new Pose2d(2.99, 3.86, Rotation2d.fromDegrees(0)),
+        new Pose2d(2.99, 4.025, Rotation2d.fromDegrees(0)),
+        new Pose2d(5.97, 4.025, Rotation2d.fromDegrees(180)));
+
+    ScoringLocations.setupRed(
+        new Pose2d(14.56, 3.86, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.56, 4.19, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.56, 4.025, Rotation2d.fromDegrees(180)),
+        new Pose2d(11.58, 4.025, Rotation2d.fromDegrees(0)));
 
     setupDriveController();
     setupOperatorController();
@@ -63,6 +74,7 @@ public class Robot extends LoggedRobot {
     Trigger climb = stick.povDown();
     Trigger stowButton = stick.button(11);
     Trigger coralIntake = stick.button(4);
+    Trigger confirmIntake = stick.button(2);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));
     levelTwo.onTrue(structure.setNextCoral(CoralState.L2));
@@ -75,6 +87,19 @@ public class Robot extends LoggedRobot {
     coralIntake.onTrue(structure.passthroughIntake());
     coralIntake.onFalse(structure.stow());
     stowButton.onTrue(structure.stow());
+    confirmIntake.onTrue(structure.confirmIntake());
+    confirmIntake.onFalse(structure.stow());
+
+    SmartDashboard.putData("Target L1", structure.setNextCoral(CoralState.L1));
+    SmartDashboard.putData("Target L2", structure.setNextCoral(CoralState.L2));
+    SmartDashboard.putData("Target L3", structure.setNextCoral(CoralState.L3));
+    SmartDashboard.putData("Target L4", structure.setNextCoral(CoralState.L4));
+    SmartDashboard.putData("Target High Algae", structure.setNextAlgae(AlgaeState.HIGH));
+    SmartDashboard.putData("Target Low Algae", structure.setNextAlgae(AlgaeState.LOW));
+    SmartDashboard.putData("Ready Climb", structure.readyClimb());
+    SmartDashboard.putData("Climb", structure.climb());
+    SmartDashboard.putData("Intake", structure.passthroughIntake());
+    SmartDashboard.putData("Stow", structure.stow());
   }
 
   private void setupDriveController() {
@@ -101,12 +126,12 @@ public class Robot extends LoggedRobot {
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    alignReefLeft.whileTrue(
-        swerve.alignToReef(Alignment.Left).alongWith(structure.readyNextCoral()));
-    alignReefMiddle.whileTrue(
-        swerve.alignToReef(Alignment.Middle).alongWith(structure.readyNextAlgae()));
-    alignReefRight.whileTrue(
-        swerve.alignToReef(Alignment.Right).alongWith(structure.readyNextCoral()));
+    alignReefLeft.onFalse(structure.readyNextCoral());
+    alignReefLeft.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Left));
+    alignReefMiddle.onFalse(structure.readyNextAlgae());
+    alignReefMiddle.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Middle));
+    alignReefRight.onFalse(structure.readyNextCoral());
+    alignReefRight.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Right));
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
@@ -143,41 +168,29 @@ public class Robot extends LoggedRobot {
 
   public void setupAuto() {
     NamedCommands.registerCommand(
-        "To A",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.A)), Set.of(swerve)));
+        "To A", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getA()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To B",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.B)), Set.of(swerve)));
+        "To B", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getB()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To C",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.C)), Set.of(swerve)));
+        "To C", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getC()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To D",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.D)), Set.of(swerve)));
+        "To D", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getD()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To E",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.E)), Set.of(swerve)));
+        "To E", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getE()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To F",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.F)), Set.of(swerve)));
+        "To F", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getF()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To G",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.G)), Set.of(swerve)));
+        "To G", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getG()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To H",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.H)), Set.of(swerve)));
+        "To H", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getH()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To I",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.I)), Set.of(swerve)));
+        "To I", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getI()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To J",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.J)), Set.of(swerve)));
+        "To J", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getJ()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To K",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.K)), Set.of(swerve)));
+        "To K", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getK()), Set.of(swerve)));
     NamedCommands.registerCommand(
-        "To L",
-        Commands.defer(() -> swerve.poseCentric(allianceFlip(ScoringLocations.L)), Set.of(swerve)));
+        "To L", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getL()), Set.of(swerve)));
     NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.passthroughIntake());

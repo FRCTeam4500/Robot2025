@@ -6,7 +6,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,14 +22,14 @@ import frc.robot.utilities.logging.Loggable;
 
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
-  public final MechanismLigament2d mech;
-  public final MechanismLigament2d armHolder;
+  private DigitalInput zeroingSwitch;
   public final Trigger armCanIntake =
       new Trigger(
           () -> {
             return upMotor.getPosition() > 0.6;
           });
 
+  private final double zeroedPosition = 0;
   private final double stowPosition = 0;
   private final double handoffPosition = .67;
   private final double l4Position = .95;
@@ -67,9 +67,14 @@ public class Elevator extends SubsystemBase implements Loggable {
                 }),
             FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
             TargetType.Position);
-    mech = new MechanismLigament2d("Elevator", 0, 90);
-    armHolder = new MechanismLigament2d("Arm Holder", 0.1, -90);
-    mech.append(armHolder);
+    zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
+  }
+
+  @Override
+  public void periodic() {
+    if (!zeroingSwitch.get()) {
+      upMotor.resetPosition(zeroedPosition);
+    }
   }
 
   /**
@@ -251,7 +256,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Up Motor", upMotor);
-    mech.setLength(upMotor.getPosition() + 0.1);
+    HoundLog.log(path, "Zeroing Switch", !zeroingSwitch.get());
   }
 
   public double getExtension() {

@@ -35,16 +35,16 @@ public class SwerveConstants {
   public static final double SKEW_COEFFICIENT = -0.129;
 
   /** The position of the front left module from the robot's center */
-  public static final Translation2d FRONT_LEFT_TRANSLATION = new Translation2d(0.2974, 0.2974);
+  public static final Translation2d FRONT_LEFT_TRANSLATION = new Translation2d(0.368, 0.266);
 
   /** The position of the front right module from the robot's center */
-  public static final Translation2d FRONT_RIGHT_TRANSLATION = new Translation2d(0.2974, -0.2974);
+  public static final Translation2d FRONT_RIGHT_TRANSLATION = new Translation2d(0.368, -0.266);
 
   /** The position of the back left module from the robot's center */
-  public static final Translation2d BACK_LEFT_TRANSLATION = new Translation2d(-0.2974, 0.2974);
+  public static final Translation2d BACK_LEFT_TRANSLATION = new Translation2d(-0.368, 0.266);
 
   /** The position of the back right module from the robot's center */
-  public static final Translation2d BACK_RIGHT_TRANSLATION = new Translation2d(-0.2974, -0.2974);
+  public static final Translation2d BACK_RIGHT_TRANSLATION = new Translation2d(-0.368, -0.266);
 
   public static final SwerveModule FRONT_LEFT_MODULE =
       new SwerveModule(

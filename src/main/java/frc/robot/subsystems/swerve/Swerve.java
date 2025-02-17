@@ -2,20 +2,16 @@ package frc.robot.subsystems.swerve;
 
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
-import static frc.robot.utilities.ScoringLocations.allianceFlip;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -28,6 +24,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,6 +32,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
+import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
@@ -49,7 +48,9 @@ public class Swerve extends SubsystemBase implements Loggable {
   private SwerveDrivePoseEstimator estimator;
   private Limelight[] tagCameras;
   private Rotation2d targetHeading;
-  private PIDController headingPID;
+  private FeedbackController headingFeedback;
+  private PoseFeedbackController poseFeedback;
+  private Pose2d targetPose;
 
   public final Trigger closerToRight =
       new Trigger(
@@ -88,12 +89,44 @@ public class Swerve extends SubsystemBase implements Loggable {
             getModulePositions(),
             new Pose2d(),
             VecBuilder.fill(0.5, 0.5, 0.5),
-            VecBuilder.fill(5, 5, 5));
+            VecBuilder.fill(50, 50, 50));
     targetHeading = new Rotation2d();
-    headingPID = new PIDController(5, 0, 0);
-    headingPID.enableContinuousInput(-Math.PI, Math.PI);
-    headingPID.setTolerance(Math.PI / 32, Math.PI / 32);
-    headingPID.setSetpoint(0);
+    headingFeedback =
+        FeedbackController.fromPD(
+            5,
+            0,
+            0,
+            pid -> {
+              pid.enableContinuousInput(-Math.PI, Math.PI);
+              pid.setTolerance(Math.PI / 32, Math.PI / 32);
+              pid.setSetpoint(0);
+            });
+
+    poseFeedback =
+        new PoseFeedbackController(
+            FeedbackController.fromPD(
+                3,
+                0,
+                0,
+                pid -> {
+                  pid.setTolerance(0.01);
+                }),
+            FeedbackController.fromPD(
+                3,
+                0,
+                0,
+                pid -> {
+                  pid.setTolerance(0.01);
+                }),
+            FeedbackController.fromPD(
+                6,
+                0,
+                0,
+                pid -> {
+                  pid.enableContinuousInput(0, 360);
+                  pid.setTolerance(2);
+                }));
+    targetPose = new Pose2d();
 
     GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
 
@@ -126,6 +159,32 @@ public class Swerve extends SubsystemBase implements Loggable {
           return alliance == Alliance.Red;
         },
         this);
+
+    FRONT_LEFT_MODULE
+        .getAngleMotor()
+        .getSysIDCommands(
+            "Swerve Angle",
+            1,
+            5,
+            5,
+            FRONT_RIGHT_MODULE.getAngleMotor(),
+            BACK_LEFT_MODULE.getAngleMotor(),
+            BACK_RIGHT_MODULE.getAngleMotor())
+        .putOnDashboard("Swerve Angle", this);
+
+    FRONT_LEFT_MODULE
+        .getDriveMotor()
+        .getSysIDCommands(
+            "Swerve Drive",
+            1,
+            2.5,
+            3,
+            FRONT_RIGHT_MODULE.getDriveMotor(),
+            BACK_LEFT_MODULE.getDriveMotor(),
+            BACK_RIGHT_MODULE.getDriveMotor())
+        .putOnDashboard("Swerve Drive", this);
+
+    SmartDashboard.putData("Face wheels forward", makePushable(Rotation2d.kZero));
   }
 
   /**
@@ -166,24 +225,32 @@ public class Swerve extends SubsystemBase implements Loggable {
         this);
   }
 
-  @SuppressWarnings("resource")
   public Command poseCentric(Pose2d target) {
-    PIDController forwardPID = new PIDController(1, 0, 0);
-    PIDController sidewaysPID = new PIDController(1, 0, 0);
-    PIDController rotationalPID = new PIDController(6, 0, 0);
-    rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
+    // PIDController forwardPID = new PIDController(1, 0, 0);
+    // PIDController sidewaysPID = new PIDController(1, 0, 0);
+    // PIDController rotationalPID = new PIDController(6, 0, 0);
+    // rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
     return Commands.run(
-        () -> {
-          Pose2d current = estimator.getEstimatedPosition();
-          ChassisSpeeds speeds =
-              new ChassisSpeeds(
-                  forwardPID.calculate(current.getX(), target.getX()),
-                  sidewaysPID.calculate(current.getY(), target.getY()),
-                  rotationalPID.calculate(
-                      current.getRotation().getRadians(), target.getRotation().getRadians()));
-          drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
-        },
-        this);
+            () -> {
+              Pose2d current = estimator.getEstimatedPosition();
+              ChassisSpeeds speeds = poseFeedback.calculate(current, target);
+              // new ChassisSpeeds(
+              //     forwardPID.calculate(current.getX(), target.getX()),
+              //     sidewaysPID.calculate(current.getY(), target.getY()),
+              //     rotationalPID.calculate(
+              //         current.getRotation().getRadians(), target.getRotation().getRadians()));
+              drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
+            },
+            this)
+        .beforeStarting(
+            () -> {
+              poseFeedback.reset(estimator.getEstimatedPosition());
+              this.targetPose = target;
+            })
+        .finallyDo(
+            () -> {
+              this.targetPose = new Pose2d();
+            });
   }
 
   public Command alignToReef(Alignment position) {
@@ -193,121 +260,15 @@ public class Swerve extends SubsystemBase implements Loggable {
     // 6 areas; 30 to -30,30 to 90,etc.
     return Commands.defer(
         () -> {
+          return poseCentric(
+              ScoringLocations.getDriveTarget(
+                  estimator.getEstimatedPosition().getTranslation(), position));
           // return Commands.none();
-          Translation2d robert = estimator.getEstimatedPosition().getTranslation();
-          Translation2d reef;
-          Command poseCentricCommand = Commands.none();
-          switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
-            case Blue:
-              reef = new Translation2d(4.5, 4);
-              double angle = robert.minus(reef).getAngle().getDegrees();
-              angle = MathUtil.inputModulus(angle, -30, 330);
-              if (angle <= 30 && angle >= -30) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(ScoringLocations.H);
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(ScoringLocations.H.interpolate(ScoringLocations.G, 0.5));
-                else poseCentricCommand = poseCentric(ScoringLocations.G);
-              } else if (angle <= 90 && angle >= 30) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(ScoringLocations.J);
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(ScoringLocations.J.interpolate(ScoringLocations.I, 0.5));
-                else poseCentricCommand = poseCentric(ScoringLocations.I);
-              } else if (angle <= 150 && angle >= 90) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(ScoringLocations.L);
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(ScoringLocations.L.interpolate(ScoringLocations.K, 0.5));
-                else poseCentricCommand = poseCentric(ScoringLocations.K);
-              } else if (angle <= 210 && angle >= 150) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(ScoringLocations.B);
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(ScoringLocations.B.interpolate(ScoringLocations.A, 0.5));
-                else poseCentricCommand = poseCentric(ScoringLocations.A);
-              } else if (angle <= 270 && angle >= 210) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(ScoringLocations.D);
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(ScoringLocations.D.interpolate(ScoringLocations.C, 0.5));
-                else poseCentricCommand = poseCentric(ScoringLocations.C);
-              } else {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(ScoringLocations.F);
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(ScoringLocations.F.interpolate(ScoringLocations.E, 0.5));
-                else poseCentricCommand = poseCentric(ScoringLocations.E);
-              }
-              break;
-            case Red:
-              reef = new Translation2d(13.1, 4);
-              double angleRed = robert.minus(reef).getAngle().getDegrees();
-              angleRed = MathUtil.inputModulus(angleRed, -30, 330);
-              if (angleRed <= 30 && angleRed >= -30) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.B));
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(
-                          allianceFlip(ScoringLocations.B)
-                              .interpolate(allianceFlip(ScoringLocations.A), 0.5));
-                else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.A));
-              } else if (angleRed <= 90 && angleRed >= 30) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.D));
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(
-                          allianceFlip(ScoringLocations.D)
-                              .interpolate(allianceFlip(ScoringLocations.C), 0.5));
-                else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.C));
-              } else if (angleRed <= 150 && angleRed >= 90) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.F));
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(
-                          allianceFlip(ScoringLocations.F)
-                              .interpolate(allianceFlip(ScoringLocations.E), 0.5));
-                else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.E));
-              } else if (angleRed <= 210 && angleRed >= 150) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.H));
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(
-                          allianceFlip(ScoringLocations.H)
-                              .interpolate(allianceFlip(ScoringLocations.G), 0.5));
-                else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.G));
-              } else if (angleRed <= 270 && angleRed >= 210) {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.J));
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(
-                          allianceFlip(ScoringLocations.J)
-                              .interpolate(allianceFlip(ScoringLocations.I), 0.5));
-                else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.I));
-              } else {
-                if (position == Alignment.Right)
-                  poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.L));
-                else if (position == Alignment.Middle)
-                  poseCentricCommand =
-                      poseCentric(
-                          allianceFlip(ScoringLocations.L)
-                              .interpolate(allianceFlip(ScoringLocations.K), 0.5));
-                else poseCentricCommand = poseCentric(allianceFlip(ScoringLocations.K));
-              }
-              break;
-          }
-          return poseCentricCommand;
+          // Translation2d robert = estimator.getEstimatedPosition().getTranslation();
+          // Translation2d reef;
+          // Command poseCentricCommand = Commands.none();
+
+          // return poseCentricCommand;
         },
         Set.of(this));
   }
@@ -336,39 +297,53 @@ public class Swerve extends SubsystemBase implements Loggable {
     return Commands.runOnce(() -> this.targetHeading = targetHeading);
   }
 
-  public Command testDriveConversionFactor(double speed, double duration) {
-    return Commands.run(
+  public Command driveConversionFinder(double speed, double duration) {
+    class CharacterizationState {
+      double[] startPositions = new double[4];
+      double[] endPositions = new double[4];
+      double startAngle = 0;
+      double endAngle = 0;
+    }
+    CharacterizationState state = new CharacterizationState();
+    return Commands.runOnce(
             () -> {
               drive(new ChassisSpeeds(0, 0, speed));
-              HoundLog.log(
-                  "Swerve/Characterization/Gyro Speed",
-                  Math.abs(gyro.getAngularVelocity().getRadians()));
-              HoundLog.log(
-                  "Swerve/Characterization/Odometry Speed",
-                  Math.abs(getSpeeds().omegaRadiansPerSecond));
-              HoundLog.log(
-                  "Swerve/Characterization/FL Speed",
-                  Math.abs(
-                      modules[0].getCurrentState().speedMetersPerSecond
-                          / FRONT_LEFT_TRANSLATION.getNorm()));
-              HoundLog.log(
-                  "Swerve/Characterization/FR Speed",
-                  Math.abs(
-                      modules[1].getCurrentState().speedMetersPerSecond
-                          / FRONT_RIGHT_TRANSLATION.getNorm()));
-              HoundLog.log(
-                  "Swerve/Characterization/BL Speed",
-                  Math.abs(
-                      modules[2].getCurrentState().speedMetersPerSecond
-                          / BACK_LEFT_TRANSLATION.getNorm()));
-              HoundLog.log(
-                  "Swerve/Characterization/BR Speed",
-                  Math.abs(
-                      modules[3].getCurrentState().speedMetersPerSecond
-                          / BACK_RIGHT_TRANSLATION.getNorm()));
             },
             this)
-        .withTimeout(duration);
+        .andThen(Commands.waitSeconds(1))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  state.startAngle = gyro.getAngle().getRadians();
+                  state.startPositions =
+                      new double[] {
+                        modules[0].getCurrentPosition().distanceMeters,
+                        modules[1].getCurrentPosition().distanceMeters,
+                        modules[2].getCurrentPosition().distanceMeters,
+                        modules[3].getCurrentPosition().distanceMeters
+                      };
+                }))
+        .andThen(Commands.waitSeconds(duration))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  state.endAngle = gyro.getAngle().getRadians();
+                  state.endPositions =
+                      new double[] {
+                        modules[0].getCurrentPosition().distanceMeters,
+                        modules[1].getCurrentPosition().distanceMeters,
+                        modules[2].getCurrentPosition().distanceMeters,
+                        modules[3].getCurrentPosition().distanceMeters
+                      };
+                  double gyroDelta = Math.abs(state.endAngle - state.startAngle);
+                  for (int i = 0; i < modules.length; i++) {
+                    double wheelDelta = Math.abs(state.endPositions[i] - state.startPositions[i]);
+                    wheelDelta /= SwerveConstants.BACK_LEFT_TRANSLATION.getNorm();
+                    System.out.println(
+                        "Module " + (i + 1) + " Coefficient: " + gyroDelta / wheelDelta);
+                  }
+                  System.out.println();
+                }));
   }
 
   public Command backup() {
@@ -378,6 +353,28 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .withTimeout(.25);
+  }
+
+  public Command makePushable(Rotation2d pushDirection) {
+    return Commands.run(
+        () -> {
+          FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+          FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+          BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+          BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+        },
+        this);
+  }
+
+  public Command xLock() {
+    return Commands.run(
+        () -> {
+          FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+          FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+          BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+          BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+        },
+        this);
   }
 
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
@@ -391,8 +388,8 @@ public class Swerve extends SubsystemBase implements Loggable {
                     * MAX_SPEEDS.omegaRadiansPerSecond
                     * 0.02);
     double rotational =
-        headingPID.calculate(currentHeading.getRadians(), targetHeading.getRadians());
-    if (headingPID.atSetpoint()) {
+        headingFeedback.calculate(currentHeading.getRadians(), targetHeading.getRadians());
+    if (headingFeedback.atGoal()) {
       rotational = 0;
     }
     if (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue) {
@@ -459,13 +456,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
-      PoseEstimate estimate =
-          camera.getPoseMT2(
-              estimator.getEstimatedPosition().getRotation(),
-              Rotation2d.fromDegrees(getSpeeds().omegaRadiansPerSecond));
-      if (DriverStation.isDisabled()) {
-        estimate = camera.getPoseMT1();
-      }
+      PoseEstimate estimate = camera.getPoseMT1();
       if (estimate.exists() && (estimate.tagCount() > 1 || estimate.averageDistance() < 4)) {
         estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
@@ -488,6 +479,8 @@ public class Swerve extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Back Left Module", modules[2]);
     HoundLog.log(path, "Back Right Module", modules[3]);
     HoundLog.log(path, "Gyro", gyro);
+    HoundLog.log(path, "At Target Pose", poseFeedback.atTarget());
+    HoundLog.log(path, "Target Pose", targetPose);
     for (Limelight camera : tagCameras) {
       HoundLog.log(path, camera.getName(), camera);
     }
