@@ -51,6 +51,7 @@ public class Ramp extends SubsystemBase implements Loggable {
                 }),
             FeedforwardController.forArmGravity(0.31, 0.07, 0, 0),
             TargetType.Position);
+    tiltMotor.getSysIDCommands("Ramp", 0.2, 0.5, 4).putOnDashboard("Ramp", this);
   }
 
   /**

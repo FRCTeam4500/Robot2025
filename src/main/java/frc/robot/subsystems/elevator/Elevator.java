@@ -68,6 +68,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
             TargetType.Position);
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
+    upMotor.getSysIDCommands("Elevator", 0.5, 2, 5).putOnDashboard("Elevator", this);
   }
 
   @Override

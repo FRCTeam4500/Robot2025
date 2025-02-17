@@ -28,6 +28,7 @@ public class Climber extends SubsystemBase implements Loggable {
                 }),
             TargetType.Position,
             stowAngle);
+    tiltyMotor.getSysIDCommands("Climber", 1, 1, 5).putOnDashboard("Climber", this);
   }
 
   public Command stow() {

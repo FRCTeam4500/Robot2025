@@ -50,6 +50,7 @@ public class Placer extends SubsystemBase implements Loggable {
             FeedbackController.empty(0.5),
             FeedforwardController.forConstantGravity(0, 0.47622, 0.12973, 0.01321),
             TargetType.Velocity);
+    runMotor.getSysIDCommands("Placer", 2, 8, 5).putOnDashboard("Placer", this);
   }
 
   /**
