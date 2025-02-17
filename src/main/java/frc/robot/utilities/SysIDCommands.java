@@ -23,15 +23,15 @@ public record SysIDCommands(
     Command dynamicReverse,
     Command quasistaticForward,
     Command quasistaticReverse) {
-    
-    public void putOnDashboard(String mechanismName, Subsystem... reqs) {
-        dynamicForward.addRequirements(reqs);
-        dynamicReverse.addRequirements(reqs);
-        quasistaticForward.addRequirements(reqs);
-        quasistaticReverse.addRequirements(reqs);
-        SmartDashboard.putData("SysID/" + mechanismName + "/Dynamic Forward", dynamicForward);
-        SmartDashboard.putData("SysID/" + mechanismName + "/Dynamic Reverse", dynamicReverse);
-        SmartDashboard.putData("SysID/" + mechanismName + "/Quasistatic Forward", quasistaticForward);
-        SmartDashboard.putData("SysID/" + mechanismName + "/Quasistatic Reverse", quasistaticReverse);
-    }
+
+  public void putOnDashboard(String mechanismName, Subsystem... reqs) {
+    dynamicForward.addRequirements(reqs);
+    dynamicReverse.addRequirements(reqs);
+    quasistaticForward.addRequirements(reqs);
+    quasistaticReverse.addRequirements(reqs);
+    SmartDashboard.putData("SysID/" + mechanismName + "/Dynamic Forward", dynamicForward);
+    SmartDashboard.putData("SysID/" + mechanismName + "/Dynamic Reverse", dynamicReverse);
+    SmartDashboard.putData("SysID/" + mechanismName + "/Quasistatic Forward", quasistaticForward);
+    SmartDashboard.putData("SysID/" + mechanismName + "/Quasistatic Reverse", quasistaticReverse);
+  }
 }

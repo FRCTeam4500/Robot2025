@@ -21,10 +21,10 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -104,12 +104,20 @@ public class Swerve extends SubsystemBase implements Loggable {
 
     poseFeedback =
         new PoseFeedbackController(
-            FeedbackController.fromPD(3, 0, 0, pid -> {
-              pid.setTolerance(0.01);
-            }),
-            FeedbackController.fromPD(3, 0, 0, pid -> {
-              pid.setTolerance(0.01);
-            }),
+            FeedbackController.fromPD(
+                3,
+                0,
+                0,
+                pid -> {
+                  pid.setTolerance(0.01);
+                }),
+            FeedbackController.fromPD(
+                3,
+                0,
+                0,
+                pid -> {
+                  pid.setTolerance(0.01);
+                }),
             FeedbackController.fromPD(
                 6,
                 0,
@@ -151,20 +159,30 @@ public class Swerve extends SubsystemBase implements Loggable {
           return alliance == Alliance.Red;
         },
         this);
-    
-    FRONT_LEFT_MODULE.getAngleMotor().getSysIDCommands(
-      "Swerve Angle", 1, 5, 5, 
-      FRONT_RIGHT_MODULE.getAngleMotor(), 
-      BACK_LEFT_MODULE.getAngleMotor(), 
-      BACK_RIGHT_MODULE.getAngleMotor()
-    ).putOnDashboard("Swerve Angle", this);
 
-    FRONT_LEFT_MODULE.getDriveMotor().getSysIDCommands(
-      "Swerve Drive", 1, 2.5, 3, 
-      FRONT_RIGHT_MODULE.getDriveMotor(), 
-      BACK_LEFT_MODULE.getDriveMotor(), 
-      BACK_RIGHT_MODULE.getDriveMotor()
-    ).putOnDashboard("Swerve Drive", this);
+    FRONT_LEFT_MODULE
+        .getAngleMotor()
+        .getSysIDCommands(
+            "Swerve Angle",
+            1,
+            5,
+            5,
+            FRONT_RIGHT_MODULE.getAngleMotor(),
+            BACK_LEFT_MODULE.getAngleMotor(),
+            BACK_RIGHT_MODULE.getAngleMotor())
+        .putOnDashboard("Swerve Angle", this);
+
+    FRONT_LEFT_MODULE
+        .getDriveMotor()
+        .getSysIDCommands(
+            "Swerve Drive",
+            1,
+            2.5,
+            3,
+            FRONT_RIGHT_MODULE.getDriveMotor(),
+            BACK_LEFT_MODULE.getDriveMotor(),
+            BACK_RIGHT_MODULE.getDriveMotor())
+        .putOnDashboard("Swerve Drive", this);
 
     SmartDashboard.putData("Face wheels forward", makePushable(Rotation2d.kZero));
   }
@@ -338,21 +356,25 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command makePushable(Rotation2d pushDirection) {
-    return Commands.run(() -> {
-      FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-      FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-      BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-      BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-    }, this);
+    return Commands.run(
+        () -> {
+          FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+          FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+          BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+          BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+        },
+        this);
   }
 
   public Command xLock() {
-    return Commands.run(() -> {
-      FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-      FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-      BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
-      BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
-    }, this);
+    return Commands.run(
+        () -> {
+          FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+          FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+          BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
+          BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
+        },
+        this);
   }
 
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
