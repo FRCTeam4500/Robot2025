@@ -94,6 +94,9 @@ public class Motor extends SubsystemBase implements Loggable {
    * @param nextTarget the target position/velocity to go to
    */
   public void setTarget(double nextTarget) {
+    if (getCurrentCommand() != null) {
+      return;
+    }
     if (useVoltage || target != nextTarget) {
       switch (type) {
         case Position:
