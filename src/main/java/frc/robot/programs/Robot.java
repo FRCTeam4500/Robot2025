@@ -5,7 +5,6 @@
 
 package frc.robot.programs;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -214,14 +213,15 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("To Top", swerve.alignToReef(Alignment.Top));
     NamedCommands.registerCommand("To Bottom", swerve.alignToReef(Alignment.Bottom));
     NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
+    NamedCommands.registerCommand("Ready High Algae", structure.readyAlgaeHigh());
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.passthroughIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
 
-    // SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
     SendableChooser<Command> chooser = new SendableChooser<>();
-    chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece Left"));
-    chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece Left", true));
+    chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
+    chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece", true));
+    chooser.addOption("1 Coral Backup", new PathPlannerAuto("Ranking"));
     SmartDashboard.putData("Dashboard/Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
