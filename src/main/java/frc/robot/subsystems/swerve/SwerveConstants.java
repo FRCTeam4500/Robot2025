@@ -92,8 +92,7 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              FeedforwardController.forConstantGravity(
-                  0, 0.2832, 0.0089448, 0.0011507),
+              FeedforwardController.forConstantGravity(0, 0.2832, 0.0089448, 0.0011507),
               TargetType.Position));
 
   public static final SwerveModule FRONT_RIGHT_MODULE =
@@ -142,8 +141,7 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              FeedforwardController.forConstantGravity(
-                  0, 0.27701, 0.0089885, 0.0010955),
+              FeedforwardController.forConstantGravity(0, 0.27701, 0.0089885, 0.0010955),
               TargetType.Position));
 
   public static final SwerveModule BACK_LEFT_MODULE =
@@ -241,7 +239,6 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              FeedforwardController.forConstantGravity(
-                  0, 0.25348, 0.0092287, 0.0014289),
+              FeedforwardController.forConstantGravity(0, 0.25348, 0.0092287, 0.0014289),
               TargetType.Position));
 }

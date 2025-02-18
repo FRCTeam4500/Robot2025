@@ -242,7 +242,8 @@ public class Swerve extends SubsystemBase implements Loggable {
         .finallyDo(
             () -> {
               this.targetPose = new Pose2d();
-            }).until(() -> poseFeedback.atTarget());
+            })
+        .until(() -> poseFeedback.atTarget());
   }
 
   public Command alignToReef(Alignment position) {
@@ -349,18 +350,20 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   public Command makePushable(Rotation2d pushDirection) {
     return Commands.run(
-        () -> {
-          FRONT_LEFT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
-          FRONT_RIGHT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
-          BACK_LEFT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
-          BACK_RIGHT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
-        },
-        this).beforeStarting(() -> {
-          FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-          FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-          BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-          BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-        });
+            () -> {
+              FRONT_LEFT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+              FRONT_RIGHT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+              BACK_LEFT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+              BACK_RIGHT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+            },
+            this)
+        .beforeStarting(
+            () -> {
+              FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+              FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+              BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+              BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
+            });
   }
 
   public Command xLock() {
@@ -424,7 +427,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   public Pose2d getPose() {
     return estimator.getEstimatedPosition();
   }
-  
+
   private void resetPose(Pose2d pose) {
     estimator.resetPosition(gyro.getAngle(), getModulePositions(), pose);
     targetHeading = pose.getRotation();
