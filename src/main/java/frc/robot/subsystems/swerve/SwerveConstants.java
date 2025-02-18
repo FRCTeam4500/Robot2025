@@ -60,7 +60,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.Clockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(21.322380803);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(19.3395592116);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -69,7 +69,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.24571, 1.8141, 0.16798),
+              FeedforwardController.forConstantGravity(0, 0.19441, 2.2437, 0.25605),
               TargetType.Velocity),
           Motor.fromSparkMax(
               9,
@@ -93,7 +93,7 @@ public class SwerveConstants {
                     controller.setTolerance(1);
                   }),
               FeedforwardController.forConstantGravity(
-                  0, 0.25179, 0.00862027777778, 0.000942472222222),
+                  0, 0.2832, 0.0089448, 0.0011507),
               TargetType.Position));
 
   public static final SwerveModule FRONT_RIGHT_MODULE =
@@ -110,7 +110,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.CounterClockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(16.3455480816);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(14.4138815898);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -119,7 +119,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.19746, 1.7841, 0.21748),
+              FeedforwardController.forConstantGravity(0, 0.17836, 1.6999, 0.21927),
               TargetType.Velocity),
           Motor.fromSparkMax(
               8,
@@ -143,7 +143,7 @@ public class SwerveConstants {
                     controller.setTolerance(1);
                   }),
               FeedforwardController.forConstantGravity(
-                  0, 0.36617, 0.00891694444444, 0.000734805555556),
+                  0, 0.27701, 0.0089885, 0.0010955),
               TargetType.Position));
 
   public static final SwerveModule BACK_LEFT_MODULE =
@@ -160,7 +160,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.Clockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(20.5568464957);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(19.0586651169);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -169,7 +169,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.21224, 1.7981, 0.18871),
+              FeedforwardController.forConstantGravity(0, 0.17324, 2.3081, 0.24606),
               TargetType.Velocity),
           Motor.fromSparkMax(
               18,
@@ -192,7 +192,7 @@ public class SwerveConstants {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              FeedforwardController.forConstantGravity(0, 0.37473, 0.009, 0.000677583333333),
+              FeedforwardController.forConstantGravity(0, 0.25886, 0.0090872, 0.0012662),
               TargetType.Position));
 
   public static final SwerveModule BACK_RIGHT_MODULE =
@@ -209,7 +209,7 @@ public class SwerveConstants {
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.CounterClockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(21.1278700094);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(18.6090424975);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -218,7 +218,7 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.2177, 1.8156, 0.12033),
+              FeedforwardController.forConstantGravity(0, 0.18414, 2.1992, 0.20409),
               TargetType.Velocity),
           Motor.fromSparkMax(
               6,
@@ -242,6 +242,6 @@ public class SwerveConstants {
                     controller.setTolerance(1);
                   }),
               FeedforwardController.forConstantGravity(
-                  0, 0.25159, 0.00888861111111, 0.000701638888889),
+                  0, 0.25348, 0.0092287, 0.0014289),
               TargetType.Position));
 }

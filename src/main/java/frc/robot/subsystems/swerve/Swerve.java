@@ -185,6 +185,7 @@ public class Swerve extends SubsystemBase implements Loggable {
         .putOnDashboard("Swerve Drive", this);
 
     SmartDashboard.putData("Face wheels forward", makePushable(Rotation2d.kZero));
+    SmartDashboard.putData("SysID/Swerve/Conversion Factor Finder", driveConversionFinder(0.25, 5));
   }
 
   /**
@@ -358,12 +359,17 @@ public class Swerve extends SubsystemBase implements Loggable {
   public Command makePushable(Rotation2d pushDirection) {
     return Commands.run(
         () -> {
+          FRONT_LEFT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+          FRONT_RIGHT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+          BACK_LEFT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+          BACK_RIGHT_MODULE.getAngleMotor().setTarget(pushDirection.getDegrees());
+        },
+        this).beforeStarting(() -> {
           FRONT_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
           FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
           BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
           BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-        },
-        this);
+        });
   }
 
   public Command xLock() {
@@ -416,6 +422,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
     speeds = kinematics.toChassisSpeeds(states);
+    HoundLog.log("Swerve", "Target Speed", speeds);
     states = kinematics.toSwerveModuleStates(applySkewCorrection(speeds));
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
     for (int i = 0; i < modules.length; i++) {
@@ -426,7 +433,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   public Pose2d getPose() {
     return estimator.getEstimatedPosition();
   }
-
+  
   private void resetPose(Pose2d pose) {
     estimator.resetPosition(gyro.getAngle(), getModulePositions(), pose);
   }
