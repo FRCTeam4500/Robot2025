@@ -21,7 +21,7 @@ public class Arm extends SubsystemBase implements Loggable {
 
   private final double startAngle = 90.851;
   private final double stowAngle = 75;
-  private final double placeL4Angle = 60;
+  private final double placeL4Angle = 55;
   private final double placeL3Angle = 60;
   private final double placeL2Angle = 73.15;
   private final double placeL1Angle = 33.37915;

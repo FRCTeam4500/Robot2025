@@ -22,7 +22,7 @@ import frc.robot.utilities.logging.Loggable;
 public class Ramp extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
 
-  private double intakeAngle = -185;
+  private double intakeAngle = -190;
   private double stowAngle = -250;
 
   /** Creates a new Ramp subsystem. */
@@ -43,7 +43,7 @@ public class Ramp extends SubsystemBase implements Loggable {
             (FeedforwardSim jim) -> {
               jim.withHardstops(90, 270);
             },
-            -170.713,
+            -258,
             FeedbackController.fromPID(
                 new PIDController(0.015, 0, 0),
                 (PIDController pid) -> {
