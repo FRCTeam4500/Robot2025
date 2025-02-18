@@ -54,21 +54,15 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "Barge-Push"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Ready High Algae"
+            "name": "Ready Low Algae"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Push-GH"
+            "pathName": "Barge-GH"
           }
         },
         {

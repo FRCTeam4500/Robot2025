@@ -214,6 +214,7 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("To Bottom", swerve.alignToReef(Alignment.Bottom));
     NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
     NamedCommands.registerCommand("Ready High Algae", structure.readyAlgaeHigh());
+    NamedCommands.registerCommand("Ready Low Algae", structure.readyAlgaeLow());
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.passthroughIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
