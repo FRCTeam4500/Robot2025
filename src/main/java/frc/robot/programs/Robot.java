@@ -45,6 +45,7 @@ public class Robot extends LoggedRobot {
     xbox = new CommandXboxController(2);
     stick = new CommandJoystick(1);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
+    SmartDashboard.putData("Debug/Command Scheduler", CommandScheduler.getInstance());
 
     ScoringLocations.setupBlue(
         new Pose2d(3.02, 4.19, Rotation2d.fromDegrees(0)),
@@ -90,16 +91,16 @@ public class Robot extends LoggedRobot {
     confirmIntake.onTrue(structure.confirmIntake());
     confirmIntake.onFalse(structure.stow());
 
-    SmartDashboard.putData("Target L1", structure.setNextCoral(CoralState.L1));
-    SmartDashboard.putData("Target L2", structure.setNextCoral(CoralState.L2));
-    SmartDashboard.putData("Target L3", structure.setNextCoral(CoralState.L3));
-    SmartDashboard.putData("Target L4", structure.setNextCoral(CoralState.L4));
-    SmartDashboard.putData("Target High Algae", structure.setNextAlgae(AlgaeState.HIGH));
-    SmartDashboard.putData("Target Low Algae", structure.setNextAlgae(AlgaeState.LOW));
-    SmartDashboard.putData("Ready Climb", structure.readyClimb());
-    SmartDashboard.putData("Climb", structure.climb());
-    SmartDashboard.putData("Intake", structure.passthroughIntake());
-    SmartDashboard.putData("Stow", structure.stow());
+    SmartDashboard.putData("Buttons/Target L1", structure.setNextCoral(CoralState.L1));
+    SmartDashboard.putData("Buttons/Target L2", structure.setNextCoral(CoralState.L2));
+    SmartDashboard.putData("Buttons/Target L3", structure.setNextCoral(CoralState.L3));
+    SmartDashboard.putData("Buttons/Target L4", structure.setNextCoral(CoralState.L4));
+    SmartDashboard.putData("Buttons/Target High Algae", structure.setNextAlgae(AlgaeState.HIGH));
+    SmartDashboard.putData("Buttons/Target Low Algae", structure.setNextAlgae(AlgaeState.LOW));
+    SmartDashboard.putData("Buttons/Ready Climb", structure.readyClimb());
+    SmartDashboard.putData("Buttons/Climb", structure.climb());
+    SmartDashboard.putData("Buttons/Intake", structure.passthroughIntake());
+    SmartDashboard.putData("Buttons/Stow", structure.stow());
   }
 
   private void setupDriveController() {
@@ -139,7 +140,8 @@ public class Robot extends LoggedRobot {
         structure
             .shoot()
             .andThen(swerve.backup())
-            .andThen(Commands.runOnce(() -> structure.stow().schedule())));
+            .andThen(Commands.runOnce(() -> structure.stow().schedule()))
+            .withName("Shoot and Stow"));
     passthroughIntake.onTrue(structure.passthroughIntake());
     passthroughIntake
         .and(onBlue)
@@ -168,36 +170,49 @@ public class Robot extends LoggedRobot {
 
   public void setupAuto() {
     NamedCommands.registerCommand(
-        "To A", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getA()), Set.of(swerve)));
+        "To A",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getA()), Set.of(swerve))
+            .withName("To A"));
     NamedCommands.registerCommand(
-        "To B", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getB()), Set.of(swerve)));
+        "To B", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getB()), Set.of(swerve))
+            .withName("To B"));
     NamedCommands.registerCommand(
-        "To C", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getC()), Set.of(swerve)));
+        "To C", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getC()), Set.of(swerve))
+            .withName("To C"));
     NamedCommands.registerCommand(
-        "To D", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getD()), Set.of(swerve)));
+        "To D", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getD()), Set.of(swerve))
+            .withName("To D"));
     NamedCommands.registerCommand(
-        "To E", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getE()), Set.of(swerve)));
+        "To E", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getE()), Set.of(swerve))
+            .withName("To E"));
     NamedCommands.registerCommand(
-        "To F", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getF()), Set.of(swerve)));
+        "To F", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getF()), Set.of(swerve))
+            .withName("To F"));
     NamedCommands.registerCommand(
-        "To G", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getG()), Set.of(swerve)));
+        "To G", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getG()), Set.of(swerve))
+            .withName("To G"));
     NamedCommands.registerCommand(
-        "To H", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getH()), Set.of(swerve)));
+        "To H", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getH()), Set.of(swerve))
+            .withName("To H"));
     NamedCommands.registerCommand(
-        "To I", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getI()), Set.of(swerve)));
+        "To I", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getI()), Set.of(swerve))
+            .withName("To I"));
     NamedCommands.registerCommand(
-        "To J", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getJ()), Set.of(swerve)));
+        "To J", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getJ()), Set.of(swerve))
+            .withName("To J"));
     NamedCommands.registerCommand(
-        "To K", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getK()), Set.of(swerve)));
+        "To K", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getK()), Set.of(swerve))
+            .withName("To K"));
     NamedCommands.registerCommand(
-        "To L", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getL()), Set.of(swerve)));
+        "To L", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getL()), Set.of(swerve))
+            .withName("To L"));
     NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.passthroughIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
 
     SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", chooser);
+    SmartDashboard.putData("Dashboard/Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
 

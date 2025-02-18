@@ -184,8 +184,8 @@ public class Swerve extends SubsystemBase implements Loggable {
             BACK_RIGHT_MODULE.getDriveMotor())
         .putOnDashboard("Swerve Drive", this);
 
-    SmartDashboard.putData("Face wheels forward", makePushable(Rotation2d.kZero));
-    SmartDashboard.putData("SysID/Swerve/Conversion Factor Finder", driveConversionFinder(0.25, 5));
+    SmartDashboard.putData("Characterization/Swerve/Face wheels forward", makePushable(Rotation2d.kZero));
+    SmartDashboard.putData("Characterization/Swerve/Conversion Factor Finder", driveConversionFinder(0.25, 5));
   }
 
   /**
@@ -204,7 +204,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               drive(calculateVelRobotRel(xbox));
             },
             this)
-        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
+        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation()).withName("Angle Centric");
   }
 
   public Command robotCentric(XboxController xbox) {
@@ -223,7 +223,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                       * withHardDeadzone(-xbox.getRightX(), 0.1)
                       * MAX_SPEEDS.omegaRadiansPerSecond));
         },
-        this);
+        this).withName("Robot Centric");
   }
 
   public Command poseCentric(Pose2d target) {
@@ -243,27 +243,17 @@ public class Swerve extends SubsystemBase implements Loggable {
             () -> {
               this.targetPose = new Pose2d();
             })
-        .until(() -> poseFeedback.atTarget());
+        .until(() -> poseFeedback.atTarget()).withName("Pose Centric");
   }
 
   public Command alignToReef(Alignment position) {
-    // use current position v center of reef
-    // operate in range of angles
-    // areas BASED ON SIDE OF REEF DUUUUHHHHH
-    // 6 areas; 30 to -30,30 to 90,etc.
     return Commands.defer(
         () -> {
           return poseCentric(
               ScoringLocations.getDriveTarget(
                   estimator.getEstimatedPosition().getTranslation(), position));
-          // return Commands.none();
-          // Translation2d robert = estimator.getEstimatedPosition().getTranslation();
-          // Translation2d reef;
-          // Command poseCentricCommand = Commands.none();
-
-          // return poseCentricCommand;
         },
-        Set.of(this));
+        Set.of(this)).withName("Align To Reef: " + position.name() + " Side");
   }
 
   /**
@@ -336,7 +326,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                         "Module " + (i + 1) + " Coefficient: " + gyroDelta / wheelDelta);
                   }
                   System.out.println();
-                }));
+                })).withName("Drive Conversion Factor Finder");
   }
 
   public Command backup() {
@@ -345,7 +335,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               drive(new ChassisSpeeds(-2, 0, 0));
             },
             this)
-        .withTimeout(.25);
+        .withTimeout(.25).withName("Backup");
   }
 
   public Command makePushable(Rotation2d pushDirection) {
@@ -363,7 +353,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               FRONT_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
               BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
               BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, pushDirection));
-            });
+            }).withName("Pushable: " + pushDirection.getDegrees() + " Degrees");
   }
 
   public Command xLock() {
@@ -374,7 +364,7 @@ public class Swerve extends SubsystemBase implements Loggable {
           BACK_LEFT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(-45)));
           BACK_RIGHT_MODULE.setTargetState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
         },
-        this);
+        this).withName("Wheel Lock");
   }
 
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {

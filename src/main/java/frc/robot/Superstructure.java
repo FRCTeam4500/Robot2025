@@ -85,7 +85,7 @@ public class Superstructure implements Loggable {
   }
 
   public Command confirmIntake() {
-    return placer.intake();
+    return placer.intake().withName("Confirm Intake");
   }
 
   public Command setNextCoral(CoralState state) {
@@ -111,7 +111,7 @@ public class Superstructure implements Loggable {
           }
           return Commands.none();
         },
-        Set.of());
+        Set.of()).withName("Ready Next Coral");
   }
 
   public Command readyNextAlgae() {
@@ -125,62 +125,71 @@ public class Superstructure implements Loggable {
           }
           return Commands.none();
         },
-        Set.of());
+        Set.of()).withName("Ready Next Algae");
   }
 
   public Command readyLevel1() {
     return arm.placeL1()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level1()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level1()))
+        .withName("Ready Level 1");
   }
 
   public Command readyLevel2() {
     return arm.placeL2()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level2()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level2()))
+        .withName("Ready Level 2");
   }
 
   public Command readyLevel3() {
     return arm.placeL3()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level3()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level3()))
+        .withName("Ready Level 3");
   }
 
   public Command readyLevel4() {
     return arm.placeL4()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()));
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()))
+        .withName("Ready Level 4");
   }
 
   public Command readyAlgaeHigh() {
     return arm.dislodge()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.highAlgae()))
-        .alongWith(placer.eject());
+        .alongWith(placer.eject())
+        .withName("Ready Algae High");
   }
 
   public Command readyAlgaeLow() {
     return arm.dislodge()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.lowAlgae()))
-        .alongWith(placer.eject());
+        .alongWith(placer.eject())
+        .withName("Ready Algae Low");
   }
 
   public Command readyClimb() {
     return arm.stow()
         .alongWith(placer.stop())
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-        .alongWith(ramp.hide().andThen(climber.ready()));
+        .alongWith(ramp.hide().andThen(climber.ready()))
+        .withName("Ready Climb");
   }
 
   public Command climb() {
-    return climber.climb();
+    return climber.climb().withName("Climb");
   }
 
   public Command algaeGroundIntake() {
     return arm.algaeGround()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-        .alongWith(placer.eject());
+        .alongWith(placer.eject())
+        .withName("Algae Ground Intake");
   }
 
   public Command groundIntake() {
     return arm.ground()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundPickup()))
-        .alongWith(placer.intake());
+        .alongWith(placer.intake())
+        .withName("Coral Ground Intake");
   }
 
   public Command passthroughIntake() {
@@ -188,17 +197,19 @@ public class Superstructure implements Loggable {
         .alongWith(ramp.show())
         .until(arm.canMoveElevator)
         .andThen(elevator.handoff())
-        .andThen(arm.handoff().alongWith(placer.intake()));
+        .andThen(arm.handoff().alongWith(placer.intake()))
+        .withName("Passthrough Intake");
   }
 
   public Command backwardsIntake() {
     return arm.stationPickup()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stationPickup()))
-        .andThen(placer.intake());
+        .andThen(placer.intake())
+        .withName("Backwards Intake");
   }
 
   public Command shoot() {
-    return placer.eject().andThen(Commands.waitSeconds(0.5));
+    return placer.eject().andThen(Commands.waitSeconds(0.25)).withName("Shoot");
   }
 
   public Command stow() {
@@ -206,7 +217,8 @@ public class Superstructure implements Loggable {
         .stop()
         .andThen(arm.stow())
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-        .alongWith(climber.stow().andThen(ramp.show()));
+        .alongWith(climber.stow().andThen(ramp.show()))
+        .withName("Stow");
   }
 
   public static enum CoralState {
