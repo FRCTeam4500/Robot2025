@@ -23,13 +23,13 @@ import frc.robot.utilities.FeedforwardController;
 @SuppressWarnings("resource")
 public class SwerveConstants {
   /** The max speed the robot should travel at */
-  public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(6, 6, 4);
+  public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(5, 5, 4);
 
   /** The minimum coefficient for slowmode */
   public static final double MIN_COEFFICIENT = 0.2;
 
   /** The absolute max acheivable module speed */
-  public static final double MAX_MODULE_SPEED = 6;
+  public static final double MAX_MODULE_SPEED = 5.4;
 
   /** A coefficient used to correct from translation while rotating */
   public static final double SKEW_COEFFICIENT = -0.129;
@@ -68,7 +68,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              FeedbackController.fromPID(10, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.19441, 2.2437, 0.25605),
               TargetType.Velocity),
           Motor.fromSparkMax(
@@ -118,7 +118,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              FeedbackController.fromPID(10, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.17836, 1.6999, 0.21927),
               TargetType.Velocity),
           Motor.fromSparkMax(
@@ -168,7 +168,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              FeedbackController.fromPID(10, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.17324, 2.3081, 0.24606),
               TargetType.Velocity),
           Motor.fromSparkMax(
@@ -217,7 +217,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(new PIDController(0, 0, 0), controller -> {}),
+              FeedbackController.fromPID(10, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.18414, 2.1992, 0.20409),
               TargetType.Velocity),
           Motor.fromSparkMax(

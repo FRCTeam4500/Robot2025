@@ -75,7 +75,7 @@ public interface FeedbackController {
     };
   }
 
-  public static FeedbackController fromPD(
+  public static FeedbackController fromPID(
       double kP, double kI, double kD, Consumer<PIDController> config) {
     return fromPID(new PIDController(kP, kI, kD), config);
   }
@@ -120,7 +120,7 @@ public interface FeedbackController {
     };
   }
 
-  public static FeedbackController fromProfiledPD(
+  public static FeedbackController fromProfiledPID(
       double kP,
       double kI,
       double kD,

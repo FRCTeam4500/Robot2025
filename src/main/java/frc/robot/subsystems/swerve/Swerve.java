@@ -92,7 +92,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             VecBuilder.fill(50, 50, 50));
     targetHeading = new Rotation2d();
     headingFeedback =
-        FeedbackController.fromPD(
+        FeedbackController.fromPID(
             5,
             0,
             0,
@@ -104,27 +104,27 @@ public class Swerve extends SubsystemBase implements Loggable {
 
     poseFeedback =
         new PoseFeedbackController(
-            FeedbackController.fromPD(
+            FeedbackController.fromPID(
                 3,
                 0,
                 0,
                 pid -> {
-                  pid.setTolerance(0.01);
+                  pid.setTolerance(0.005);
                 }),
-            FeedbackController.fromPD(
+            FeedbackController.fromPID(
                 3,
                 0,
                 0,
                 pid -> {
-                  pid.setTolerance(0.01);
+                  pid.setTolerance(0.005);
                 }),
-            FeedbackController.fromPD(
+            FeedbackController.fromPID(
                 6,
                 0,
                 0,
                 pid -> {
                   pid.enableContinuousInput(0, 360);
-                  pid.setTolerance(2);
+                  pid.setTolerance(1);
                 }));
     targetPose = new Pose2d();
 
@@ -284,7 +284,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     return Commands.runOnce(
         () -> {
           resetPose(new Pose2d(estimator.getEstimatedPosition().getTranslation(), newHeading));
-          targetHeading = new Rotation2d();
+          targetHeading = newHeading;
         });
   }
 
@@ -436,6 +436,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   
   private void resetPose(Pose2d pose) {
     estimator.resetPosition(gyro.getAngle(), getModulePositions(), pose);
+    targetHeading = pose.getRotation();
   }
 
   private ChassisSpeeds getSpeeds() {

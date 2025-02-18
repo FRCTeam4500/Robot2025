@@ -59,12 +59,22 @@ public class ScoringLocations {
     blueA = A;
     blueB = B;
     blueCenter = AB.getTranslation().interpolate(GH.getTranslation(), 0.5);
+    if (DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue)) {
+      ScoringLocations.center = blueCenter;
+      ScoringLocations.A = blueA;
+      ScoringLocations.B = blueB;
+    }
   }
 
   public static void setupRed(Pose2d A, Pose2d B, Pose2d AB, Pose2d GH) {
     redA = A;
     redB = B;
     redCenter = AB.getTranslation().interpolate(GH.getTranslation(), 0.5);
+    if (DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red)) {
+      ScoringLocations.center = redCenter;
+      ScoringLocations.A = redA;
+      ScoringLocations.B = redB;
+    }
   }
 
   public static Pose2d getDriveTarget(Translation2d robotPose, Alignment alignment) {
