@@ -227,19 +227,10 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command poseCentric(Pose2d target) {
-    // PIDController forwardPID = new PIDController(1, 0, 0);
-    // PIDController sidewaysPID = new PIDController(1, 0, 0);
-    // PIDController rotationalPID = new PIDController(6, 0, 0);
-    // rotationalPID.enableContinuousInput(0, 2 * Math.PI); // "0-360 degrees"
     return Commands.run(
             () -> {
               Pose2d current = estimator.getEstimatedPosition();
               ChassisSpeeds speeds = poseFeedback.calculate(current, target);
-              // new ChassisSpeeds(
-              //     forwardPID.calculate(current.getX(), target.getX()),
-              //     sidewaysPID.calculate(current.getY(), target.getY()),
-              //     rotationalPID.calculate(
-              //         current.getRotation().getRadians(), target.getRotation().getRadians()));
               drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
             },
             this)
@@ -251,7 +242,7 @@ public class Swerve extends SubsystemBase implements Loggable {
         .finallyDo(
             () -> {
               this.targetPose = new Pose2d();
-            });
+            }).until(() -> poseFeedback.atTarget());
   }
 
   public Command alignToReef(Alignment position) {
