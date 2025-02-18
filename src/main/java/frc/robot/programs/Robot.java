@@ -7,6 +7,8 @@ package frc.robot.programs;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -209,12 +211,17 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand(
         "To L", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getL()), Set.of(swerve))
             .withName("To L"));
+    NamedCommands.registerCommand("To Top", swerve.alignToReef(Alignment.Top));
+    NamedCommands.registerCommand("To Bottom", swerve.alignToReef(Alignment.Bottom));
     NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.passthroughIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
 
-    SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
+    // SendableChooser<Command> chooser = AutoBuilder.buildAutoChooser();
+    SendableChooser<Command> chooser = new SendableChooser<>();
+    chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece Left"));
+    chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece Left", true));
     SmartDashboard.putData("Dashboard/Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }

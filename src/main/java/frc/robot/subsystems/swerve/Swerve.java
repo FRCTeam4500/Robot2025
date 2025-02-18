@@ -481,6 +481,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   public static enum Alignment {
     Right,
     Middle,
-    Left;
+    Left,
+    Top,
+    Bottom;
   }
 }

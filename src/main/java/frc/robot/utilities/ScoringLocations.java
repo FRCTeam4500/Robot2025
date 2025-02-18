@@ -85,17 +85,21 @@ public class ScoringLocations {
         if (angle <= 30) {
           switch (alignment) {
             case Left:
-              return getA();
+            return getA();
             case Right:
-              return getB();
+            return getB();
+            case Top:
             case Middle:
+            case Bottom:
               return getA().interpolate(getB(), 0.5);
           }
         } else if (angle <= 90) {
           switch (alignment) {
             case Left:
+            case Bottom:
               return getC();
             case Right:
+            case Top:
               return getD();
             case Middle:
               return getC().interpolate(getD(), 0.5);
@@ -103,8 +107,10 @@ public class ScoringLocations {
         } else if (angle <= 150) {
           switch (alignment) {
             case Left:
+            case Bottom:
               return getE();
             case Right:
+            case Top:
               return getF();
             case Middle:
               return getE().interpolate(getF(), 0.5);
@@ -112,17 +118,21 @@ public class ScoringLocations {
         } else if (angle <= 210) {
           switch (alignment) {
             case Left:
-              return getG();
+            return getG();
             case Right:
-              return getH();
+            return getH();
+            case Top:
             case Middle:
+            case Bottom:
               return getG().interpolate(getH(), 0.5);
           }
         } else if (angle <= 270) {
           switch (alignment) {
             case Left:
+            case Top:
               return getI();
             case Right:
+            case Bottom:
               return getJ();
             case Middle:
               return getI().interpolate(getJ(), 0.5);
@@ -130,8 +140,10 @@ public class ScoringLocations {
         } else {
           switch (alignment) {
             case Left:
+            case Top:
               return getK();
             case Right:
+            case Bottom:
               return getL();
             case Middle:
               return getK().interpolate(getL(), 0.5);
@@ -144,14 +156,18 @@ public class ScoringLocations {
               return getG();
             case Right:
               return getH();
+            case Top:
             case Middle:
+            case Bottom:
               return getG().interpolate(getH(), 0.5);
           }
         } else if (angle <= 90) {
           switch (alignment) {
             case Left:
+            case Top:
               return getI();
             case Right:
+            case Bottom:
               return getJ();
             case Middle:
               return getI().interpolate(getJ(), 0.5);
@@ -159,8 +175,10 @@ public class ScoringLocations {
         } else if (angle <= 150) {
           switch (alignment) {
             case Left:
+            case Top:
               return getK();
             case Right:
+            case Bottom:
               return getL();
             case Middle:
               return getK().interpolate(getL(), 0.5);
@@ -171,14 +189,18 @@ public class ScoringLocations {
               return getA();
             case Right:
               return getB();
+            case Top:
             case Middle:
+            case Bottom:
               return getA().interpolate(getB(), 0.5);
           }
         } else if (angle <= 270) {
           switch (alignment) {
             case Left:
+            case Bottom:
               return getC();
             case Right:
+            case Top:
               return getD();
             case Middle:
               return getC().interpolate(getD(), 0.5);
@@ -186,8 +208,10 @@ public class ScoringLocations {
         } else {
           switch (alignment) {
             case Left:
+            case Bottom:
               return getE();
             case Right:
+            case Top:
               return getF();
             case Middle:
               return getE().interpolate(getF(), 0.5);
