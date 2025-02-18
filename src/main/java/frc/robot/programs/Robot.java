@@ -74,8 +74,9 @@ public class Robot extends LoggedRobot {
     Trigger readyClimb = stick.povUp();
     Trigger climb = stick.povDown();
     Trigger stowButton = stick.button(11);
-    Trigger coralIntake = stick.button(4);
-    Trigger confirmIntake = stick.button(2);
+    Trigger coralIntake = stick.button(2);
+    Trigger confirmIntake = stick.button(4);
+    Trigger backwardsCoralIntake = stick.button(3);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));
     levelTwo.onTrue(structure.setNextCoral(CoralState.L2));
@@ -90,6 +91,8 @@ public class Robot extends LoggedRobot {
     stowButton.onTrue(structure.stow());
     confirmIntake.onTrue(structure.confirmIntake());
     confirmIntake.onFalse(structure.stow());
+    backwardsCoralIntake.onTrue(structure.backwardsIntake());
+    backwardsCoralIntake.onFalse(structure.stow());
 
     SmartDashboard.putData("Buttons/Target L1", structure.setNextCoral(CoralState.L1));
     SmartDashboard.putData("Buttons/Target L2", structure.setNextCoral(CoralState.L2));
