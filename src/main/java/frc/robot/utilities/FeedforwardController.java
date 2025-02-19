@@ -91,7 +91,7 @@ public interface FeedforwardController {
     };
   }
 
-  public static FeedforwardController forGasShockArm(
+  public static FeedforwardController forWeirdGravity(
       InterpolatingDoubleTreeMap gravityVolts, double kS, double kV, double kA) {
     return new FeedforwardController() {
       @Override
