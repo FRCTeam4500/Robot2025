@@ -29,9 +29,13 @@ public record SysIDCommands(
     dynamicReverse.addRequirements(reqs);
     quasistaticForward.addRequirements(reqs);
     quasistaticReverse.addRequirements(reqs);
-    SmartDashboard.putData("Characterization/" + mechanismName + "/Dynamic Forward", dynamicForward);
-    SmartDashboard.putData("Characterization/" + mechanismName + "/Dynamic Reverse", dynamicReverse);
-    SmartDashboard.putData("Characterization/" + mechanismName + "/Quasistatic Forward", quasistaticForward);
-    SmartDashboard.putData("Characterization/" + mechanismName + "/Quasistatic Reverse", quasistaticReverse);
+    SmartDashboard.putData(
+        "Characterization/" + mechanismName + "/Dynamic Forward", dynamicForward);
+    SmartDashboard.putData(
+        "Characterization/" + mechanismName + "/Dynamic Reverse", dynamicReverse);
+    SmartDashboard.putData(
+        "Characterization/" + mechanismName + "/Quasistatic Forward", quasistaticForward);
+    SmartDashboard.putData(
+        "Characterization/" + mechanismName + "/Quasistatic Reverse", quasistaticReverse);
   }
 }

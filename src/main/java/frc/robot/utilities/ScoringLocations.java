@@ -85,9 +85,9 @@ public class ScoringLocations {
         if (angle <= 30) {
           switch (alignment) {
             case Left:
-            return getA();
+              return getA();
             case Right:
-            return getB();
+              return getB();
             case Top:
             case Middle:
             case Bottom:
@@ -118,9 +118,9 @@ public class ScoringLocations {
         } else if (angle <= 210) {
           switch (alignment) {
             case Left:
-            return getG();
+              return getG();
             case Right:
-            return getH();
+              return getH();
             case Top:
             case Middle:
             case Bottom:

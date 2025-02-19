@@ -7,7 +7,6 @@ package frc.robot.programs;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -178,37 +177,48 @@ public class Robot extends LoggedRobot {
         Commands.defer(() -> swerve.poseCentric(ScoringLocations.getA()), Set.of(swerve))
             .withName("To A"));
     NamedCommands.registerCommand(
-        "To B", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getB()), Set.of(swerve))
+        "To B",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getB()), Set.of(swerve))
             .withName("To B"));
     NamedCommands.registerCommand(
-        "To C", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getC()), Set.of(swerve))
+        "To C",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getC()), Set.of(swerve))
             .withName("To C"));
     NamedCommands.registerCommand(
-        "To D", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getD()), Set.of(swerve))
+        "To D",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getD()), Set.of(swerve))
             .withName("To D"));
     NamedCommands.registerCommand(
-        "To E", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getE()), Set.of(swerve))
+        "To E",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getE()), Set.of(swerve))
             .withName("To E"));
     NamedCommands.registerCommand(
-        "To F", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getF()), Set.of(swerve))
+        "To F",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getF()), Set.of(swerve))
             .withName("To F"));
     NamedCommands.registerCommand(
-        "To G", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getG()), Set.of(swerve))
+        "To G",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getG()), Set.of(swerve))
             .withName("To G"));
     NamedCommands.registerCommand(
-        "To H", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getH()), Set.of(swerve))
+        "To H",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getH()), Set.of(swerve))
             .withName("To H"));
     NamedCommands.registerCommand(
-        "To I", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getI()), Set.of(swerve))
+        "To I",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getI()), Set.of(swerve))
             .withName("To I"));
     NamedCommands.registerCommand(
-        "To J", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getJ()), Set.of(swerve))
+        "To J",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getJ()), Set.of(swerve))
             .withName("To J"));
     NamedCommands.registerCommand(
-        "To K", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getK()), Set.of(swerve))
+        "To K",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getK()), Set.of(swerve))
             .withName("To K"));
     NamedCommands.registerCommand(
-        "To L", Commands.defer(() -> swerve.poseCentric(ScoringLocations.getL()), Set.of(swerve))
+        "To L",
+        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getL()), Set.of(swerve))
             .withName("To L"));
     NamedCommands.registerCommand("To Top", swerve.alignToReef(Alignment.Top));
     NamedCommands.registerCommand("To Bottom", swerve.alignToReef(Alignment.Bottom));
