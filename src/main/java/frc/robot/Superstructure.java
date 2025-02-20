@@ -215,9 +215,8 @@ public class Superstructure implements Loggable {
   }
 
   public Command stow() {
-    return placer
-        .stop()
-        .andThen(arm.stow())
+    return arm.stow()
+        .andThen(placer.stop())
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
         .alongWith(climber.stow().andThen(ramp.show()))
         .withName("Stow");
