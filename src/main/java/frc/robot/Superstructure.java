@@ -98,34 +98,36 @@ public class Superstructure implements Loggable {
 
   public Command readyNextCoral() {
     return Commands.defer(
-        () -> {
-          switch (nextCoral) {
-            case L1:
-              return readyLevel1();
-            case L2:
-              return readyLevel2();
-            case L3:
-              return readyLevel3();
-            case L4:
-              return readyLevel4();
-          }
-          return Commands.none();
-        },
-        Set.of()).withName("Ready Next Coral");
+            () -> {
+              switch (nextCoral) {
+                case L1:
+                  return readyLevel1();
+                case L2:
+                  return readyLevel2();
+                case L3:
+                  return readyLevel3();
+                case L4:
+                  return readyLevel4();
+              }
+              return Commands.none();
+            },
+            Set.of())
+        .withName("Ready Next Coral");
   }
 
   public Command readyNextAlgae() {
     return Commands.defer(
-        () -> {
-          switch (nextAlgae) {
-            case LOW:
-              return readyAlgaeLow();
-            case HIGH:
-              return readyAlgaeHigh();
-          }
-          return Commands.none();
-        },
-        Set.of()).withName("Ready Next Algae");
+            () -> {
+              switch (nextAlgae) {
+                case LOW:
+                  return readyAlgaeLow();
+                case HIGH:
+                  return readyAlgaeHigh();
+              }
+              return Commands.none();
+            },
+            Set.of())
+        .withName("Ready Next Algae");
   }
 
   public Command readyLevel1() {
