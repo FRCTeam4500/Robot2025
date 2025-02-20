@@ -68,7 +68,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(10, 0, 0, controller -> {}),
+              FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.19441, 2.2437, 0.25605),
               TargetType.Velocity),
           Motor.fromSparkMax(
@@ -117,7 +117,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(10, 0, 0, controller -> {}),
+              FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.17836, 1.6999, 0.21927),
               TargetType.Velocity),
           Motor.fromSparkMax(
@@ -166,7 +166,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(10, 0, 0, controller -> {}),
+              FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.17324, 2.3081, 0.24606),
               TargetType.Velocity),
           Motor.fromSparkMax(
@@ -215,7 +215,7 @@ public class SwerveConstants {
               },
               sim -> {},
               0,
-              FeedbackController.fromPID(10, 0, 0, controller -> {}),
+              FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
               FeedforwardController.forConstantGravity(0, 0.18414, 2.1992, 0.20409),
               TargetType.Velocity),
           Motor.fromSparkMax(

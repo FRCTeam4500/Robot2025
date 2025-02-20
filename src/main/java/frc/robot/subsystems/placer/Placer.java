@@ -22,7 +22,7 @@ public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
 
   private final double intakeSpeed = -25;
-  private final double ejectSpeed = 25;
+  private final double ejectSpeed = 20;
 
   public final Trigger hasPieceTrigger =
       new Trigger(
