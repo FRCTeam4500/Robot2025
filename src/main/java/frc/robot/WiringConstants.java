@@ -31,7 +31,7 @@ public class WiringConstants {
 
   public static class ArmWiring {
     public static final int ARM_ID = 13;
-    public static final int ENCODER_CHANNEL = 0;
+    public static final int ENCODER_CHANNEL = 1;
   }
 
   public static class ElevatorWiring {

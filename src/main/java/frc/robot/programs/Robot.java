@@ -88,6 +88,25 @@ public class Robot extends LoggedRobot {
     climb.onTrue(structure.climb());
     coralIntake.onTrue(structure.passthroughIntake());
     coralIntake.onFalse(structure.stow());
+    Trigger onBlue =
+        new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue);
+    Trigger onRed = onBlue.negate();
+    coralIntake
+        .and(onBlue)
+        .and(swerve.closerToRight)
+        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
+    coralIntake
+        .and(onBlue)
+        .and(swerve.closerToRight.negate())
+        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
+    coralIntake
+        .and(onRed)
+        .and(swerve.closerToRight)
+        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
+    coralIntake
+        .and(onRed)
+        .and(swerve.closerToRight.negate())
+        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
     stowButton.onTrue(structure.stow());
     confirmIntake.onTrue(structure.confirmIntake());
     confirmIntake.onFalse(structure.stow());
@@ -145,7 +164,7 @@ public class Robot extends LoggedRobot {
             .andThen(swerve.backup())
             .andThen(Commands.runOnce(() -> structure.stow().schedule()))
             .withName("Shoot and Stow"));
-    passthroughIntake.onTrue(structure.passthroughIntake());
+    // passthroughIntake.onTrue(structure.passthroughIntake());
     passthroughIntake
         .and(onBlue)
         .and(swerve.closerToRight)
