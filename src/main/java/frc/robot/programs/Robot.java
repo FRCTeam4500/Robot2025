@@ -288,6 +288,7 @@ public class Robot extends LoggedRobot {
     chooser.addOption(
         "3 Coral Right (Manual)", new PathPlannerAuto("3 Piece (Manual Align)", true));
     chooser.addOption("1 Coral Backup (Auto)", new PathPlannerAuto("Ranking (Auto Align)"));
+    chooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
     SmartDashboard.putData("Dashboard/Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
