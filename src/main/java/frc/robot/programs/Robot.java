@@ -282,9 +282,11 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Stow", structure.stow());
 
     SendableChooser<Command> chooser = new SendableChooser<>();
-    chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
-    chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece", true));
-    chooser.addOption("1 Coral Backup", new PathPlannerAuto("Ranking"));
+    chooser.addOption("3 Coral Left (Auto)", new PathPlannerAuto("3 Piece (Auto Align)"));
+    chooser.addOption("3 Coral Right (Auto)", new PathPlannerAuto("3 Piece (Auto Align)", true));
+    chooser.addOption("3 Coral Left (Manual)", new PathPlannerAuto("3 Piece (Manual Align)"));
+    chooser.addOption("3 Coral Right (Manual)", new PathPlannerAuto("3 Piece (Manual Align)", true));
+    chooser.addOption("1 Coral Backup (Auto)", new PathPlannerAuto("Ranking (Auto Align)"));
     SmartDashboard.putData("Dashboard/Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
