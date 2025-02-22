@@ -50,7 +50,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "To Score (Auto Align)",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -55.0
