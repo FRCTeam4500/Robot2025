@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double stationAngle = 70;
   private final double groundAngle = -30;
   private final double dislodgeAngle = 40;
-  private final double algaeGroundAngle = 10;
+  private final double algaeGroundAngle = -20;
 
   public final Trigger canMoveElevator =
       new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);

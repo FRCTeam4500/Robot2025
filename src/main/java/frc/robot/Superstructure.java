@@ -168,6 +168,10 @@ public class Superstructure implements Loggable {
         .withName("Ready Algae Low");
   }
 
+  public Command stopPlacer() {
+    return placer.stop();
+  }
+
   public Command readyClimb() {
     return arm.stow()
         .alongWith(placer.stop())
@@ -182,8 +186,8 @@ public class Superstructure implements Loggable {
 
   public Command algaeGroundIntake() {
     return arm.algaeGround()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-        .alongWith(placer.eject())
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgae()))
+        .alongWith(placer.intake())
         .withName("Algae Ground Intake");
   }
 
@@ -194,7 +198,7 @@ public class Superstructure implements Loggable {
         .withName("Coral Ground Intake");
   }
 
-  public Command passthroughIntake() {
+  public Command backCoralIntake() {
     return arm.ground()
         .alongWith(ramp.show())
         .until(arm.canMoveElevator)
@@ -203,7 +207,7 @@ public class Superstructure implements Loggable {
         .withName("Passthrough Intake");
   }
 
-  public Command backwardsIntake() {
+  public Command frontCoralIntake() {
     return arm.stationPickup()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stationPickup()))
         .andThen(placer.intake())
