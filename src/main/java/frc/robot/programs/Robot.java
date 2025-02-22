@@ -29,7 +29,6 @@ import frc.robot.subsystems.swerve.Swerve.Alignment;
 import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
-import java.util.Set;
 
 public class Robot extends LoggedRobot {
   private Swerve swerve;
@@ -224,56 +223,6 @@ public class Robot extends LoggedRobot {
   }
 
   public void setupAuto() {
-    NamedCommands.registerCommand(
-        "To A",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getA()), Set.of(swerve))
-            .withName("To A"));
-    NamedCommands.registerCommand(
-        "To B",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getB()), Set.of(swerve))
-            .withName("To B"));
-    NamedCommands.registerCommand(
-        "To C",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getC()), Set.of(swerve))
-            .withName("To C"));
-    NamedCommands.registerCommand(
-        "To D",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getD()), Set.of(swerve))
-            .withName("To D"));
-    NamedCommands.registerCommand(
-        "To E",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getE()), Set.of(swerve))
-            .withName("To E"));
-    NamedCommands.registerCommand(
-        "To F",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getF()), Set.of(swerve))
-            .withName("To F"));
-    NamedCommands.registerCommand(
-        "To G",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getG()), Set.of(swerve))
-            .withName("To G"));
-    NamedCommands.registerCommand(
-        "To H",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getH()), Set.of(swerve))
-            .withName("To H"));
-    NamedCommands.registerCommand(
-        "To I",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getI()), Set.of(swerve))
-            .withName("To I"));
-    NamedCommands.registerCommand(
-        "To J",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getJ()), Set.of(swerve))
-            .withName("To J"));
-    NamedCommands.registerCommand(
-        "To K",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getK()), Set.of(swerve))
-            .withName("To K"));
-    NamedCommands.registerCommand(
-        "To L",
-        Commands.defer(() -> swerve.poseCentric(ScoringLocations.getL()), Set.of(swerve))
-            .withName("To L"));
-    NamedCommands.registerCommand("To Top", swerve.alignToReef(Alignment.Top));
-    NamedCommands.registerCommand("To Bottom", swerve.alignToReef(Alignment.Bottom));
     NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
     NamedCommands.registerCommand("Ready High Algae", structure.readyAlgaeHigh());
     NamedCommands.registerCommand("Ready Low Algae", structure.readyAlgaeLow());
@@ -282,13 +231,10 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Stow", structure.stow());
 
     SendableChooser<Command> chooser = new SendableChooser<>();
-    chooser.addOption("3 Coral Left (Auto)", new PathPlannerAuto("3 Piece (Auto Align)"));
-    chooser.addOption("3 Coral Right (Auto)", new PathPlannerAuto("3 Piece (Auto Align)", true));
     chooser.addOption("3 Coral Left (Manual)", new PathPlannerAuto("3 Piece (Manual Align)"));
     chooser.addOption(
         "3 Coral Right (Manual)", new PathPlannerAuto("3 Piece (Manual Align)", true));
-    chooser.addOption("1 Coral Backup (Auto)", new PathPlannerAuto("Ranking (Auto Align)"));
-    chooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
+    chooser.addOption("1 Coral Backup (Manual)", new PathPlannerAuto("Ranking (Manual Align)"));
     SmartDashboard.putData("Dashboard/Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
