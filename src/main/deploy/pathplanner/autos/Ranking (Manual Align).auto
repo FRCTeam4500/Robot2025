@@ -26,12 +26,6 @@
         {
           "type": "named",
           "data": {
-            "name": "To H"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "Ready L4"
           }
         },
