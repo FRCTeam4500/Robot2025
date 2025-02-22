@@ -54,13 +54,13 @@ public class SwerveConstants {
                 TalonFXConfiguration config = new TalonFXConfiguration();
                 config.CurrentLimits =
                     new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimit(60)
                         .withSupplyCurrentLimitEnable(true);
                 config.MotorOutput =
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.Clockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(19.3395592116);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(17.5);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -69,14 +69,14 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.19441, 2.2437, 0.25605),
+              FeedforwardController.forConstantGravity(0, 0.19635, 2.0292, 0.19562),
               TargetType.Velocity),
           Motor.fromSparkMax(
               9,
               false,
               motor -> {
                 SparkMaxConfig config = new SparkMaxConfig();
-                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kCoast);
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
@@ -85,14 +85,14 @@ public class SwerveConstants {
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
               sim -> {},
-              (new AnalogEncoder(0).get() - 0.650) * 360,
+              (new AnalogEncoder(0).get() - 0.647) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
                     controller.enableContinuousInput(0, 360);
                     controller.setTolerance(1);
                   }),
-              FeedforwardController.forConstantGravity(0, 0.2832, 0.0089448, 0.0011507),
+              FeedforwardController.forConstantGravity(0, 0.15603, 0.0085738, 0.0010808),
               TargetType.Position));
 
   public static final SwerveModule FRONT_RIGHT_MODULE =
@@ -103,13 +103,13 @@ public class SwerveConstants {
                 TalonFXConfiguration config = new TalonFXConfiguration();
                 config.CurrentLimits =
                     new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimit(60)
                         .withSupplyCurrentLimitEnable(true);
                 config.MotorOutput =
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.CounterClockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(14.4138815898);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(17.5);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -118,14 +118,14 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.17836, 1.6999, 0.21927),
+              FeedforwardController.forConstantGravity(0, 0.20427, 2.0144, 0.25467),
               TargetType.Velocity),
           Motor.fromSparkMax(
               8,
               false,
               motor -> {
                 SparkMaxConfig config = new SparkMaxConfig();
-                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kCoast);
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
@@ -134,7 +134,7 @@ public class SwerveConstants {
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
               sim -> {},
-              (new AnalogEncoder(1).get() - 0.906) * 360,
+              (new AnalogEncoder(1).get() - 0.930) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
@@ -152,13 +152,13 @@ public class SwerveConstants {
                 TalonFXConfiguration config = new TalonFXConfiguration();
                 config.CurrentLimits =
                     new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimit(60)
                         .withSupplyCurrentLimitEnable(true);
                 config.MotorOutput =
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.Clockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(19.0586651169);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(17.5);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -167,14 +167,14 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.17324, 2.3081, 0.24606),
+              FeedforwardController.forConstantGravity(0, 0.2049, 2.0169, 0.2644),
               TargetType.Velocity),
           Motor.fromSparkMax(
               18,
               false,
               motor -> {
                 SparkMaxConfig config = new SparkMaxConfig();
-                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kCoast);
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
@@ -183,7 +183,7 @@ public class SwerveConstants {
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
               sim -> {},
-              (new AnalogEncoder(2).get() - 0.001) * 360,
+              (new AnalogEncoder(2).get() - 0.022) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
@@ -201,13 +201,13 @@ public class SwerveConstants {
                 TalonFXConfiguration config = new TalonFXConfiguration();
                 config.CurrentLimits =
                     new CurrentLimitsConfigs()
-                        .withSupplyCurrentLimit(40)
+                        .withSupplyCurrentLimit(60)
                         .withSupplyCurrentLimitEnable(true);
                 config.MotorOutput =
                     new MotorOutputConfigs()
                         .withNeutralMode(NeutralModeValue.Brake)
                         .withInverted(InvertedValue.CounterClockwise_Positive);
-                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(18.6090424975);
+                config.Feedback = new FeedbackConfigs().withSensorToMechanismRatio(17.5);
                 StatusCode status = StatusCode.StatusCodeNotInitialized;
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
@@ -216,14 +216,14 @@ public class SwerveConstants {
               sim -> {},
               0,
               FeedbackController.fromPID(0.1, 0, 0, controller -> {}),
-              FeedforwardController.forConstantGravity(0, 0.18414, 2.1992, 0.20409),
+              FeedforwardController.forConstantGravity(0, 0.20206, 2.0934, 0.18192),
               TargetType.Velocity),
           Motor.fromSparkMax(
               6,
               false,
               motor -> {
                 SparkMaxConfig config = new SparkMaxConfig();
-                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kBrake);
+                config.inverted(false).smartCurrentLimit(20).idleMode(IdleMode.kCoast);
                 config
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
@@ -232,7 +232,7 @@ public class SwerveConstants {
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
               },
               sim -> {},
-              (new AnalogEncoder(3).get() - 0.854) * 360,
+              (new AnalogEncoder(3).get() - 0.879) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
