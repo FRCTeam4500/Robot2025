@@ -149,8 +149,9 @@ public class Superstructure implements Loggable {
   }
 
   public Command readyLevel4() {
-    return arm.placeL4()
+    return arm.stow()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()))
+        .andThen(arm.placeL4())
         .withName("Ready Level 4");
   }
 
