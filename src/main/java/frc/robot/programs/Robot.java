@@ -223,7 +223,7 @@ public class Robot extends LoggedRobot {
   }
 
   public void setupAuto() {
-    NamedCommands.registerCommand("Ready L4", structure.readyLevel4());
+    NamedCommands.registerCommand("Ready L4", structure.readyLevel4().andThen(structure.stopPlacer()));
     NamedCommands.registerCommand("Ready High Algae", structure.readyAlgaeHigh());
     NamedCommands.registerCommand("Ready Low Algae", structure.readyAlgaeLow());
     NamedCommands.registerCommand("Shoot", structure.shoot());
@@ -231,10 +231,10 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Stow", structure.stow());
 
     SendableChooser<Command> chooser = new SendableChooser<>();
-    chooser.addOption("3 Coral Left (Manual)", new PathPlannerAuto("3 Piece (Manual Align)"));
+    chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
     chooser.addOption(
-        "3 Coral Right (Manual)", new PathPlannerAuto("3 Piece (Manual Align)", true));
-    chooser.addOption("1 Coral Backup (Manual)", new PathPlannerAuto("Ranking (Manual Align)"));
+        "3 Coral Right", new PathPlannerAuto("3 Piece", true));
+    chooser.addOption("1 Coral Backup", new PathPlannerAuto("Backup"));
     SmartDashboard.putData("Dashboard/Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }

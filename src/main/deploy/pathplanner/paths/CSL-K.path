@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.423054622767083,
-        "y": 6.596463737685918
+        "x": 2.730259250670805,
+        "y": 6.5442730924153025
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5919167671977066,
-        "y": 5.240119435764575
+        "x": 3.851511424159593,
+        "y": 5.405504290696272
       },
       "prevControl": {
-        "x": 3.3103333182696972,
-        "y": 5.534987837223923
+        "x": 3.3494308983156045,
+        "y": 5.81756193782478
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,9 +45,9 @@
     "rotation": -59.99999999999999
   },
   "reversed": false,
-  "folder": "To Score (Manual Align)",
+  "folder": "To Score",
   "idealStartingState": {
-    "velocity": 0.0,
+    "velocity": 0,
     "rotation": -55.0
   },
   "useDefaultConstraints": true

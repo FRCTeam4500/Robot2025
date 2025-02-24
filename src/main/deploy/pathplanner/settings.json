@@ -3,9 +3,9 @@
   "robotLength": 0.9652,
   "holonomicMode": true,
   "pathFolders": [
-    "Backup Paths",
+    "To Score",
     "To Coral Station",
-    "To Score (Manual Align)"
+    "Backup Paths"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,
