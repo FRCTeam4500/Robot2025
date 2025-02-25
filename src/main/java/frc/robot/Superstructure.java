@@ -1,30 +1,247 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.climber.Climber;
+import frc.robot.subsystems.elevator.Elevator;
+import frc.robot.subsystems.placer.Placer;
+import frc.robot.subsystems.ramp.Ramp;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-import frc.robot.utilities.logging.sendables.mechanism.LoggedMechanism2d;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A class that holds together the top half of our robot. Basically everything except the
- * drivetrain. It exposes command factories which combine the various subsystems to preform tasks
+ * drivetrain. It exposes command factories which combine the various subsystems
  */
 public class Superstructure implements Loggable {
   // Create objects for all non-drivebase subsystems
-  private LoggedMechanism2d robotMech;
+  private Climber climber;
+  private Elevator elevator;
+  private Ramp ramp;
+  private Arm arm;
+  private Placer placer;
+  private Supplier<Pose2d> robotPose;
 
-  public Superstructure() {
-    robotMech = new LoggedMechanism2d(1.5, 1.5);
-    configureMech();
+  private CoralState nextCoral;
+  private AlgaeState nextAlgae;
+
+  public Superstructure(Supplier<Pose2d> robotPose) {
+    climber = new Climber();
+    elevator = new Elevator();
+    ramp = new Ramp();
+    arm = new Arm();
+    placer = new Placer();
+    this.robotPose = robotPose;
+    nextCoral = CoralState.L4;
+    nextAlgae = AlgaeState.HIGH;
+
+    RobotModeTriggers.teleop().onTrue(stow());
   }
 
-  private void configureMech() {
-    // Append subsystem mechs
-  }
-
-  public void log(String name) {
+  public void log(String path) {
     // Call log() methods for contained subsystems
-    HoundLog.log(name, "Robot Mech", robotMech);
+    HoundLog.log(path, "Climber", climber);
+    HoundLog.log(path, "Elevator", elevator);
+    HoundLog.log(path, "Placer", placer);
+    HoundLog.log(path, "Ramp", ramp);
+    HoundLog.log(path, "Arm", arm);
+    HoundLog.log(path, "Next State/Name", nextCoral);
+    HoundLog.log(path, "Next State/Color", nextCoral.color);
+
+    double percentUp = elevator.getExtension() / 0.95;
+    Transform3d elevatorStagePose =
+        new Transform3d(0.09, 0, 0.14 + .55 * percentUp, new Rotation3d());
+    Transform3d carriagePose = new Transform3d(0.09, 0, 0.2 + 1.13 * percentUp, new Rotation3d());
+    Transform3d armPose =
+        new Transform3d(
+            0.167,
+            0,
+            0.41 + 1.13 * percentUp,
+            new Rotation3d(0, Math.toRadians(-arm.getAngle()), 0));
+    Transform3d rampPose =
+        new Transform3d(0, 0, 0.62, new Rotation3d(0, Math.toRadians(-ramp.getAngle()), 0));
+    Transform3d climberPose =
+        new Transform3d(
+            -0.407, 0, 0.255, new Rotation3d(0, Math.toRadians(-climber.getAngle()), 0));
+    HoundLog.log(
+        path,
+        "Component Poses",
+        new Transform3d[] {elevatorStagePose, carriagePose, armPose, rampPose, climberPose});
+
+    Pose3d robot = new Pose3d(robotPose.get());
+    Transform3d piece = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, Math.PI / 2, 0));
+    Transform3d pieceSideways = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, 0, Math.PI / 2));
+    HoundLog.log("Held Piece", robot.transformBy(armPose).transformBy(piece));
+    HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
   }
 
-  // Put Command Factories Here
+  public Command confirmIntake() {
+    return placer.intake().withName("Confirm Intake");
+  }
+
+  public Command setNextCoral(CoralState state) {
+    return Commands.runOnce(() -> nextCoral = state);
+  }
+
+  public Command setNextAlgae(AlgaeState state) {
+    return Commands.runOnce(() -> nextAlgae = state);
+  }
+
+  public Command readyNextCoral() {
+    return Commands.defer(
+            () -> {
+              switch (nextCoral) {
+                case L1:
+                  return readyLevel1();
+                case L2:
+                  return readyLevel2();
+                case L3:
+                  return readyLevel3();
+                case L4:
+                  return readyLevel4();
+              }
+              return Commands.none();
+            },
+            Set.of())
+        .withName("Ready Next Coral");
+  }
+
+  public Command readyNextAlgae() {
+    return Commands.defer(
+            () -> {
+              switch (nextAlgae) {
+                case LOW:
+                  return readyAlgaeLow();
+                case HIGH:
+                  return readyAlgaeHigh();
+              }
+              return Commands.none();
+            },
+            Set.of())
+        .withName("Ready Next Algae");
+  }
+
+  public Command readyLevel1() {
+    return arm.placeL1()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level1()))
+        .withName("Ready Level 1");
+  }
+
+  public Command readyLevel2() {
+    return arm.placeL2()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level2()))
+        .withName("Ready Level 2");
+  }
+
+  public Command readyLevel3() {
+    return arm.placeL3()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level3()))
+        .withName("Ready Level 3");
+  }
+
+  public Command readyLevel4() {
+    return arm.stow()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()))
+        .andThen(arm.placeL4())
+        .withName("Ready Level 4");
+  }
+
+  public Command readyAlgaeHigh() {
+    return arm.dislodge()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.highAlgae()))
+        .alongWith(placer.eject())
+        .withName("Ready Algae High");
+  }
+
+  public Command readyAlgaeLow() {
+    return arm.dislodge()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.lowAlgae()))
+        .alongWith(placer.eject())
+        .withName("Ready Algae Low");
+  }
+
+  public Command stopPlacer() {
+    return placer.stop();
+  }
+
+  public Command readyClimb() {
+    return arm.climb()
+        .alongWith(placer.stop())
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
+        .alongWith(ramp.hide().andThen(climber.ready()))
+        .withName("Ready Climb");
+  }
+
+  public Command climb() {
+    return climber.climb().withName("Climb");
+  }
+
+  public Command algaeGroundIntake() {
+    return arm.algaeGround()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgae()))
+        .alongWith(placer.intake())
+        .withName("Algae Ground Intake");
+  }
+
+  public Command groundIntake() {
+    return arm.ground()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundPickup()))
+        .alongWith(placer.intake())
+        .withName("Coral Ground Intake");
+  }
+
+  public Command backCoralIntake() {
+    return arm.ground()
+        .alongWith(ramp.show())
+        .until(arm.canMoveElevator)
+        .andThen(elevator.handoff())
+        .andThen(arm.handoff().alongWith(placer.intake()))
+        .withName("Passthrough Intake");
+  }
+
+  public Command frontCoralIntake() {
+    return arm.stationPickup()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stationPickup()))
+        .andThen(placer.intake())
+        .withName("Backwards Intake");
+  }
+
+  public Command shoot() {
+    return placer.eject().andThen(Commands.waitSeconds(0.25)).withName("Shoot");
+  }
+
+  public Command stow() {
+    return arm.stow()
+        .andThen(placer.stop())
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
+        .alongWith(climber.stow().andThen(ramp.show()))
+        .withName("Stow");
+  }
+
+  public static enum CoralState {
+    L1(Color.kYellow),
+    L2(Color.kSkyBlue),
+    L3(Color.kLimeGreen),
+    L4(Color.kRed);
+
+    public final String color;
+
+    private CoralState(Color color) {
+      this.color = color.toHexString();
+    }
+  }
+
+  public static enum AlgaeState {
+    LOW,
+    HIGH;
+  }
 }
