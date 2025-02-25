@@ -1,5 +1,7 @@
 package frc.robot.subsystems.swerve;
 
+import java.io.ObjectInputFilter.Status;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -7,6 +9,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -14,7 +17,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
@@ -22,6 +27,15 @@ import frc.robot.utilities.FeedforwardController;
 
 @SuppressWarnings("resource")
 public class SwerveConstants {
+  private static Alert flaConfigError = new Alert("Front Left Angle Config Failed :(", AlertType.kError);
+  private static Alert fraConfigError = new Alert("Front Right Angle Config Failed :(", AlertType.kError);
+  private static Alert blaConfigError = new Alert("Back Left Angle Config Failed :(", AlertType.kError);
+  private static Alert braConfigError = new Alert("Back Right Angle Config Failed :(", AlertType.kError);
+  private static Alert fldConfigError = new Alert("Front Left Drive Config Failed :(", AlertType.kError);
+  private static Alert frdConfigError = new Alert("Front Right Drive Config Failed :(", AlertType.kError);
+  private static Alert bldConfigError = new Alert("Back Left Drive Config Failed :(", AlertType.kError);
+  private static Alert brdConfigError = new Alert("Back Right Drive Config Failed :(", AlertType.kError);
+
   /** The max speed the robot should travel at */
   public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(3.5, 3.5, 4);
 
@@ -65,6 +79,8 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) fldConfigError.set(true);
+                else fldConfigError.set(false);
               },
               sim -> {},
               0,
@@ -81,8 +97,10 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
+                REVLibError err = motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) flaConfigError.set(true);
+                else flaConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(0).get() - 0.647) * 360,
@@ -114,6 +132,8 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) frdConfigError.set(true);
+                else frdConfigError.set(false);
               },
               sim -> {},
               0,
@@ -130,8 +150,10 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
+                REVLibError err = motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) fraConfigError.set(true);
+                else fraConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(1).get() - 0.930) * 360,
@@ -163,6 +185,8 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) bldConfigError.set(true);
+                else bldConfigError.set(false);
               },
               sim -> {},
               0,
@@ -179,8 +203,10 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
+                REVLibError err = motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) blaConfigError.set(true);
+                else blaConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(2).get() - 0.022) * 360,
@@ -212,6 +238,8 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) brdConfigError.set(true);
+                else brdConfigError.set(false);
               },
               sim -> {},
               0,
@@ -228,8 +256,10 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
+                REVLibError err = motor.configure(
                     config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) braConfigError.set(true);
+                else braConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(3).get() - 0.879) * 360,

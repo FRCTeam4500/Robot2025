@@ -2,10 +2,13 @@ package frc.robot.subsystems.elevator;
 
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,6 +31,8 @@ public class Elevator extends SubsystemBase implements Loggable {
           () -> {
             return upMotor.getPosition() > 0.6;
           });
+
+  private Alert configError = new Alert("Elevator Config Failed :(", AlertType.kError);
 
   private final double zeroedPosition = 0;
   private final double stowPosition = 0;
@@ -54,8 +59,10 @@ public class Elevator extends SubsystemBase implements Loggable {
               config.encoder.positionConversionFactor(1 / 63.1167979003);
               config.encoder.velocityConversionFactor(1 / 63.1167979003);
               config.smartCurrentLimit(60);
-              spark.configure(
+              REVLibError err = spark.configure(
                   config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+              if (!err.equals(REVLibError.kOk)) configError.set(true);
+              else configError.set(false);
             },
             (FeedforwardSim sim) -> {
               sim.withHardstops(0, 1);

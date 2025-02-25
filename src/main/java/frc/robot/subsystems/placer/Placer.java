@@ -1,9 +1,13 @@
 package frc.robot.subsystems.placer;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,6 +24,8 @@ import frc.robot.utilities.logging.Loggable;
 
 public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
+
+  private Alert configError = new Alert("Placer Config Failed :(", AlertType.kError);
 
   private final double intakeSpeed = -25;
   // private final double algaeSpeed = -35;
@@ -38,14 +44,19 @@ public class Placer extends SubsystemBase implements Loggable {
     runMotor =
         Motor.fromTalonFX(
             PlacerWiring.PLACER_ID,
-            (TalonFX fx) -> {
+            (TalonFX motor) -> {
               TalonFXConfiguration config = new TalonFXConfiguration();
               config.Audio.AllowMusicDurDisable = true;
               config.CurrentLimits.StatorCurrentLimitEnable = false;
               config.CurrentLimits.SupplyCurrentLimitEnable = false;
               config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
               config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-              fx.getConfigurator().apply(config);
+              StatusCode status = StatusCode.StatusCodeNotInitialized;
+              for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                status = motor.getConfigurator().apply(config);
+              }
+              if (status != StatusCode.OK) configError.set(true);
+              else configError.set(false);
             },
             (FeedforwardSim sim) -> {},
             0,

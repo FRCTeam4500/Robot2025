@@ -1,9 +1,12 @@
 package frc.robot.subsystems.arm;
 
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,6 +38,8 @@ public class Arm extends SubsystemBase implements Loggable {
   public final Trigger canMoveElevator =
       new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);
 
+  private Alert configError = new Alert("Arm Config Failed :(", AlertType.kError);
+
   public Arm() {
     tiltMotor =
         Motor.fromTalonFX(
@@ -48,7 +53,12 @@ public class Arm extends SubsystemBase implements Loggable {
               config.CurrentLimits.StatorCurrentLimit = 60;
               config.CurrentLimits.StatorCurrentLimitEnable = true;
               config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-              motor.getConfigurator().apply(config);
+              StatusCode status = StatusCode.StatusCodeNotInitialized;
+              for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                status = motor.getConfigurator().apply(config);
+              }
+              if (status != StatusCode.OK) configError.set(true);
+              else configError.set(false);
             },
             sim -> {
               sim.withHardstops(handoffAngle, startAngle);
