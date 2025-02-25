@@ -23,7 +23,7 @@ import frc.robot.utilities.FeedforwardController;
 @SuppressWarnings("resource")
 public class SwerveConstants {
   /** The max speed the robot should travel at */
-  public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(5, 5, 4);
+  public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(3.5, 3.5, 4);
 
   /** The minimum coefficient for slowmode */
   public static final double MIN_COEFFICIENT = 0.2;
