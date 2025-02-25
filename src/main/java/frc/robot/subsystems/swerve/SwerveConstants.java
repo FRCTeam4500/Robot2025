@@ -1,7 +1,5 @@
 package frc.robot.subsystems.swerve;
 
-import java.io.ObjectInputFilter.Status;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -18,8 +16,8 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
@@ -27,14 +25,22 @@ import frc.robot.utilities.FeedforwardController;
 
 @SuppressWarnings("resource")
 public class SwerveConstants {
-  private static Alert flaConfigError = new Alert("Front Left Angle Config Failed :(", AlertType.kError);
-  private static Alert fraConfigError = new Alert("Front Right Angle Config Failed :(", AlertType.kError);
-  private static Alert blaConfigError = new Alert("Back Left Angle Config Failed :(", AlertType.kError);
-  private static Alert braConfigError = new Alert("Back Right Angle Config Failed :(", AlertType.kError);
-  private static Alert fldConfigError = new Alert("Front Left Drive Config Failed :(", AlertType.kError);
-  private static Alert frdConfigError = new Alert("Front Right Drive Config Failed :(", AlertType.kError);
-  private static Alert bldConfigError = new Alert("Back Left Drive Config Failed :(", AlertType.kError);
-  private static Alert brdConfigError = new Alert("Back Right Drive Config Failed :(", AlertType.kError);
+  private static Alert flaConfigError =
+      new Alert("Front Left Angle Config Failed :(", AlertType.kError);
+  private static Alert fraConfigError =
+      new Alert("Front Right Angle Config Failed :(", AlertType.kError);
+  private static Alert blaConfigError =
+      new Alert("Back Left Angle Config Failed :(", AlertType.kError);
+  private static Alert braConfigError =
+      new Alert("Back Right Angle Config Failed :(", AlertType.kError);
+  private static Alert fldConfigError =
+      new Alert("Front Left Drive Config Failed :(", AlertType.kError);
+  private static Alert frdConfigError =
+      new Alert("Front Right Drive Config Failed :(", AlertType.kError);
+  private static Alert bldConfigError =
+      new Alert("Back Left Drive Config Failed :(", AlertType.kError);
+  private static Alert brdConfigError =
+      new Alert("Back Right Drive Config Failed :(", AlertType.kError);
 
   /** The max speed the robot should travel at */
   public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(3.5, 3.5, 4);
@@ -97,8 +103,9 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                REVLibError err = motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) flaConfigError.set(true);
                 else flaConfigError.set(false);
               },
@@ -150,8 +157,9 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                REVLibError err = motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) fraConfigError.set(true);
                 else fraConfigError.set(false);
               },
@@ -203,8 +211,9 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                REVLibError err = motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) blaConfigError.set(true);
                 else blaConfigError.set(false);
               },
@@ -256,8 +265,9 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                REVLibError err = motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) braConfigError.set(true);
                 else braConfigError.set(false);
               },

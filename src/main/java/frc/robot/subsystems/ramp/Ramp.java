@@ -1,8 +1,8 @@
 package frc.robot.subsystems.ramp;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -43,7 +43,9 @@ public class Ramp extends SubsystemBase implements Loggable {
               config.encoder.positionConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
               config.encoder.velocityConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
               config.smartCurrentLimit(60);
-              REVLibError err = max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+              REVLibError err =
+                  max.configure(
+                      config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
               if (!err.equals(REVLibError.kOk)) configError.set(true);
               else configError.set(false);
             },
