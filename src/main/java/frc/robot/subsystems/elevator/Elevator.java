@@ -40,8 +40,8 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double groundPosition = 0.05; // ground intake?
   private final double groundAlgaePosition = 0.25;
   private final double processingPosition = 0; // algae processor
-  private final double lowAlgaePosition = 0.35; // between l2 and l3
-  private final double highAlgaePosition = 0.7; // between l3 and l4
+  private final double lowAlgaePosition = 0.2; // between l2 and l3
+  private final double highAlgaePosition = 0.55; // between l3 and l4
 
   public Elevator() {
     upMotor =
