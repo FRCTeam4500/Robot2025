@@ -23,7 +23,7 @@ public class Ramp extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
 
   private double intakeAngle = -200;
-  private double stowAngle = -80;
+  private double stowAngle = -273;
 
   /** Creates a new Ramp subsystem. */
   public Ramp() {

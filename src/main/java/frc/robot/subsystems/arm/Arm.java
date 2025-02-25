@@ -28,6 +28,7 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double handoffAngle = -85;
   private final double stationAngle = 70;
   private final double groundAngle = -30;
+  private final double climbAngle = -20;
   private final double dislodgeAngle = 40;
   private final double algaeGroundAngle = -20;
 
@@ -82,6 +83,19 @@ public class Arm extends SubsystemBase implements Loggable {
     return Commands.runOnce(
             () -> {
               tiltMotor.setTarget(groundAngle);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return tiltMotor.atTarget();
+                }));
+  }
+
+  public Command climb() {
+    return Commands.runOnce(
+            () -> {
+              tiltMotor.setTarget(climbAngle);
             },
             this)
         .andThen(
