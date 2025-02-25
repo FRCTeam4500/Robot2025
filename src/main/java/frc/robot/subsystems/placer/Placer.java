@@ -22,8 +22,8 @@ public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
 
   private final double intakeSpeed = -25;
-  //private final double algaeSpeed = -35;
-  //private final boolean hasAlgae =false;
+  // private final double algaeSpeed = -35;
+  // private final boolean hasAlgae =false;
   private final double ejectSpeed = 15;
 
   public final Trigger hasPieceTrigger =
