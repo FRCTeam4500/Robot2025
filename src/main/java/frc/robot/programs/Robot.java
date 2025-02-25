@@ -47,14 +47,14 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Debug/Command Scheduler", CommandScheduler.getInstance());
 
     ScoringLocations.setupBlue(
-        new Pose2d(3.02, 4.19, Rotation2d.fromDegrees(0)),
-        new Pose2d(3.02, 3.86, Rotation2d.fromDegrees(0)),
+        new Pose2d(3.03, 4.19, Rotation2d.fromDegrees(0)),
+        new Pose2d(3.03, 3.86, Rotation2d.fromDegrees(0)),
         new Pose2d(2.99, 4.025, Rotation2d.fromDegrees(0)),
         new Pose2d(5.97, 4.025, Rotation2d.fromDegrees(180)));
 
     ScoringLocations.setupRed(
-        new Pose2d(14.53, 3.86, Rotation2d.fromDegrees(180)),
-        new Pose2d(14.53, 4.19, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.52, 3.86, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.52, 4.19, Rotation2d.fromDegrees(180)),
         new Pose2d(14.56, 4.025, Rotation2d.fromDegrees(180)),
         new Pose2d(11.58, 4.025, Rotation2d.fromDegrees(0)));
 
