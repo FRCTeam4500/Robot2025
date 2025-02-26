@@ -202,45 +202,51 @@ public class Swerve extends SubsystemBase implements Loggable {
    */
   public Command angleCentric(XboxController xbox) {
     return Commands.run(
-      () -> {
-        drive(calculateVelRobotRel(xbox));
-      },
-      this)
-      .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-      .withName("Angle Centric");
-    }
-    
-    public Command robotCentric(XboxController xbox) {
-      return Commands.run(
-        () -> {
-          double coefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
-          drive(
-            new ChassisSpeeds(
-              coefficient
-              * withHardDeadzone(-xbox.getLeftY(), 0.1)
-              * MAX_SPEEDS.vxMetersPerSecond,
-              coefficient
-              * withHardDeadzone(-xbox.getLeftX(), 0.1)
-              * MAX_SPEEDS.vyMetersPerSecond,
-              coefficient
-              * withHardDeadzone(-xbox.getRightX(), 0.1)
-              * MAX_SPEEDS.omegaRadiansPerSecond));
+            () -> {
+              drive(calculateVelRobotRel(xbox));
             },
             this)
-            .withName("Robot Centric");
-          }
-          
-          public Command reefCentric(XboxController xbox) {
-            return Commands.run(() -> {
-              targetHeading = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
-              drive(calculateVelRobotRel(xbox));
-            }, this).withName("Reef Centric");
-          }
+        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+        .withName("Angle Centric");
+  }
 
-          public Command poseCentric(Pose2d target) {
-            return Commands.run(
-              () -> {
-                Pose2d current = estimator.getEstimatedPosition();
+  public Command robotCentric(XboxController xbox) {
+    return Commands.run(
+            () -> {
+              double coefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
+              drive(
+                  new ChassisSpeeds(
+                      coefficient
+                          * withHardDeadzone(-xbox.getLeftY(), 0.1)
+                          * MAX_SPEEDS.vxMetersPerSecond,
+                      coefficient
+                          * withHardDeadzone(-xbox.getLeftX(), 0.1)
+                          * MAX_SPEEDS.vyMetersPerSecond,
+                      coefficient
+                          * withHardDeadzone(-xbox.getRightX(), 0.1)
+                          * MAX_SPEEDS.omegaRadiansPerSecond));
+            },
+            this)
+        .withName("Robot Centric");
+  }
+
+  public Command reefCentric(XboxController xbox) {
+    return Commands.run(
+            () -> {
+              targetHeading =
+                  ScoringLocations.getDriveTarget(
+                          estimator.getEstimatedPosition().getTranslation(), Alignment.Middle)
+                      .getRotation();
+              drive(calculateVelRobotRel(xbox));
+            },
+            this)
+        .withName("Reef Centric");
+  }
+
+  public Command poseCentric(Pose2d target) {
+    return Commands.run(
+            () -> {
+              Pose2d current = estimator.getEstimatedPosition();
               ChassisSpeeds speeds = poseFeedback.calculate(current, target);
               drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
             },
@@ -270,13 +276,15 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command turnToReef() {
-    return Commands.defer(() -> {
-      return setTargetHeading(ScoringLocations.getDriveTarget(
-        estimator.getEstimatedPosition().getTranslation(), Alignment.Middle
-      ).getRotation());
-    }, Set.of(this));
+    return Commands.defer(
+        () -> {
+          return setTargetHeading(
+              ScoringLocations.getDriveTarget(
+                      estimator.getEstimatedPosition().getTranslation(), Alignment.Middle)
+                  .getRotation());
+        },
+        Set.of(this));
   }
-
 
   /**
    * Updates the heading of the robot
@@ -479,7 +487,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
       PoseEstimate estimate = camera.getPoseMT1();
-      if (estimate.exists() && (estimate.averageDistance() < 2)) {
+      if (estimate.exists() && (estimate.averageDistance() < 2) && camera.isEnabled()) {
         estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }
