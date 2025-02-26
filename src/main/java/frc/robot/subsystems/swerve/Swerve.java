@@ -202,38 +202,45 @@ public class Swerve extends SubsystemBase implements Loggable {
    */
   public Command angleCentric(XboxController xbox) {
     return Commands.run(
-            () -> {
+      () -> {
+        drive(calculateVelRobotRel(xbox));
+      },
+      this)
+      .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+      .withName("Angle Centric");
+    }
+    
+    public Command robotCentric(XboxController xbox) {
+      return Commands.run(
+        () -> {
+          double coefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
+          drive(
+            new ChassisSpeeds(
+              coefficient
+              * withHardDeadzone(-xbox.getLeftY(), 0.1)
+              * MAX_SPEEDS.vxMetersPerSecond,
+              coefficient
+              * withHardDeadzone(-xbox.getLeftX(), 0.1)
+              * MAX_SPEEDS.vyMetersPerSecond,
+              coefficient
+              * withHardDeadzone(-xbox.getRightX(), 0.1)
+              * MAX_SPEEDS.omegaRadiansPerSecond));
+            },
+            this)
+            .withName("Robot Centric");
+          }
+          
+          public Command reefCentric(XboxController xbox) {
+            return Commands.run(() -> {
+              targetHeading = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
               drive(calculateVelRobotRel(xbox));
-            },
-            this)
-        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-        .withName("Angle Centric");
-  }
+            }, this).withName("Reef Centric");
+          }
 
-  public Command robotCentric(XboxController xbox) {
-    return Commands.run(
-            () -> {
-              double coefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
-              drive(
-                  new ChassisSpeeds(
-                      coefficient
-                          * withHardDeadzone(-xbox.getLeftY(), 0.1)
-                          * MAX_SPEEDS.vxMetersPerSecond,
-                      coefficient
-                          * withHardDeadzone(-xbox.getLeftX(), 0.1)
-                          * MAX_SPEEDS.vyMetersPerSecond,
-                      coefficient
-                          * withHardDeadzone(-xbox.getRightX(), 0.1)
-                          * MAX_SPEEDS.omegaRadiansPerSecond));
-            },
-            this)
-        .withName("Robot Centric");
-  }
-
-  public Command poseCentric(Pose2d target) {
-    return Commands.run(
-            () -> {
-              Pose2d current = estimator.getEstimatedPosition();
+          public Command poseCentric(Pose2d target) {
+            return Commands.run(
+              () -> {
+                Pose2d current = estimator.getEstimatedPosition();
               ChassisSpeeds speeds = poseFeedback.calculate(current, target);
               drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
             },
@@ -269,6 +276,7 @@ public class Swerve extends SubsystemBase implements Loggable {
       ).getRotation());
     }, Set.of(this));
   }
+
 
   /**
    * Updates the heading of the robot
