@@ -46,12 +46,18 @@ public class Limelight implements Loggable {
     this.name = name;
     table = NetworkTableInstance.getDefault().getTable(this.name);
     table.getEntry("pipline").setInteger(pipeline);
-    Sendable isEnabledSendable = new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.addBooleanProperty(name, () -> enabled, (boolean val) -> { enabled = val; });
-      }
-    };
+    Sendable isEnabledSendable =
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.addBooleanProperty(
+                name,
+                () -> enabled,
+                (boolean val) -> {
+                  enabled = val;
+                });
+          }
+        };
     SmartDashboard.putData("[Limelight] " + this.name + " Enabled", isEnabledSendable);
   }
 
