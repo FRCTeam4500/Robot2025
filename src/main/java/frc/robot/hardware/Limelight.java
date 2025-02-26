@@ -5,6 +5,9 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
@@ -31,6 +34,7 @@ import frc.robot.utilities.logging.Loggable;
 public class Limelight implements Loggable {
   private NetworkTable table;
   private String name;
+  private boolean enabled;
 
   /**
    * Make a limelight with the given name and pipeline
@@ -39,9 +43,16 @@ public class Limelight implements Loggable {
    * @param pipeline The pipeline to be used. These are configured in a web browser.
    */
   public Limelight(String name, int pipeline) {
-    table = NetworkTableInstance.getDefault().getTable(name);
-    table.getEntry("pipline").setInteger(pipeline);
     this.name = name;
+    table = NetworkTableInstance.getDefault().getTable(this.name);
+    table.getEntry("pipline").setInteger(pipeline);
+    Sendable isEnabledSendable = new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+        builder.addBooleanProperty(name, () -> enabled, (boolean val) -> { enabled = val; });
+      }
+    };
+    SmartDashboard.putData("[Limelight] " + this.name + " Enabled", isEnabledSendable);
   }
 
   /**
@@ -165,6 +176,10 @@ public class Limelight implements Loggable {
 
   public String getName() {
     return name;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
   }
 
   /** Holds an estimated position from a vison system. */
