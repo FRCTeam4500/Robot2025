@@ -34,7 +34,7 @@ import frc.robot.utilities.logging.Loggable;
 public class Limelight implements Loggable {
   private NetworkTable table;
   private String name;
-  private boolean enabled;
+  private boolean enabled = true;
 
   /**
    * Make a limelight with the given name and pipeline
