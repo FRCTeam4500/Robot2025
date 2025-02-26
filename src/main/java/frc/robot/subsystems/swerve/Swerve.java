@@ -105,14 +105,14 @@ public class Swerve extends SubsystemBase implements Loggable {
     poseFeedback =
         new PoseFeedbackController(
             FeedbackController.fromPID(
-                3,
+                5,
                 0,
                 0,
                 pid -> {
                   pid.setTolerance(0.005);
                 }),
             FeedbackController.fromPID(
-                3,
+                5,
                 0,
                 0,
                 pid -> {

@@ -26,7 +26,7 @@ public class Placer extends SubsystemBase implements Loggable {
 
   private Alert configError = new Alert("Placer Config Failed :(", AlertType.kError);
 
-  private final double intakeSpeed = -25;
+  private final double intakeSpeed = -30;
   // private final double algaeSpeed = -35;
   // private final boolean hasAlgae =false;
   private final double ejectSpeed = 15;

@@ -108,7 +108,7 @@ public class Robot extends LoggedRobot {
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
     stowButton.onTrue(structure.stow());
     confirmIntake.onTrue(structure.confirmIntake());
-    confirmIntake.onFalse(structure.stow());
+    confirmIntake.onFalse(structure.stopPlacer());
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
     frontCoralIntake
