@@ -262,6 +262,14 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Align To Reef: " + position.name() + " Side");
   }
 
+  public Command turnToReef() {
+    return Commands.defer(() -> {
+      return setTargetHeading(ScoringLocations.getDriveTarget(
+        estimator.getEstimatedPosition().getTranslation(), Alignment.Middle
+      ).getRotation());
+    }, Set.of(this));
+  }
+
   /**
    * Updates the heading of the robot
    *
