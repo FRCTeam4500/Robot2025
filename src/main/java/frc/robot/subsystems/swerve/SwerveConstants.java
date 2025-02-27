@@ -46,7 +46,7 @@ public class SwerveConstants {
   public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(3.5, 3.5, 4);
 
   /** The minimum coefficient for slowmode */
-  public static final double MIN_COEFFICIENT = 0.2;
+  public static final double MIN_COEFFICIENT = 0.14546;
 
   /** The absolute max acheivable module speed */
   public static final double MAX_MODULE_SPEED = 5.4;
