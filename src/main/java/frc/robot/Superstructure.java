@@ -1,5 +1,8 @@
 package frc.robot;
 
+import java.util.Set;
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -8,6 +11,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
 import frc.robot.subsystems.elevator.Elevator;
@@ -15,8 +19,6 @@ import frc.robot.subsystems.placer.Placer;
 import frc.robot.subsystems.ramp.Ramp;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-import java.util.Set;
-import java.util.function.Supplier;
 
 /**
  * A class that holds together the top half of our robot. Basically everything except the
@@ -33,6 +35,11 @@ public class Superstructure implements Loggable {
 
   private CoralState nextCoral;
   private AlgaeState nextAlgae;
+
+  private boolean isPlacingAlgae = false;
+
+  private boolean shouldMoveBackAfterShoot = false;
+  public Trigger moveAfterShoot = new Trigger(() -> shouldMoveBackAfterShoot);
 
   public Superstructure(Supplier<Pose2d> robotPose) {
     climber = new Climber();
@@ -99,6 +106,7 @@ public class Superstructure implements Loggable {
   public Command readyNextCoral() {
     return Commands.defer(
             () -> {
+              isPlacingAlgae=false;
               switch (nextCoral) {
                 case L1:
                   return readyLevel1();
@@ -118,6 +126,7 @@ public class Superstructure implements Loggable {
   public Command readyNextAlgae() {
     return Commands.defer(
             () -> {
+              isPlacingAlgae = true;
               switch (nextAlgae) {
                 case LOW:
                   return readyAlgaeLow();
@@ -133,7 +142,8 @@ public class Superstructure implements Loggable {
   public Command readyLevel1() {
     return arm.placeL1()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level1()))
-        .withName("Ready Level 1");
+        .withName("Ready Level 1")
+        .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = true));
   }
 
   public Command readyLevel2() {
@@ -158,14 +168,14 @@ public class Superstructure implements Loggable {
   public Command readyAlgaeHigh() {
     return arm.dislodge()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.highAlgae()))
-        .alongWith(placer.eject())
+        .alongWith(placer.eject(placer.algaeEjectSpeed))
         .withName("Ready Algae High");
   }
 
   public Command readyAlgaeLow() {
     return arm.dislodge()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.lowAlgae()))
-        .alongWith(placer.eject())
+        .alongWith(placer.eject(placer.algaeEjectSpeed))
         .withName("Ready Algae Low");
   }
 
@@ -216,7 +226,10 @@ public class Superstructure implements Loggable {
   }
 
   public Command shoot() {
-    return placer.eject().andThen(Commands.waitSeconds(0.25)).withName("Shoot");
+    return Commands.defer(
+      () -> placer.eject(isPlacingAlgae ? placer.algaeEjectSpeed : placer.coralEjectSpeed)
+                  .andThen(Commands.waitSeconds(isPlacingAlgae ? 0.35 : 0.25))
+                  .withName("Shoot"), Set.of());
   }
 
   public Command stow() {
@@ -224,7 +237,8 @@ public class Superstructure implements Loggable {
         .andThen(placer.stop())
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
         .alongWith(climber.stow().andThen(ramp.show()))
-        .withName("Stow");
+        .withName("Stow")
+        .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false));
   }
 
   public static enum CoralState {

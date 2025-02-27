@@ -25,11 +25,9 @@ public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
 
   private Alert configError = new Alert("Placer Config Failed :(", AlertType.kError);
-
-  private final double intakeSpeed = -30;
-  // private final double algaeSpeed = -35;
-  // private final boolean hasAlgae =false;
-  private final double ejectSpeed = 15;
+  private final double intakeSpeed = -25;
+  public final double coralEjectSpeed = 15;
+  public final double algaeEjectSpeed = 25;
 
   public final Trigger hasPieceTrigger =
       new Trigger(
@@ -100,10 +98,10 @@ public class Placer extends SubsystemBase implements Loggable {
   /**
    * @return A command that makes the shooter?? intaker?? spit
    */
-  public Command eject() {
+  public Command eject(double speed) {
     return Commands.runOnce(
             () -> {
-              runMotor.setTarget(ejectSpeed);
+              runMotor.setTarget(speed);
             },
             this)
         .andThen(

@@ -180,10 +180,16 @@ public class Robot extends LoggedRobot {
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
-    shoot.onTrue(
+
+    shoot.and(structure.moveAfterShoot).onTrue(
         structure
             .shoot()
             .andThen(swerve.backup())
+            .andThen(Commands.runOnce(() -> structure.stow().schedule()))
+            .withName("Shoot and Stow and Move"));
+    shoot.and(structure.moveAfterShoot.negate()).onTrue(
+        structure
+            .shoot()
             .andThen(Commands.runOnce(() -> structure.stow().schedule()))
             .withName("Shoot and Stow"));
     backCoralIntake
