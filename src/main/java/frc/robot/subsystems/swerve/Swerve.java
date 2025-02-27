@@ -17,6 +17,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -28,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
@@ -51,6 +54,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   private FeedbackController headingFeedback;
   private PoseFeedbackController poseFeedback;
   private Pose2d targetPose;
+  private boolean useMT1;
 
   public final Trigger closerToRight =
       new Trigger(
@@ -127,6 +131,19 @@ public class Swerve extends SubsystemBase implements Loggable {
                   pid.setTolerance(1);
                 }));
     targetPose = new Pose2d();
+    useMT1 = true;
+    RobotModeTriggers.disabled().negate().onTrue(
+      Commands.runOnce(() -> useMT1 = false).ignoringDisable(true)
+    );
+    RobotModeTriggers.disabled().onTrue(
+      Commands.runOnce(() -> useMT1 = true).ignoringDisable(useMT1)
+    );
+    SmartDashboard.putData("Vision Method", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+          builder.addBooleanProperty("MT1", () -> useMT1, toUse -> useMT1 = toUse);
+      }
+    });
 
     GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
 
@@ -486,8 +503,11 @@ public class Swerve extends SubsystemBase implements Loggable {
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
-      PoseEstimate estimate = camera.getPoseMT1();
-      if (estimate.exists() && (estimate.averageDistance() < 3) && camera.isEnabled()) {
+      PoseEstimate estimate = camera.getPoseMT2(estimator.getEstimatedPosition().getRotation(), Rotation2d.fromRadians(getSpeeds().omegaRadiansPerSecond));
+      if (useMT1) {
+        estimate = camera.getPoseMT1();
+      }
+      if (estimate.exists() && (estimate.averageDistance() < 2) && camera.isEnabled()) {
         estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }
