@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,77 +27,72 @@ public class Climber extends SubsystemBase implements Loggable {
   private final double readyPosition = 180;
   private final double stowPosition = 0;
 
-  private Alert configError = new Alert(
-    "Climber Config Failed :(",
-    AlertType.kError
-  );
+  private Alert configError = new Alert("Climber Config Failed :(", AlertType.kError);
 
   public Climber() {
-    winchMotor = Motor.fromTalonFX(
-      ClimberWiring.CLIMBER_ID,
-      (TalonFX motor) -> {
-        TalonFXConfiguration config = new TalonFXConfiguration();
-        config.Audio.AllowMusicDurDisable = true;
-        config.Feedback.SensorToMechanismRatio = 1;
-        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-        config.CurrentLimits.StatorCurrentLimit = 60;
-        config.CurrentLimits.StatorCurrentLimitEnable = true;
-        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-        StatusCode status = StatusCode.StatusCodeNotInitialized;
-        for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-          status = motor.getConfigurator().apply(config);
-        }
-        if (status != StatusCode.OK) configError.set(true);
-        else configError.set(false);
-      },
-      (FeedforwardSim sim) -> {},
-      0.0,
-      FeedbackController.fromPID(1, 0, 0, pid -> {}),
-      FeedforwardController.forNone(),
-      TargetType.Position
-    );
-    winchMotor
-      .getSysIDCommands("Climber", 1, 1, 5)
-      .putOnDashboard("Climber", this);
+    winchMotor =
+        Motor.fromTalonFX(
+            ClimberWiring.CLIMBER_ID,
+            (TalonFX motor) -> {
+              TalonFXConfiguration config = new TalonFXConfiguration();
+              config.Audio.AllowMusicDurDisable = true;
+              config.Feedback.SensorToMechanismRatio = 1;
+              config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+              config.CurrentLimits.StatorCurrentLimit = 60;
+              config.CurrentLimits.StatorCurrentLimitEnable = true;
+              config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+              StatusCode status = StatusCode.StatusCodeNotInitialized;
+              for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                status = motor.getConfigurator().apply(config);
+              }
+              if (status != StatusCode.OK) configError.set(true);
+              else configError.set(false);
+            },
+            (FeedforwardSim sim) -> {},
+            0.0,
+            FeedbackController.fromPID(1, 0, 0, pid -> {}),
+            FeedforwardController.forNone(),
+            TargetType.Position);
+    winchMotor.getSysIDCommands("Climber", 1, 1, 5).putOnDashboard("Climber", this);
   }
 
   public Command stow() {
     return Commands.runOnce(
-      () -> {
-        winchMotor.setTarget(stowPosition);
-      },
-      this
-    ).andThen(
-      Commands.waitUntil(() -> {
-        return winchMotor.atTarget();
-      })
-    );
+            () -> {
+              winchMotor.setTarget(stowPosition);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return winchMotor.atTarget();
+                }));
   }
 
   public Command ready() {
     return Commands.runOnce(
-      () -> {
-        winchMotor.setTarget(readyPosition);
-      },
-      this
-    ).andThen(
-      Commands.waitUntil(() -> {
-        return winchMotor.atTarget();
-      })
-    );
+            () -> {
+              winchMotor.setTarget(readyPosition);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return winchMotor.atTarget();
+                }));
   }
 
   public Command climb() {
     return Commands.runOnce(
-      () -> {
-        winchMotor.setTarget(climbPosition);
-      },
-      this
-    ).andThen(
-      Commands.waitUntil(() -> {
-        return winchMotor.atTarget();
-      })
-    );
+            () -> {
+              winchMotor.setTarget(climbPosition);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return winchMotor.atTarget();
+                }));
   }
 
   @Override
