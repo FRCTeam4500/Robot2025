@@ -1,81 +1,112 @@
 package frc.robot.subsystems.climber;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.WiringConstants.ClimberWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
 import frc.robot.utilities.FeedbackController;
+import frc.robot.utilities.FeedforwardController;
+import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 
 public class Climber extends SubsystemBase implements Loggable {
-  private Motor tiltyMotor;
 
-  private final double climbAngle = 45;
-  private final double readyAngle = 180;
-  private final double stowAngle = 0;
+  private Motor winchMotor;
+
+  private final double climbPosition = 45;
+  private final double readyPosition = 180;
+  private final double stowPosition = 0;
+
+  private Alert configError = new Alert(
+    "Climber Config Failed :(",
+    AlertType.kError
+  );
 
   public Climber() {
-    tiltyMotor =
-        Motor.fromIdealSim(
-            FeedbackController.fromProfiledPID(
-                new ProfiledPIDController(0, 0, 0, new Constraints(90, 180)),
-                (ProfiledPIDController pid) -> {
-                  pid.setTolerance(1);
-                }),
-            TargetType.Position,
-            stowAngle);
-    tiltyMotor.getSysIDCommands("Climber", 1, 1, 5).putOnDashboard("Climber", this);
+    winchMotor = Motor.fromTalonFX(
+      ClimberWiring.CLIMBER_ID,
+      (TalonFX motor) -> {
+        TalonFXConfiguration config = new TalonFXConfiguration();
+        config.Audio.AllowMusicDurDisable = true;
+        config.Feedback.SensorToMechanismRatio = 1;
+        config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+        config.CurrentLimits.StatorCurrentLimit = 60;
+        config.CurrentLimits.StatorCurrentLimitEnable = true;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+        StatusCode status = StatusCode.StatusCodeNotInitialized;
+        for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+          status = motor.getConfigurator().apply(config);
+        }
+        if (status != StatusCode.OK) configError.set(true);
+        else configError.set(false);
+      },
+      (FeedforwardSim sim) -> {},
+      0.0,
+      FeedbackController.fromPID(1, 0, 0, pid -> {}),
+      FeedforwardController.forNone(),
+      TargetType.Position
+    );
+    winchMotor
+      .getSysIDCommands("Climber", 1, 1, 5)
+      .putOnDashboard("Climber", this);
   }
 
   public Command stow() {
     return Commands.runOnce(
-            () -> {
-              tiltyMotor.setTarget(stowAngle);
-            },
-            this)
-        .andThen(
-            Commands.waitUntil(
-                () -> {
-                  return tiltyMotor.atTarget();
-                }));
+      () -> {
+        winchMotor.setTarget(stowPosition);
+      },
+      this
+    ).andThen(
+      Commands.waitUntil(() -> {
+        return winchMotor.atTarget();
+      })
+    );
   }
 
   public Command ready() {
     return Commands.runOnce(
-            () -> {
-              tiltyMotor.setTarget(readyAngle);
-            },
-            this)
-        .andThen(
-            Commands.waitUntil(
-                () -> {
-                  return tiltyMotor.atTarget();
-                }));
+      () -> {
+        winchMotor.setTarget(readyPosition);
+      },
+      this
+    ).andThen(
+      Commands.waitUntil(() -> {
+        return winchMotor.atTarget();
+      })
+    );
   }
 
   public Command climb() {
     return Commands.runOnce(
-            () -> {
-              tiltyMotor.setTarget(climbAngle);
-            },
-            this)
-        .andThen(
-            Commands.waitUntil(
-                () -> {
-                  return tiltyMotor.atTarget();
-                }));
+      () -> {
+        winchMotor.setTarget(climbPosition);
+      },
+      this
+    ).andThen(
+      Commands.waitUntil(() -> {
+        return winchMotor.atTarget();
+      })
+    );
   }
 
   @Override
   public void log(String path) {
-    HoundLog.log(path, "Tilty Motor", tiltyMotor);
+    HoundLog.log(path, "Tilty Motor", winchMotor);
   }
 
   public double getAngle() {
-    return tiltyMotor.getPosition();
+    return winchMotor.getPosition();
   }
 }
