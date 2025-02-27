@@ -9,9 +9,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -42,6 +44,7 @@ public class Motor extends SubsystemBase implements Loggable {
   private FeedforwardController ff;
   private Loggable motorInfo;
   private DutyCycleEncoder encoder;
+  private Alert encoderDisconnected = new Alert("[Motor] Absolute Encoder Disconnected :(", AlertType.kError);
 
   /**
    * Creates a new motor where the given parameters are used to interface with the hardware or sim
@@ -196,6 +199,8 @@ public class Motor extends SubsystemBase implements Loggable {
     encoder.setInverted(inverted);
     positionSetter = (newPosition) -> {};
     positionGetter = () -> 360 * MathUtil.inputModulus(encoder.get() - zeroSignal, -0.5, 0.5);
+    if (!encoder.isConnected()) encoderDisconnected.set(true);
+    else encoderDisconnected.set(false);
     // velocityGetter = () -> 0;
   }
 

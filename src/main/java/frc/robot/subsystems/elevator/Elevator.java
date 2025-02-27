@@ -36,16 +36,16 @@ public class Elevator extends SubsystemBase implements Loggable {
   private Alert configError = new Alert("Elevator Config Failed :(", AlertType.kError);
 
   private final double zeroedPosition = 0;
-  private final double stowPosition = 0.01;
+  private final double stowPosition = 0.05;
   private final double handoffPosition = .76;
   private final double l4Position = 1.0;
   private final double l3Position = 0.45;
-  private final double l2Position = 0.01;
-  private final double l1Position = 0.01;
+  private final double l2Position = 0.05;
+  private final double l1Position = 0.05;
   private final double stationPosition = 0.15; // intake from coral station
   private final double groundPosition = 0.05; // ground intake?
   private final double groundAlgaePosition = 0.25;
-  private final double processingPosition = 0; // algae processor
+  private final double processingPosition = 0.05; // algae processor
   private final double lowAlgaePosition = 0.2; // between l2 and l3
   private final double highAlgaePosition = 0.55; // between l3 and l4
 
@@ -111,7 +111,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                }));
+                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   /**
@@ -159,7 +159,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                }));
+                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   /**
@@ -175,7 +175,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                }));
+                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   /**
@@ -271,7 +271,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                }));
+                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   @Override
