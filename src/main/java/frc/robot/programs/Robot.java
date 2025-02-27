@@ -7,7 +7,6 @@ package frc.robot.programs;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -157,12 +156,14 @@ public class Robot extends LoggedRobot {
     Trigger frontCoralIntake = xbox.povUp();
     Trigger algaeGroundIntake = xbox.povDown();
     Trigger coralGroundIntake = xbox.povLeft();
-    Trigger alignReefLeft = xbox.leftBumper();
+    Trigger alignReefLeft = xbox.x();
     Trigger alignReefMiddle = xbox.leftStick();
-    Trigger alignReefRight = xbox.rightBumper();
+    Trigger alignReefRight = xbox.b();
     Trigger stow = xbox.y();
     Trigger readyProcessor = xbox.rightStick();
     Trigger shoot = xbox.rightTrigger();
+    Trigger faceReefCoral = xbox.rightBumper();
+    Trigger faceReefAlgae = xbox.leftBumper();
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
@@ -223,6 +224,10 @@ public class Robot extends LoggedRobot {
     coralGroundIntake.onFalse(structure.stow());
     algaeGroundIntake.onTrue(structure.algaeGroundIntake());
     algaeGroundIntake.onFalse(structure.stopPlacer());
+    faceReefCoral.whileTrue(swerve.reefCentric(xbox.getHID()));
+    faceReefCoral.onFalse(structure.readyNextCoral());
+    faceReefAlgae.whileTrue(swerve.reefCentric(xbox.getHID()));
+    faceReefAlgae.onFalse(structure.readyNextAlgae());
   }
 
   public void setupAuto() {
