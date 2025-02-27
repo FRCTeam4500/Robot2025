@@ -81,7 +81,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     upMotor.getSysIDCommands("Elevator", 0.5, 2, 5).putOnDashboard("Elevator", this);
     upMotor.setMaxNegativeVoltage(-10);
     switchHit = new Trigger(() -> !zeroingSwitch.get());
-    switchHit.onTrue(Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
+    switchHit.onTrue(
+        Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
   }
 
   public Command groundAlgae() {
