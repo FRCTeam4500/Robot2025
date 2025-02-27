@@ -111,7 +111,8 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
+                }))
+        .andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   /**
@@ -159,7 +160,8 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
+                }))
+        .andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   /**
@@ -175,7 +177,8 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
+                }))
+        .andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   /**
@@ -271,7 +274,8 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                })).andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
+                }))
+        .andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
   }
 
   @Override
