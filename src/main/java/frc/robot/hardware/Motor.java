@@ -31,6 +31,8 @@ import java.util.function.DoubleSupplier;
 public class Motor extends SubsystemBase implements Loggable {
   private double target;
   private boolean useVoltage;
+  private double maxVolts;
+  private double negativeMaxVolts;
   private TargetType type;
   private DoubleConsumer positionSetter;
   private DoubleConsumer voltageSetter;
@@ -70,6 +72,8 @@ public class Motor extends SubsystemBase implements Loggable {
       Loggable motorInfo) {
     target = 0;
     useVoltage = true;
+    maxVolts = 12;
+    negativeMaxVolts = -12;
     this.type = type;
     this.positionSetter = positionSetter;
     this.voltageSetter = voltageSetter;
@@ -123,9 +127,6 @@ public class Motor extends SubsystemBase implements Loggable {
    * @apiNote Using this method causes {@link #atTarget()} to always return true!
    */
   public void setVoltage(double volts) {
-    if (Math.abs(volts) > 12) {
-      volts = 12 * Math.signum(volts);
-    }
     target = volts;
     useVoltage = true;
   }
@@ -172,6 +173,14 @@ public class Motor extends SubsystemBase implements Loggable {
     return fb.atGoal();
   }
 
+  public void setMaxVoltage(double volts) {
+    maxVolts = volts;
+  }
+
+  public void setMaxNegativeVoltage(double volts) {
+    negativeMaxVolts = volts;
+  }
+
   public void changeEncoder(
       DoubleConsumer positionSetter, DoubleSupplier positionGetter, DoubleSupplier velocityGetter) {
     this.positionSetter = positionSetter;
@@ -202,7 +211,7 @@ public class Motor extends SubsystemBase implements Loggable {
       return;
     }
     if (useVoltage) {
-      voltageSetter.accept(target);
+      voltageSetter.accept(MathUtil.clamp(target, negativeMaxVolts, maxVolts));
       return;
     }
     double fbVolts = 0;
@@ -219,7 +228,7 @@ public class Motor extends SubsystemBase implements Loggable {
         ffVolts = ff.calculateVoltage(getPosition(), target, 0);
         break;
     }
-    voltageSetter.accept(fbVolts + ffVolts);
+    voltageSetter.accept(MathUtil.clamp(fbVolts + ffVolts, negativeMaxVolts, maxVolts));
   }
 
   @Override

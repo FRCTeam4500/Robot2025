@@ -79,6 +79,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             TargetType.Position);
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
     upMotor.getSysIDCommands("Elevator", 0.5, 2, 5).putOnDashboard("Elevator", this);
+    upMotor.setMaxNegativeVoltage(-10);
     switchHit = new Trigger(() -> !zeroingSwitch.get());
     switchHit.onTrue(Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
   }
