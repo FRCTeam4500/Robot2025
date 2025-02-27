@@ -1,8 +1,5 @@
 package frc.robot;
 
-import java.util.Set;
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -19,6 +16,8 @@ import frc.robot.subsystems.placer.Placer;
 import frc.robot.subsystems.ramp.Ramp;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * A class that holds together the top half of our robot. Basically everything except the
@@ -106,7 +105,7 @@ public class Superstructure implements Loggable {
   public Command readyNextCoral() {
     return Commands.defer(
             () -> {
-              isPlacingAlgae=false;
+              isPlacingAlgae = false;
               switch (nextCoral) {
                 case L1:
                   return readyLevel1();
@@ -227,9 +226,12 @@ public class Superstructure implements Loggable {
 
   public Command shoot() {
     return Commands.defer(
-      () -> placer.eject(isPlacingAlgae ? placer.algaeEjectSpeed : placer.coralEjectSpeed)
-                  .andThen(Commands.waitSeconds(isPlacingAlgae ? 0.35 : 0.25))
-                  .withName("Shoot"), Set.of());
+        () ->
+            placer
+                .eject(isPlacingAlgae ? placer.algaeEjectSpeed : placer.coralEjectSpeed)
+                .andThen(Commands.waitSeconds(isPlacingAlgae ? 0.35 : 0.25))
+                .withName("Shoot"),
+        Set.of());
   }
 
   public Command stow() {
