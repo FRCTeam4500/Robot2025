@@ -26,6 +26,7 @@ import frc.robot.utilities.logging.Loggable;
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
   private DigitalInput zeroingSwitch;
+  private Trigger switchHit;
   public final Trigger armCanIntake =
       new Trigger(
           () -> {
@@ -34,7 +35,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   private Alert configError = new Alert("Elevator Config Failed :(", AlertType.kError);
 
-  private final double zeroedPosition = 0.01;
+  private final double zeroedPosition = 0;
   private final double stowPosition = 0.01;
   private final double handoffPosition = .76;
   private final double l4Position = 1.0;
@@ -78,13 +79,8 @@ public class Elevator extends SubsystemBase implements Loggable {
             TargetType.Position);
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
     upMotor.getSysIDCommands("Elevator", 0.5, 2, 5).putOnDashboard("Elevator", this);
-  }
-
-  @Override
-  public void periodic() {
-    if (!zeroingSwitch.get()) {
-      upMotor.resetPosition(zeroedPosition);
-    }
+    switchHit = new Trigger(() -> !zeroingSwitch.get());
+    switchHit.onTrue(Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
   }
 
   public Command groundAlgae() {
