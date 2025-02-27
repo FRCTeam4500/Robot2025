@@ -132,18 +132,19 @@ public class Swerve extends SubsystemBase implements Loggable {
                 }));
     targetPose = new Pose2d();
     useMT1 = true;
-    RobotModeTriggers.disabled().negate().onTrue(
-      Commands.runOnce(() -> useMT1 = false).ignoringDisable(true)
-    );
-    RobotModeTriggers.disabled().onTrue(
-      Commands.runOnce(() -> useMT1 = true).ignoringDisable(useMT1)
-    );
-    SmartDashboard.putData("Vision Method", new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-          builder.addBooleanProperty("MT1", () -> useMT1, toUse -> useMT1 = toUse);
-      }
-    });
+    RobotModeTriggers.disabled()
+        .negate()
+        .onTrue(Commands.runOnce(() -> useMT1 = false).ignoringDisable(true));
+    RobotModeTriggers.disabled()
+        .onTrue(Commands.runOnce(() -> useMT1 = true).ignoringDisable(useMT1));
+    SmartDashboard.putData(
+        "Vision Method",
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.addBooleanProperty("MT1", () -> useMT1, toUse -> useMT1 = toUse);
+          }
+        });
 
     GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
 
@@ -503,7 +504,10 @@ public class Swerve extends SubsystemBase implements Loggable {
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
-      PoseEstimate estimate = camera.getPoseMT2(estimator.getEstimatedPosition().getRotation(), Rotation2d.fromRadians(getSpeeds().omegaRadiansPerSecond));
+      PoseEstimate estimate =
+          camera.getPoseMT2(
+              estimator.getEstimatedPosition().getRotation(),
+              Rotation2d.fromRadians(getSpeeds().omegaRadiansPerSecond));
       if (useMT1) {
         estimate = camera.getPoseMT1();
       }
