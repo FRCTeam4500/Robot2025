@@ -240,7 +240,7 @@ public class Superstructure implements Loggable {
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
         .alongWith(climber.stow().andThen(ramp.show()))
         .withName("Stow")
-        .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false));
+        .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false)));
   }
 
   public static enum CoralState {

@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,8 +28,7 @@ public class Ramp extends SubsystemBase implements Loggable {
 
   private Alert configError = new Alert("Ramp Config Failed :(", AlertType.kError);
 
-  private double intakeAngle = -200;
-  private double stowAngle = -273;
+  private double stowAngle = -390;
 
   /** Creates a new Ramp subsystem. */
   public Ramp() {
@@ -39,9 +39,9 @@ public class Ramp extends SubsystemBase implements Loggable {
             (SparkMax max) -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.idleMode(IdleMode.kBrake);
-              config.inverted(true);
-              config.encoder.positionConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
-              config.encoder.velocityConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
+              config.inverted(false);
+              config.encoder.positionConversionFactor((1.0 / (60 / 12)) * 360);
+              config.encoder.velocityConversionFactor((1.0 / (60 / 12)  * 360));
               config.smartCurrentLimit(60);
               REVLibError err =
                   max.configure(
@@ -52,13 +52,13 @@ public class Ramp extends SubsystemBase implements Loggable {
             (FeedforwardSim jim) -> {
               jim.withHardstops(90, 270);
             },
-            -145,
+            -192,
             FeedbackController.fromPID(
-                new PIDController(0.015, 0, 0),
+                new PIDController(0.01, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(5);
                 }),
-            FeedforwardController.forArmGravity(0.31, 0.07, 0, 0),
+            FeedforwardController.forNone(),
             TargetType.Position);
     tiltMotor.getSysIDCommands("Ramp", 0.2, 0.5, 4).putOnDashboard("Ramp", this);
   }
@@ -78,7 +78,9 @@ public class Ramp extends SubsystemBase implements Loggable {
    * @return Command to move ramp to the stow angle.
    */
   public Command hide() {
-    return Commands.runOnce(() -> moveRamp(stowAngle));
+    return Commands.runOnce(() -> {
+      moveRamp(stowAngle);
+    });
   }
 
   /**
@@ -87,7 +89,7 @@ public class Ramp extends SubsystemBase implements Loggable {
    * @param Command to move ramp to the intake angle.
    */
   public Command show() {
-    return Commands.runOnce(() -> moveRamp(intakeAngle));
+    return Commands.runOnce(() -> tiltMotor.setVoltage(0));
   }
 
   @Override

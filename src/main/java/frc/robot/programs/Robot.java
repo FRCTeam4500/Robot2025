@@ -10,6 +10,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -36,6 +38,7 @@ public class Robot extends LoggedRobot {
   private Superstructure structure;
   private CommandXboxController xbox;
   private CommandJoystick stick;
+  private boolean climberLocked;
 
   /** make a robot */
   public Robot() {
@@ -63,6 +66,15 @@ public class Robot extends LoggedRobot {
     setupDriveController();
     setupOperatorController();
     setupAuto();
+    climberLocked = true;
+    SmartDashboard.putData("Climber Lock", new Sendable() {
+        @Override
+        public void initSendable(SendableBuilder builder) {
+            builder.addBooleanProperty("Climber Locked", () -> climberLocked, (lock) -> climberLocked = lock);
+        }
+    });
+    RobotModeTriggers.teleop().and(new Trigger(() -> DriverStation.isFMSAttached())).and(new Trigger(() -> DriverStation.getMatchTime() < 20))
+        .onTrue(Commands.runOnce(() -> climberLocked = false));
   }
 
   private void setupOperatorController() {
@@ -78,6 +90,7 @@ public class Robot extends LoggedRobot {
     Trigger backCoralIntake = stick.button(2);
     Trigger confirmIntake = stick.button(4);
     Trigger frontCoralIntake = stick.button(3);
+    Trigger climbLocked = new Trigger(() -> climberLocked);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));
     levelTwo.onTrue(structure.setNextCoral(CoralState.L2));
@@ -85,8 +98,8 @@ public class Robot extends LoggedRobot {
     levelFour.onTrue(structure.setNextCoral(CoralState.L4));
     algaeHigh.onTrue(structure.setNextAlgae(AlgaeState.HIGH));
     algaeLow.onTrue(structure.setNextAlgae(AlgaeState.LOW));
-    readyClimb.onTrue(structure.readyClimb());
-    climb.onTrue(structure.climb());
+    readyClimb.and(climbLocked.negate()).onTrue(structure.readyClimb());
+    climb.and(climbLocked.negate()).onTrue(structure.climb());
     backCoralIntake.onTrue(structure.backCoralIntake());
     backCoralIntake.onFalse(structure.stow());
     Trigger onBlue =
