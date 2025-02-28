@@ -49,8 +49,6 @@ public class Superstructure implements Loggable {
     this.robotPose = robotPose;
     nextCoral = CoralState.L4;
     nextAlgae = AlgaeState.HIGH;
-
-    RobotModeTriggers.teleop().onTrue(stow());
   }
 
   public void log(String path) {
@@ -238,7 +236,7 @@ public class Superstructure implements Loggable {
     return ramp.show().andThen(arm.stow()
         .andThen(placer.stop())
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-        .alongWith(climber.stow().andThen(ramp.show()))
+        .alongWith(ramp.show())
         .withName("Stow")
         .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false)));
   }

@@ -75,6 +75,7 @@ public class Robot extends LoggedRobot {
     });
     RobotModeTriggers.teleop().and(new Trigger(() -> DriverStation.isFMSAttached())).and(new Trigger(() -> DriverStation.getMatchTime() < 20))
         .onTrue(Commands.runOnce(() -> climberLocked = false));
+    RobotModeTriggers.teleop().and(new Trigger(() -> climberLocked)).onTrue(structure.stow());
   }
 
   private void setupOperatorController() {

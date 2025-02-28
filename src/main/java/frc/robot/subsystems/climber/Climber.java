@@ -23,9 +23,8 @@ public class Climber extends SubsystemBase implements Loggable {
 
   private Motor winchMotor;
 
-  private final double climbPosition = 45;
+  private final double latchPosition = 40;
   private final double readyPosition = 180;
-  private final double stowPosition = 0;
 
   private Alert configError = new Alert("Climber Config Failed :(", AlertType.kError);
 
@@ -50,24 +49,11 @@ public class Climber extends SubsystemBase implements Loggable {
             },
             (FeedforwardSim sim) -> {},
             0.0,
-            FeedbackController.fromPID(1, 0, 0, pid -> {}),
+            FeedbackController.fromPID(0.06, 0, 0, pid -> { pid.enableContinuousInput(-180, 180); }),
             FeedforwardController.forNone(),
             TargetType.Position);
-    winchMotor.useThroughBoreEncoder(ClimberWiring.ENCODER_CHANNEL, false, 0);
+    winchMotor.useThroughBoreEncoder(ClimberWiring.ENCODER_CHANNEL, false, (21.772/360.)-(47./360.));
     winchMotor.getSysIDCommands("Climber", 1, 1, 5).putOnDashboard("Climber", this);
-  }
-
-  public Command stow() {
-    return Commands.runOnce(
-            () -> {
-              winchMotor.setTarget(stowPosition);
-            },
-            this)
-        .andThen(
-            Commands.waitUntil(
-                () -> {
-                  return winchMotor.atTarget();
-                }));
   }
 
   public Command ready() {
@@ -86,14 +72,14 @@ public class Climber extends SubsystemBase implements Loggable {
   public Command climb() {
     return Commands.runOnce(
             () -> {
-              winchMotor.setTarget(climbPosition);
+              winchMotor.setVoltage(-3);
             },
             this)
         .andThen(
             Commands.waitUntil(
                 () -> {
-                  return winchMotor.atTarget();
-                }));
+                  return winchMotor.getPosition() <= latchPosition && winchMotor.getPosition() > 0;
+                })).andThen(Commands.runOnce(() -> winchMotor.setVoltage(0)));
   }
 
   @Override
