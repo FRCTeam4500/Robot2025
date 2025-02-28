@@ -67,13 +67,18 @@ public class Robot extends LoggedRobot {
     setupOperatorController();
     setupAuto();
     climberLocked = true;
-    SmartDashboard.putData("Climber Lock", new Sendable() {
-        @Override
-        public void initSendable(SendableBuilder builder) {
-            builder.addBooleanProperty("Climber Locked", () -> climberLocked, (lock) -> climberLocked = lock);
-        }
-    });
-    RobotModeTriggers.teleop().and(new Trigger(() -> DriverStation.isFMSAttached())).and(new Trigger(() -> DriverStation.getMatchTime() < 20))
+    SmartDashboard.putData(
+        "Climber Lock",
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.addBooleanProperty(
+                "Climber Locked", () -> climberLocked, (lock) -> climberLocked = lock);
+          }
+        });
+    RobotModeTriggers.teleop()
+        .and(new Trigger(() -> DriverStation.isFMSAttached()))
+        .and(new Trigger(() -> DriverStation.getMatchTime() < 20))
         .onTrue(Commands.runOnce(() -> climberLocked = false));
   }
 
