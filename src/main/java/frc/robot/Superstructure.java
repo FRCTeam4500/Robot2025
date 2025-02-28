@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.climber.Climber;
@@ -233,12 +232,14 @@ public class Superstructure implements Loggable {
   }
 
   public Command stow() {
-    return ramp.show().andThen(arm.stow()
-        .andThen(placer.stop())
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-        .alongWith(ramp.show())
-        .withName("Stow")
-        .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false)));
+    return ramp.show()
+        .andThen(
+            arm.stow()
+                .andThen(placer.stop())
+                .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
+                .alongWith(ramp.show())
+                .withName("Stow")
+                .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false)));
   }
 
   public static enum CoralState {
