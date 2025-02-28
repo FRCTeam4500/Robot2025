@@ -40,7 +40,8 @@ public class WiringConstants {
   }
 
   public static class ClimberWiring {
-    public static final int CLIMBER_ID = -201;
+    public static final int CLIMBER_ID = 30;
+    public static final int ENCODER_CHANNEL = 2;
   }
 
   public static class RampWiring {

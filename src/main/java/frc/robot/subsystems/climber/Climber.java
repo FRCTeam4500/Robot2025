@@ -53,6 +53,7 @@ public class Climber extends SubsystemBase implements Loggable {
             FeedbackController.fromPID(1, 0, 0, pid -> {}),
             FeedforwardController.forNone(),
             TargetType.Position);
+    winchMotor.useThroughBoreEncoder(ClimberWiring.ENCODER_CHANNEL, false, 0);
     winchMotor.getSysIDCommands("Climber", 1, 1, 5).putOnDashboard("Climber", this);
   }
 
