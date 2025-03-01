@@ -241,7 +241,6 @@ public class Superstructure implements Loggable {
             arm.stow()
                 .andThen(placer.stop())
                 .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
-                .alongWith(ramp.show())
                 .withName("Stow")
                 .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false)));
   }

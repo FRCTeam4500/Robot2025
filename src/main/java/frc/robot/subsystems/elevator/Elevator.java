@@ -1,5 +1,7 @@
 package frc.robot.subsystems.elevator;
 
+import java.util.function.Consumer;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -13,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.ElevatorWiring;
 import frc.robot.hardware.Motor;
@@ -48,8 +51,10 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double processingPosition = 0.02; // algae processor
   private final double lowAlgaePosition = 0.2; // between l2 and l3
   private final double highAlgaePosition = 0.55; // between l3 and l4
+  private Consumer<IdleMode> setIdleMode;
 
   public Elevator() {
+    setIdleMode = (mode -> {});
     upMotor =
         Motor.fromSparkMax(
             ElevatorWiring.ELEVATOR_ID,
@@ -65,6 +70,11 @@ public class Elevator extends SubsystemBase implements Loggable {
                       config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
               if (!err.equals(REVLibError.kOk)) configError.set(true);
               else configError.set(false);
+              setIdleMode = mode -> {
+                config.idleMode(mode);
+                spark.configure(
+                      config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+              };
             },
             (FeedforwardSim sim) -> {
               sim.withHardstops(0, 1);
@@ -83,6 +93,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     switchHit = new Trigger(() -> !zeroingSwitch.get());
     switchHit.onTrue(
         Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
+    RobotModeTriggers.disabled().onTrue(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)));
+    RobotModeTriggers.disabled().onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)));
   }
 
   public Command groundAlgae() {

@@ -100,7 +100,7 @@ public class Climber extends SubsystemBase implements Loggable {
   }
 
   public Command off() {
-    return Commands.runOnce(() -> winchMotor.setVoltage(0));
+    return Commands.runOnce(() -> winchMotor.setVoltage(0), this);
   }
 
   @Override
