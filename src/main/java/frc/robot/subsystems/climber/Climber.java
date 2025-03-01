@@ -24,7 +24,7 @@ public class Climber extends SubsystemBase implements Loggable {
   private Motor winchMotor;
 
   private final double latchPosition = 40;
-  private final double readyPosition = 180;
+  private final double readyPosition = 140;
 
   private Alert configError = new Alert("Climber Config Failed :(", AlertType.kError);
 
@@ -39,7 +39,7 @@ public class Climber extends SubsystemBase implements Loggable {
               config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
               config.CurrentLimits.StatorCurrentLimit = 60;
               config.CurrentLimits.StatorCurrentLimitEnable = true;
-              config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+              config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
               StatusCode status = StatusCode.StatusCodeNotInitialized;
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
@@ -49,7 +49,7 @@ public class Climber extends SubsystemBase implements Loggable {
             },
             (FeedforwardSim sim) -> {},
             0.0,
-            FeedbackController.fromPID(0.06, 0, 0, pid -> { pid.enableContinuousInput(-180, 180); }),
+            FeedbackController.fromPID(0.1, 0, 0, pid -> { pid.enableContinuousInput(-180, 180); }),
             FeedforwardController.forNone(),
             TargetType.Position);
     winchMotor.useThroughBoreEncoder(ClimberWiring.ENCODER_CHANNEL, false, (21.772/360.)-(47./360.));
@@ -59,14 +59,16 @@ public class Climber extends SubsystemBase implements Loggable {
   public Command ready() {
     return Commands.runOnce(
             () -> {
-              winchMotor.setTarget(readyPosition);
+              winchMotor.setVoltage(8.);
             },
             this)
         .andThen(
             Commands.waitUntil(
                 () -> {
-                  return winchMotor.atTarget();
-                }));
+                  return winchMotor.getPosition() >= readyPosition;
+                })).andThen(
+                  Commands.runOnce(() -> winchMotor.setVoltage(0))
+                );
   }
 
   public Command climb() {

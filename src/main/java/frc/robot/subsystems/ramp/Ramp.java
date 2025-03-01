@@ -1,5 +1,7 @@
 package frc.robot.subsystems.ramp;
 
+import javax.swing.WindowConstants;
+
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -27,7 +29,7 @@ public class Ramp extends SubsystemBase implements Loggable {
 
   private Alert configError = new Alert("Ramp Config Failed :(", AlertType.kError);
 
-  private double stowAngle = -390;
+  private double hideAngle = -390;
 
   /** Creates a new Ramp subsystem. */
   public Ramp() {
@@ -53,7 +55,7 @@ public class Ramp extends SubsystemBase implements Loggable {
             },
             -192,
             FeedbackController.fromPID(
-                new PIDController(0.01, 0, 0),
+                new PIDController(0.03, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(5);
                 }),
@@ -79,8 +81,9 @@ public class Ramp extends SubsystemBase implements Loggable {
   public Command hide() {
     return Commands.runOnce(
         () -> {
-          moveRamp(stowAngle);
-        });
+          moveRamp(hideAngle);
+        }).andThen(Commands.waitUntil(() -> tiltMotor.getPosition() < hideAngle))
+          .andThen(Commands.runOnce(() -> tiltMotor.setVoltage(0)));
   }
 
   /**
