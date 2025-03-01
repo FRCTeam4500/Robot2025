@@ -1,7 +1,5 @@
 package frc.robot.subsystems.ramp;
 
-import javax.swing.WindowConstants;
-
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -80,10 +78,11 @@ public class Ramp extends SubsystemBase implements Loggable {
    */
   public Command hide() {
     return Commands.runOnce(
-        () -> {
-          moveRamp(hideAngle);
-        }).andThen(Commands.waitUntil(() -> tiltMotor.getPosition() < hideAngle))
-          .andThen(Commands.runOnce(() -> tiltMotor.setVoltage(0)));
+            () -> {
+              moveRamp(hideAngle);
+            })
+        .andThen(Commands.waitUntil(() -> tiltMotor.getPosition() < hideAngle))
+        .andThen(Commands.runOnce(() -> tiltMotor.setVoltage(0)));
   }
 
   /**
