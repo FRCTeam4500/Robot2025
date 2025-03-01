@@ -269,10 +269,21 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Stow", structure.stow());
 
     SendableChooser<Command> chooser = new SendableChooser<>();
+    chooser.setDefaultOption("None", Commands.none());
     chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
     chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece", true));
     chooser.addOption("1 Coral Backup", new PathPlannerAuto("Backup"));
-    SmartDashboard.putData("Auto Chooser/Auto Chooser", chooser);
+    chooser.addOption("First Piece Left", new PathPlannerAuto("2-J"));
+    chooser.addOption("First Piece Right", new PathPlannerAuto("2-J", true));
+    chooser.addOption("First Intake Left", new PathPlannerAuto("J-CSL"));
+    chooser.addOption("First Intake Right", new PathPlannerAuto("J-CSL", true));
+    chooser.addOption("Second Piece Left", new PathPlannerAuto("CSL-K"));
+    chooser.addOption("Second Piece Right", new PathPlannerAuto("CSL-K", true));
+    chooser.addOption("Second Intake Left", new PathPlannerAuto("K-CSL"));
+    chooser.addOption("Second Intake Right", new PathPlannerAuto("K-CSL", true));
+    chooser.addOption("Third Piece Left", new PathPlannerAuto("CSL-L"));
+    chooser.addOption("Third Piece Right", new PathPlannerAuto("CSL-L", true));
+    SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
 
