@@ -31,6 +31,7 @@ import java.util.function.DoubleSupplier;
 
 /** A class representing a motor */
 public class Motor extends SubsystemBase implements Loggable {
+  private String name;
   private double target;
   private boolean useVoltage;
   private double maxVolts;
@@ -45,7 +46,7 @@ public class Motor extends SubsystemBase implements Loggable {
   private Loggable motorInfo;
   private DutyCycleEncoder encoder;
   private Alert encoderDisconnected =
-      new Alert("[Motor] Absolute Encoder Disconnected :(", AlertType.kError);
+      new Alert("[Motor] External Encoder Disconnected :(", AlertType.kError);
 
   /**
    * Creates a new motor where the given parameters are used to interface with the hardware or sim
@@ -94,6 +95,11 @@ public class Motor extends SubsystemBase implements Loggable {
         fb.reset(velocityGetter.getAsDouble());
         break;
     }
+  }
+
+  public Motor withName(String name) {
+    this.name = name;
+    return this;
   }
 
   /**
@@ -200,8 +206,6 @@ public class Motor extends SubsystemBase implements Loggable {
     encoder.setInverted(inverted);
     positionSetter = (newPosition) -> {};
     positionGetter = () -> 360 * MathUtil.inputModulus(encoder.get() - zeroSignal, -0.5, 0.5);
-    if (!encoder.isConnected()) encoderDisconnected.set(true);
-    else encoderDisconnected.set(false);
     // velocityGetter = () -> 0;
   }
 
@@ -239,6 +243,7 @@ public class Motor extends SubsystemBase implements Loggable {
 
   @Override
   public void log(String path) {
+    if (name != "") HoundLog.log(path, "Name", name);
     HoundLog.log(path, "Motor Info", motorInfo);
     HoundLog.log(path, "Position", getPosition());
     HoundLog.log(path, "Velocity", getVelocity());
@@ -248,6 +253,12 @@ public class Motor extends SubsystemBase implements Loggable {
       HoundLog.log(path, "Target Type", "Voltage");
     } else {
       HoundLog.log(path, "Target Type", type.name());
+    }
+    if (encoder != null) {
+      if (name != "" && encoderDisconnected.getText().contains("[Motor]")) // surely noone would name a motor "Motor"
+        encoderDisconnected.setText("[" + name + "] External Encoder Disconnected :(");
+      if (!encoder.isConnected()) encoderDisconnected.set(true);
+      else encoderDisconnected.set(false);
     }
   }
 

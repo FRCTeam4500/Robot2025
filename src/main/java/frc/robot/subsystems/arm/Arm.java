@@ -70,7 +70,7 @@ public class Arm extends SubsystemBase implements Loggable {
                   pid.setTolerance(2);
                 }),
             FeedforwardController.forArmGravity(0.35, 0.034937, 0.015511, 0.0042897),
-            TargetType.Position);
+            TargetType.Position).withName("Arm Motor");
 
     tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
     tiltMotor.getSysIDCommands("Arm", 0.25, 0.5, 4).putOnDashboard("Arm", this);
