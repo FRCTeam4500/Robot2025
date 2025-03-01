@@ -191,6 +191,10 @@ public class Superstructure implements Loggable {
     return climber.climb().withName("Climb");
   }
 
+  public Command pauseClimb() {
+    return climber.pause().withName("Pause Climb");
+  }
+
   public Command algaeGroundIntake() {
     return arm.algaeGround()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgae()))
@@ -232,7 +236,7 @@ public class Superstructure implements Loggable {
   }
 
   public Command stow() {
-    return ramp.show()
+    return ramp.show().alongWith(climber.off())
         .andThen(
             arm.stow()
                 .andThen(placer.stop())

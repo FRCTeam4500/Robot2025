@@ -170,7 +170,7 @@ public class Swerve extends SubsystemBase implements Loggable {
         this::resetPose,
         this::getSpeeds,
         this::drive,
-        new PPHolonomicDriveController(new PIDConstants(5), new PIDConstants(0.5)),
+        new PPHolonomicDriveController(new PIDConstants(5), new PIDConstants(1)),
         config,
         () -> {
           Alliance alliance = DriverStation.getAlliance().orElse(Alliance.Blue);

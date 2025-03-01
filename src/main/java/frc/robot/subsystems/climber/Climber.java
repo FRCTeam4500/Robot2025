@@ -64,6 +64,13 @@ public class Climber extends SubsystemBase implements Loggable {
     winchMotor.getSysIDCommands("Climber", 1, 1, 5).putOnDashboard("Climber", this);
   }
 
+  public Command pause() {
+    return Commands.runOnce(
+      () -> {
+        winchMotor.setTarget(winchMotor.getPosition());
+      }, this);
+  }
+
   public Command ready() {
     return Commands.runOnce(
             () -> {
@@ -90,6 +97,10 @@ public class Climber extends SubsystemBase implements Loggable {
                   return winchMotor.getPosition() <= latchPosition && winchMotor.getPosition() > 0;
                 }))
         .andThen(Commands.runOnce(() -> winchMotor.setVoltage(0)));
+  }
+
+  public Command off() {
+    return Commands.runOnce(() -> winchMotor.setVoltage(0));
   }
 
   @Override

@@ -39,6 +39,7 @@ public class Robot extends LoggedRobot {
   private CommandXboxController xbox;
   private CommandJoystick stick;
   private boolean climberLocked;
+  private boolean climbing = false;
 
   /** make a robot */
   public Robot() {
@@ -97,6 +98,7 @@ public class Robot extends LoggedRobot {
     Trigger confirmIntake = stick.button(4);
     Trigger frontCoralIntake = stick.button(3);
     Trigger climbLocked = new Trigger(() -> climberLocked);
+    Trigger climbActive = new Trigger(() -> climbing);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));
     levelTwo.onTrue(structure.setNextCoral(CoralState.L2));
@@ -105,7 +107,10 @@ public class Robot extends LoggedRobot {
     algaeHigh.onTrue(structure.setNextAlgae(AlgaeState.HIGH));
     algaeLow.onTrue(structure.setNextAlgae(AlgaeState.LOW));
     readyClimb.and(climbLocked.negate()).onTrue(structure.readyClimb());
-    climb.and(climbLocked.negate()).onTrue(structure.climb());
+    climb.and(climbLocked.negate()).and(climbActive.negate()).onTrue(structure.climb());
+    climb.and(climbLocked.negate()).and(climbActive.negate()).onFalse(Commands.runOnce(() -> climbing = true));
+    climb.and(climbLocked.negate()).and(climbActive).onTrue(structure.pauseClimb());
+    climb.and(climbLocked.negate()).and(climbActive).onFalse(Commands.runOnce(() -> climbing = false));
     backCoralIntake.onTrue(structure.backCoralIntake());
     backCoralIntake.onFalse(structure.stow());
     Trigger onBlue =
@@ -293,6 +298,8 @@ public class Robot extends LoggedRobot {
     HoundLog.log("Swerve", swerve);
     HoundLog.log("Superstrucutre", structure);
     double loggingLoop = Timer.getFPGATimestamp() - start;
+
+    HoundLog.log("Climbing", climbing);
 
     start = Timer.getFPGATimestamp();
     CommandScheduler.getInstance().run();
