@@ -31,33 +31,34 @@ public class Climber extends SubsystemBase implements Loggable {
   public Climber() {
     winchMotor =
         Motor.fromTalonFX(
-            ClimberWiring.CLIMBER_ID,
-            (TalonFX motor) -> {
-              TalonFXConfiguration config = new TalonFXConfiguration();
-              config.Audio.AllowMusicDurDisable = true;
-              config.Feedback.SensorToMechanismRatio = 1;
-              config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-              config.CurrentLimits.StatorCurrentLimit = 60;
-              config.CurrentLimits.StatorCurrentLimitEnable = true;
-              config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-              StatusCode status = StatusCode.StatusCodeNotInitialized;
-              for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-                status = motor.getConfigurator().apply(config);
-              }
-              if (status != StatusCode.OK) configError.set(true);
-              else configError.set(false);
-            },
-            (FeedforwardSim sim) -> {},
-            0.0,
-            FeedbackController.fromPID(
-                0.1,
-                0,
-                0,
-                pid -> {
-                  pid.enableContinuousInput(-180, 180);
-                }),
-            FeedforwardController.forNone(),
-            TargetType.Position).withName("Climber Motor");
+                ClimberWiring.CLIMBER_ID,
+                (TalonFX motor) -> {
+                  TalonFXConfiguration config = new TalonFXConfiguration();
+                  config.Audio.AllowMusicDurDisable = true;
+                  config.Feedback.SensorToMechanismRatio = 1;
+                  config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+                  config.CurrentLimits.StatorCurrentLimit = 60;
+                  config.CurrentLimits.StatorCurrentLimitEnable = true;
+                  config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+                  StatusCode status = StatusCode.StatusCodeNotInitialized;
+                  for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                    status = motor.getConfigurator().apply(config);
+                  }
+                  if (status != StatusCode.OK) configError.set(true);
+                  else configError.set(false);
+                },
+                (FeedforwardSim sim) -> {},
+                0.0,
+                FeedbackController.fromPID(
+                    0.1,
+                    0,
+                    0,
+                    pid -> {
+                      pid.enableContinuousInput(-180, 180);
+                    }),
+                FeedforwardController.forNone(),
+                TargetType.Position)
+            .withName("Climber Motor");
     winchMotor.useThroughBoreEncoder(
         ClimberWiring.ENCODER_CHANNEL, false, (21.772 / 360.) - (47. / 360.));
     winchMotor.getSysIDCommands("Climber", 1, 1, 5).putOnDashboard("Climber", this);

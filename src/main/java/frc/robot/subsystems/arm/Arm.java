@@ -43,34 +43,35 @@ public class Arm extends SubsystemBase implements Loggable {
   public Arm() {
     tiltMotor =
         Motor.fromTalonFX(
-            ArmWiring.ARM_ID,
-            motor -> {
-              TalonFXConfiguration config = new TalonFXConfiguration();
-              config.Audio.AllowMusicDurDisable = true;
-              config.Feedback.SensorToMechanismRatio = 55.0 / 360;
-              config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+                ArmWiring.ARM_ID,
+                motor -> {
+                  TalonFXConfiguration config = new TalonFXConfiguration();
+                  config.Audio.AllowMusicDurDisable = true;
+                  config.Feedback.SensorToMechanismRatio = 55.0 / 360;
+                  config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
-              config.CurrentLimits.StatorCurrentLimit = 60;
-              config.CurrentLimits.StatorCurrentLimitEnable = true;
-              config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-              StatusCode status = StatusCode.StatusCodeNotInitialized;
-              for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
-                status = motor.getConfigurator().apply(config);
-              }
-              if (status != StatusCode.OK) configError.set(true);
-              else configError.set(false);
-            },
-            sim -> {
-              sim.withHardstops(handoffAngle, startAngle);
-            },
-            90,
-            FeedbackController.fromPID(
-                new PIDController(0.06, 0, 0),
-                (PIDController pid) -> {
-                  pid.setTolerance(2);
-                }),
-            FeedforwardController.forArmGravity(0.35, 0.034937, 0.015511, 0.0042897),
-            TargetType.Position).withName("Arm Motor");
+                  config.CurrentLimits.StatorCurrentLimit = 60;
+                  config.CurrentLimits.StatorCurrentLimitEnable = true;
+                  config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+                  StatusCode status = StatusCode.StatusCodeNotInitialized;
+                  for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
+                    status = motor.getConfigurator().apply(config);
+                  }
+                  if (status != StatusCode.OK) configError.set(true);
+                  else configError.set(false);
+                },
+                sim -> {
+                  sim.withHardstops(handoffAngle, startAngle);
+                },
+                90,
+                FeedbackController.fromPID(
+                    new PIDController(0.06, 0, 0),
+                    (PIDController pid) -> {
+                      pid.setTolerance(2);
+                    }),
+                FeedforwardController.forArmGravity(0.35, 0.034937, 0.015511, 0.0042897),
+                TargetType.Position)
+            .withName("Arm Motor");
 
     tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
     tiltMotor.getSysIDCommands("Arm", 0.25, 0.5, 4).putOnDashboard("Arm", this);
