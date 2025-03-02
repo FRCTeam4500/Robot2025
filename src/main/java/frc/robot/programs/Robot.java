@@ -108,9 +108,15 @@ public class Robot extends LoggedRobot {
     algaeLow.onTrue(structure.setNextAlgae(AlgaeState.LOW));
     readyClimb.and(climbLocked.negate()).onTrue(structure.readyClimb());
     climb.and(climbLocked.negate()).and(climbActive.negate()).onTrue(structure.climb());
-    climb.and(climbLocked.negate()).and(climbActive.negate()).onFalse(Commands.runOnce(() -> climbing = true));
+    climb
+        .and(climbLocked.negate())
+        .and(climbActive.negate())
+        .onFalse(Commands.runOnce(() -> climbing = true));
     climb.and(climbLocked.negate()).and(climbActive).onTrue(structure.pauseClimb());
-    climb.and(climbLocked.negate()).and(climbActive).onFalse(Commands.runOnce(() -> climbing = false));
+    climb
+        .and(climbLocked.negate())
+        .and(climbActive)
+        .onFalse(Commands.runOnce(() -> climbing = false));
     backCoralIntake.onTrue(structure.backCoralIntake());
     backCoralIntake.onFalse(structure.stow());
     Trigger onBlue =

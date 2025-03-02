@@ -66,9 +66,10 @@ public class Climber extends SubsystemBase implements Loggable {
 
   public Command pause() {
     return Commands.runOnce(
-      () -> {
-        winchMotor.setTarget(winchMotor.getPosition());
-      }, this);
+        () -> {
+          winchMotor.setTarget(winchMotor.getPosition());
+        },
+        this);
   }
 
   public Command ready() {

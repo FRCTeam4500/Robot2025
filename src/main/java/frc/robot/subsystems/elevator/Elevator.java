@@ -1,7 +1,5 @@
 package frc.robot.subsystems.elevator;
 
-import java.util.function.Consumer;
-
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -25,6 +23,7 @@ import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.function.Consumer;
 
 public class Elevator extends SubsystemBase implements Loggable {
   private Motor upMotor;
@@ -70,11 +69,12 @@ public class Elevator extends SubsystemBase implements Loggable {
                       config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
               if (!err.equals(REVLibError.kOk)) configError.set(true);
               else configError.set(false);
-              setIdleMode = mode -> {
-                config.idleMode(mode);
-                spark.configure(
-                      config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-              };
+              setIdleMode =
+                  mode -> {
+                    config.idleMode(mode);
+                    spark.configure(
+                        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                  };
             },
             (FeedforwardSim sim) -> {
               sim.withHardstops(0, 1);
