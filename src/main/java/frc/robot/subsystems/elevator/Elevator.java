@@ -93,8 +93,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     switchHit = new Trigger(() -> !zeroingSwitch.get());
     switchHit.onTrue(
         Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
-    RobotModeTriggers.disabled().onTrue(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)));
-    RobotModeTriggers.disabled().onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)));
+    RobotModeTriggers.autonomous().onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)).ignoringDisable(true));
+    RobotModeTriggers.disabled().onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)).ignoringDisable(true));
   }
 
   public Command groundAlgae() {
