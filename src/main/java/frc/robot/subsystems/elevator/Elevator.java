@@ -72,8 +72,9 @@ public class Elevator extends SubsystemBase implements Loggable {
               setIdleMode =
                   mode -> {
                     config.idleMode(mode);
-                    REVLibError idlerr = spark.configure(
-                        config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                    REVLibError idlerr =
+                        spark.configure(
+                            config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
                     if (!idlerr.equals(REVLibError.kOk)) configError.set(true);
                     else configError.set(false);
                   };
@@ -95,8 +96,10 @@ public class Elevator extends SubsystemBase implements Loggable {
     switchHit = new Trigger(() -> !zeroingSwitch.get());
     switchHit.onTrue(
         Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
-    RobotModeTriggers.autonomous().onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)).ignoringDisable(true));
-    RobotModeTriggers.disabled().onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)).ignoringDisable(true));
+    RobotModeTriggers.autonomous()
+        .onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)).ignoringDisable(true));
+    RobotModeTriggers.disabled()
+        .onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)).ignoringDisable(true));
   }
 
   public Command groundAlgae() {

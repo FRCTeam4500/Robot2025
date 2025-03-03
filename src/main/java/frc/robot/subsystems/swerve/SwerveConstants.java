@@ -87,8 +87,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                    fldConfigError.set(true);
-                    Orc.addMotor(motor);
+                  fldConfigError.set(true);
+                  Orc.addMotor(motor);
                 } else fldConfigError.set(false);
               },
               sim -> {},
@@ -143,8 +143,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                    frdConfigError.set(true);
-                    Orc.addMotor(motor);
+                  frdConfigError.set(true);
+                  Orc.addMotor(motor);
                 } else frdConfigError.set(false);
               },
               sim -> {},
@@ -199,8 +199,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                    bldConfigError.set(true);
-                    Orc.addMotor(motor);
+                  bldConfigError.set(true);
+                  Orc.addMotor(motor);
                 } else bldConfigError.set(false);
               },
               sim -> {},
@@ -255,8 +255,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                    brdConfigError.set(true);
-                    Orc.addMotor(motor);
+                  brdConfigError.set(true);
+                  Orc.addMotor(motor);
                 } else brdConfigError.set(false);
               },
               sim -> {},
