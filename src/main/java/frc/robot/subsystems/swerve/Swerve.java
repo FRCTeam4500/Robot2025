@@ -66,6 +66,14 @@ public class Swerve extends SubsystemBase implements Loggable {
                 return estimator.getEstimatedPosition().getY() > 4;
             }
           });
+  
+  public final Trigger camerasDisabled = new Trigger(
+    () -> {
+      boolean anyEnabled = false;
+      for (Limelight l : tagCameras) if (l.isEnabled()) anyEnabled = true;
+      return !anyEnabled;
+    }
+  );
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
