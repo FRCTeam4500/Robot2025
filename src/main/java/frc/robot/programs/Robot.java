@@ -80,6 +80,7 @@ public class Robot extends LoggedRobot {
     Trigger backCoralIntake = stick.button(2);
     Trigger confirmIntake = stick.button(4);
     Trigger frontCoralIntake = stick.button(3);
+    Trigger climbLocked = stick.axisLessThan(3, 0);
     Trigger climbLocked = stick.axisGreaterThan(3, -0.1);
     Trigger climbActive = new Trigger(() -> climbing);
 
@@ -212,36 +213,44 @@ public class Robot extends LoggedRobot {
     backCoralIntake
         .and(onBlue)
         .and(swerve.closerToRight)
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
     backCoralIntake
         .and(onBlue)
         .and(swerve.closerToRight.negate())
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
     backCoralIntake
         .and(onRed)
         .and(swerve.closerToRight)
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
     backCoralIntake
         .and(onRed)
         .and(swerve.closerToRight.negate())
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
     frontCoralIntake
         .and(onBlue)
         .and(swerve.closerToRight)
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
     frontCoralIntake
         .and(onBlue)
         .and(swerve.closerToRight.negate())
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
     frontCoralIntake
         .and(onRed)
         .and(swerve.closerToRight)
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
     frontCoralIntake
         .and(onRed)
         .and(swerve.closerToRight.negate())
+        .and(swerve.camerasDisabled.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
     coralGroundIntake.onTrue(structure.groundIntake());
     coralGroundIntake.onFalse(structure.stow());
@@ -287,8 +296,6 @@ public class Robot extends LoggedRobot {
     HoundLog.log("Swerve", swerve);
     HoundLog.log("Superstrucutre", structure);
     double loggingLoop = Timer.getFPGATimestamp() - start;
-
-    HoundLog.log("Climbing", climbing);
 
     start = Timer.getFPGATimestamp();
     CommandScheduler.getInstance().run();
