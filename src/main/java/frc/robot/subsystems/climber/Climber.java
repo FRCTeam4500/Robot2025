@@ -74,11 +74,13 @@ public class Climber extends SubsystemBase implements Loggable {
   }
 
   public Command ready() {
-    return Commands.runOnce(() -> winchMotor.setTarget(readyPosition)).andThen(Commands.runOnce(
-            () -> {
-              winchMotor.setVoltage(8.);
-            },
-            this))
+    return Commands.runOnce(() -> winchMotor.setTarget(readyPosition))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  winchMotor.setVoltage(8.);
+                },
+                this))
         .andThen(
             Commands.waitUntil(
                 () -> {
@@ -93,10 +95,11 @@ public class Climber extends SubsystemBase implements Loggable {
               winchMotor.setTarget(latchPosition);
             },
             this)
-        .andThen(Commands.runOnce(
-          () -> {
-            winchMotor.setVoltage(-3);
-          }))
+        .andThen(
+            Commands.runOnce(
+                () -> {
+                  winchMotor.setVoltage(-3);
+                }))
         .andThen(
             Commands.waitUntil(
                 () -> {
