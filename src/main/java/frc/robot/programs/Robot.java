@@ -10,8 +10,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
@@ -38,7 +36,6 @@ public class Robot extends LoggedRobot {
   private Superstructure structure;
   private CommandXboxController xbox;
   private CommandJoystick stick;
-  private boolean climberLocked;
   private boolean climbing = false;
 
   /** make a robot */
@@ -67,21 +64,7 @@ public class Robot extends LoggedRobot {
     setupDriveController();
     setupOperatorController();
     setupAuto();
-    climberLocked = true;
-    SmartDashboard.putData(
-        "Climber Lock",
-        new Sendable() {
-          @Override
-          public void initSendable(SendableBuilder builder) {
-            builder.addBooleanProperty(
-                "Climber Locked", () -> climberLocked, (lock) -> climberLocked = lock);
-          }
-        });
-    RobotModeTriggers.teleop()
-        .and(new Trigger(() -> DriverStation.isFMSAttached()))
-        .and(new Trigger(() -> DriverStation.getMatchTime() < 20))
-        .onTrue(Commands.runOnce(() -> climberLocked = false));
-    RobotModeTriggers.teleop().and(new Trigger(() -> climberLocked)).onTrue(structure.stow());
+    RobotModeTriggers.teleop().and(stick.axisLessThan(3, 0)).onTrue(structure.stow());
   }
 
   private void setupOperatorController() {
@@ -97,7 +80,7 @@ public class Robot extends LoggedRobot {
     Trigger backCoralIntake = stick.button(2);
     Trigger confirmIntake = stick.button(4);
     Trigger frontCoralIntake = stick.button(3);
-    Trigger climbLocked = new Trigger(() -> climberLocked);
+    Trigger climbLocked = stick.axisLessThan(3,0 );
     Trigger climbActive = new Trigger(() -> climbing);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));
