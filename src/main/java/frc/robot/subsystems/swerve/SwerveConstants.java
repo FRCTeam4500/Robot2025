@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 
@@ -85,8 +86,10 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
-                if (status != StatusCode.OK) fldConfigError.set(true);
-                else fldConfigError.set(false);
+                if (status != StatusCode.OK) {
+                    fldConfigError.set(true);
+                    Orc.addMotor(motor);
+                } else fldConfigError.set(false);
               },
               sim -> {},
               0,
@@ -139,8 +142,10 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
-                if (status != StatusCode.OK) frdConfigError.set(true);
-                else frdConfigError.set(false);
+                if (status != StatusCode.OK) {
+                    frdConfigError.set(true);
+                    Orc.addMotor(motor);
+                } else frdConfigError.set(false);
               },
               sim -> {},
               0,
@@ -193,8 +198,10 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
-                if (status != StatusCode.OK) bldConfigError.set(true);
-                else bldConfigError.set(false);
+                if (status != StatusCode.OK) {
+                    bldConfigError.set(true);
+                    Orc.addMotor(motor);
+                } else bldConfigError.set(false);
               },
               sim -> {},
               0,
@@ -247,8 +254,10 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
-                if (status != StatusCode.OK) brdConfigError.set(true);
-                else brdConfigError.set(false);
+                if (status != StatusCode.OK) {
+                    brdConfigError.set(true);
+                    Orc.addMotor(motor);
+                } else brdConfigError.set(false);
               },
               sim -> {},
               0,

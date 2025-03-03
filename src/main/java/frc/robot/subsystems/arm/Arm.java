@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.ArmWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.logging.HoundLog;
@@ -57,8 +58,10 @@ public class Arm extends SubsystemBase implements Loggable {
                   for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                     status = motor.getConfigurator().apply(config);
                   }
-                  if (status != StatusCode.OK) configError.set(true);
-                  else configError.set(false);
+                  if (status != StatusCode.OK) {
+                    configError.set(true);
+                    Orc.addMotor(motor);
+                  } else configError.set(false);
                 },
                 sim -> {
                   sim.withHardstops(handoffAngle, startAngle);

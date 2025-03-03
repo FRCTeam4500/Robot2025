@@ -72,8 +72,10 @@ public class Elevator extends SubsystemBase implements Loggable {
               setIdleMode =
                   mode -> {
                     config.idleMode(mode);
-                    spark.configure(
+                    REVLibError idlerr = spark.configure(
                         config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                    if (!idlerr.equals(REVLibError.kOk)) configError.set(true);
+                    else configError.set(false);
                   };
             },
             (FeedforwardSim sim) -> {

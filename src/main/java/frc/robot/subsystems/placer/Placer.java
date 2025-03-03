@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.WiringConstants.PlacerWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.utilities.ExtendedMath;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
@@ -52,8 +53,10 @@ public class Placer extends SubsystemBase implements Loggable {
               for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                 status = motor.getConfigurator().apply(config);
               }
-              if (status != StatusCode.OK) configError.set(true);
-              else configError.set(false);
+              if (status != StatusCode.OK) {
+                configError.set(true);
+                Orc.addMotor(motor);
+              } else configError.set(false);
             },
             (FeedforwardSim sim) -> {},
             0,
