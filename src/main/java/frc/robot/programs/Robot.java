@@ -80,7 +80,7 @@ public class Robot extends LoggedRobot {
     Trigger backCoralIntake = stick.button(2);
     Trigger confirmIntake = stick.button(4);
     Trigger frontCoralIntake = stick.button(3);
-    Trigger climbLocked = stick.axisLessThan(3,0 );
+    Trigger climbLocked = stick.axisLessThan(3, 0);
     Trigger climbActive = new Trigger(() -> climbing);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));

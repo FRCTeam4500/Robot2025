@@ -91,7 +91,8 @@ public class Ramp extends SubsystemBase implements Loggable {
    * @param Command to move ramp to the intake angle.
    */
   public Command show() {
-    return Commands.runOnce(() -> tiltMotor.setTarget(0)).andThen(Commands.runOnce(() -> tiltMotor.setVoltage(0), this));
+    return Commands.runOnce(() -> tiltMotor.setTarget(0))
+        .andThen(Commands.runOnce(() -> tiltMotor.setVoltage(0), this));
   }
 
   @Override
