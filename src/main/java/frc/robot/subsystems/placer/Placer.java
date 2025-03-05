@@ -55,8 +55,10 @@ public class Placer extends SubsystemBase implements Loggable {
               }
               if (status != StatusCode.OK) {
                 configError.set(true);
+              } else {
+                configError.set(false);
                 Orc.addMotor(motor);
-              } else configError.set(false);
+              }
             },
             (FeedforwardSim sim) -> {},
             0,

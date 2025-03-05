@@ -18,6 +18,7 @@ public class Orc {
   private static Orchestra orchestra;
 
   static {
+    motors = new ArrayList<>();
     orchestra = new Orchestra();
     songSelector = new SendableChooser<String>();
     songSelector.setDefaultOption("None", null);

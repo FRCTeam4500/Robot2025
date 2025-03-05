@@ -88,8 +88,10 @@ public class SwerveConstants {
                 }
                 if (status != StatusCode.OK) {
                   fldConfigError.set(true);
+                } else {
+                  fldConfigError.set(false);
                   Orc.addMotor(motor);
-                } else fldConfigError.set(false);
+                }
               },
               sim -> {},
               0,
@@ -144,8 +146,10 @@ public class SwerveConstants {
                 }
                 if (status != StatusCode.OK) {
                   frdConfigError.set(true);
+                } else {
+                  frdConfigError.set(false);
                   Orc.addMotor(motor);
-                } else frdConfigError.set(false);
+                }
               },
               sim -> {},
               0,
@@ -200,8 +204,10 @@ public class SwerveConstants {
                 }
                 if (status != StatusCode.OK) {
                   bldConfigError.set(true);
+                } else {
+                  bldConfigError.set(false);
                   Orc.addMotor(motor);
-                } else bldConfigError.set(false);
+                }
               },
               sim -> {},
               0,
@@ -256,8 +262,10 @@ public class SwerveConstants {
                 }
                 if (status != StatusCode.OK) {
                   brdConfigError.set(true);
+                } else {
+                  brdConfigError.set(false);
                   Orc.addMotor(motor);
-                } else brdConfigError.set(false);
+                }
               },
               sim -> {},
               0,

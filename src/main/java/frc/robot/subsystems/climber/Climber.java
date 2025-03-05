@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.WiringConstants.ClimberWiring;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
-import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
@@ -105,8 +104,7 @@ public class Climber extends SubsystemBase implements Loggable {
                 () -> {
                   return winchMotor.getPosition() <= latchPosition && winchMotor.getPosition() > 0;
                 }))
-        .andThen(Commands.runOnce(() -> winchMotor.setVoltage(0)))
-        .andThen(Orc.startSinging());
+        .andThen(Commands.runOnce(() -> winchMotor.setVoltage(0)));
   }
 
   public Command off() {

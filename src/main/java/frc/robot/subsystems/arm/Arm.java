@@ -60,8 +60,10 @@ public class Arm extends SubsystemBase implements Loggable {
                   }
                   if (status != StatusCode.OK) {
                     configError.set(true);
+                  } else {
+                    configError.set(false);
                     Orc.addMotor(motor);
-                  } else configError.set(false);
+                  }
                 },
                 sim -> {
                   sim.withHardstops(handoffAngle, startAngle);
@@ -76,7 +78,7 @@ public class Arm extends SubsystemBase implements Loggable {
                 TargetType.Position)
             .withName("Arm Motor");
 
-    tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, 0.81);
+    tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, .13);
     tiltMotor.getSysIDCommands("Arm", 0.25, 0.5, 4).putOnDashboard("Arm", this);
   }
 
