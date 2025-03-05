@@ -105,8 +105,7 @@ public class Climber extends SubsystemBase implements Loggable {
                 () -> {
                   return winchMotor.getPosition() <= latchPosition && winchMotor.getPosition() > 0;
                 }))
-        .andThen(Commands.runOnce(() -> winchMotor.setVoltage(0)))
-        .andThen(Orc.startSinging());
+        .andThen(Commands.runOnce(() -> winchMotor.setVoltage(0)));
   }
 
   public Command off() {

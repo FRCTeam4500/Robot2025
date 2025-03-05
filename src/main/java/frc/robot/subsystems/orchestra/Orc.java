@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class Orc {
   private static Orchestra orchestra;
 
   static {
+    motors = new ArrayList<>();
     orchestra = new Orchestra();
     songSelector = new SendableChooser<String>();
     songSelector.setDefaultOption("None", null);
