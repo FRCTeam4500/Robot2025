@@ -50,4 +50,11 @@ public class Orc {
         .andThen(Commands.runOnce(() -> orchestra.play()))
         .ignoringDisable(true);
   }
+
+  public static Command stopSinging() {
+    return Commands.runOnce(() -> {
+      orchestra.stop();
+      orchestra.clearInstruments();
+    });
+  }
 }

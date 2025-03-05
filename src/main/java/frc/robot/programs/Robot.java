@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Superstructure;
 import frc.robot.Superstructure.AlgaeState;
 import frc.robot.Superstructure.CoralState;
+import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.subsystems.swerve.Swerve;
 import frc.robot.subsystems.swerve.Swerve.Alignment;
 import frc.robot.utilities.ScoringLocations;
@@ -177,6 +178,7 @@ public class Robot extends LoggedRobot {
     Trigger shoot = xbox.rightTrigger();
     Trigger faceReefCoral = xbox.rightBumper();
     Trigger faceReefAlgae = xbox.leftBumper();
+    Trigger stopMusic = xbox.start();
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
@@ -259,6 +261,7 @@ public class Robot extends LoggedRobot {
     faceReefCoral.onFalse(structure.readyNextCoral());
     faceReefAlgae.whileTrue(swerve.reefCentric(xbox.getHID()));
     faceReefAlgae.onFalse(structure.readyNextAlgae());
+    stopMusic.onTrue(Orc.stopSinging());
   }
 
   public void setupAuto() {

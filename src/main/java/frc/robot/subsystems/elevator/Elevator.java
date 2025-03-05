@@ -36,6 +36,7 @@ public class Elevator extends SubsystemBase implements Loggable {
           });
 
   private Alert configError = new Alert("Elevator Config Failed :(", AlertType.kError);
+  private Alert idleError = new Alert("Elevator Idle Config Failed :(", AlertType.kError);
 
   private final double zeroedPosition = 0;
   private final double stowPosition = 0.02;
@@ -75,8 +76,8 @@ public class Elevator extends SubsystemBase implements Loggable {
                     REVLibError idlerr =
                         spark.configure(
                             config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-                    if (!idlerr.equals(REVLibError.kOk)) configError.set(true);
-                    else configError.set(false);
+                    if (!idlerr.equals(REVLibError.kOk)) idleError.set(true);
+                    else idleError.set(false);
                   };
             },
             (FeedforwardSim sim) -> {
