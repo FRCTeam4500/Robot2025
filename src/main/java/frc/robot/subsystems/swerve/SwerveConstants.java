@@ -87,6 +87,7 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
+                  fldConfigError.setText("Front Left Drive Config Error: " + status.name());
                   fldConfigError.set(true);
                 } else {
                   fldConfigError.set(false);
@@ -111,7 +112,10 @@ public class SwerveConstants {
                 REVLibError err =
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-                if (!err.equals(REVLibError.kOk)) flaConfigError.set(true);
+                if (!err.equals(REVLibError.kOk)) {
+                  flaConfigError.setText("Front Left Angle Config Error: " + err.name());
+                  flaConfigError.set(true);
+                }
                 else flaConfigError.set(false);
               },
               sim -> {},
@@ -145,6 +149,7 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
+                  frdConfigError.setText("Front Right Drive Config Error: " + status.name());
                   frdConfigError.set(true);
                 } else {
                   frdConfigError.set(false);
@@ -169,7 +174,10 @@ public class SwerveConstants {
                 REVLibError err =
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-                if (!err.equals(REVLibError.kOk)) fraConfigError.set(true);
+                if (!err.equals(REVLibError.kOk)) {
+                  fraConfigError.setText("Front Right Angle Config Error: " + err.name());
+                  fraConfigError.set(true);
+                }
                 else fraConfigError.set(false);
               },
               sim -> {},
@@ -203,6 +211,7 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
+                  bldConfigError.setText("Back Left Drive Config Error: " + status.name());
                   bldConfigError.set(true);
                 } else {
                   bldConfigError.set(false);
@@ -227,7 +236,10 @@ public class SwerveConstants {
                 REVLibError err =
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-                if (!err.equals(REVLibError.kOk)) blaConfigError.set(true);
+                if (!err.equals(REVLibError.kOk)) {
+                  blaConfigError.setText("Back Left Angle Config Error: " + err.name());
+                  blaConfigError.set(true);
+                }
                 else blaConfigError.set(false);
               },
               sim -> {},
@@ -261,6 +273,7 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
+                  brdConfigError.setText("Back Right Drive Config Error: " + status.name());
                   brdConfigError.set(true);
                 } else {
                   brdConfigError.set(false);
@@ -285,7 +298,10 @@ public class SwerveConstants {
                 REVLibError err =
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-                if (!err.equals(REVLibError.kOk)) braConfigError.set(true);
+                if (!err.equals(REVLibError.kOk)) {
+                  braConfigError.setText("Back Right Angle Config Error: " + err.name());
+                  braConfigError.set(true);
+                }
                 else braConfigError.set(false);
               },
               sim -> {},

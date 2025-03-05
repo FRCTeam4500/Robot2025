@@ -45,7 +45,10 @@ public class Ramp extends SubsystemBase implements Loggable {
               REVLibError err =
                   max.configure(
                       config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-              if (!err.equals(REVLibError.kOk)) configError.set(true);
+              if (!err.equals(REVLibError.kOk)) {
+                configError.setText("Ramp Config Error: " + err.name());
+                configError.set(true);
+              }
               else configError.set(false);
             },
             (FeedforwardSim jim) -> {

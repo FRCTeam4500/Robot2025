@@ -44,7 +44,10 @@ public class Climber extends SubsystemBase implements Loggable {
                   for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                     status = motor.getConfigurator().apply(config);
                   }
-                  if (status != StatusCode.OK) configError.set(true);
+                  if (status != StatusCode.OK) {
+                    configError.setText("Climber Config Error: " + status.name());
+                    configError.set(true);
+                  }
                   else configError.set(false);
                 },
                 (FeedforwardSim sim) -> {},

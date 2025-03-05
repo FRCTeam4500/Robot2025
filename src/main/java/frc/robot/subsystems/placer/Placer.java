@@ -54,6 +54,7 @@ public class Placer extends SubsystemBase implements Loggable {
                 status = motor.getConfigurator().apply(config);
               }
               if (status != StatusCode.OK) {
+                configError.setText("Placer Config Error: " + status.name());
                 configError.set(true);
               } else {
                 configError.set(false);

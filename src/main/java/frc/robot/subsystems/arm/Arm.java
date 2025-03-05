@@ -59,6 +59,7 @@ public class Arm extends SubsystemBase implements Loggable {
                     status = motor.getConfigurator().apply(config);
                   }
                   if (status != StatusCode.OK) {
+                    configError.setText("Arm Config Error: " + status.name());
                     configError.set(true);
                   } else {
                     configError.set(false);
