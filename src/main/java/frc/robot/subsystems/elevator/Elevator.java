@@ -71,8 +71,7 @@ public class Elevator extends SubsystemBase implements Loggable {
               if (!err.equals(REVLibError.kOk)) {
                 configError.setText("Elevator Config Error: " + err.name());
                 configError.set(true);
-              }
-              else configError.set(false);
+              } else configError.set(false);
               setIdleMode =
                   mode -> {
                     config.idleMode(mode);
@@ -82,8 +81,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                     if (!idlerr.equals(REVLibError.kOk)) {
                       idleError.setText("Elevator Idle Config Error: " + idlerr.name());
                       idleError.set(true);
-                    }
-                    else idleError.set(false);
+                    } else idleError.set(false);
                   };
             },
             (FeedforwardSim sim) -> {

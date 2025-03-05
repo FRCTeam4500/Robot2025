@@ -115,8 +115,7 @@ public class SwerveConstants {
                 if (!err.equals(REVLibError.kOk)) {
                   flaConfigError.setText("Front Left Angle Config Error: " + err.name());
                   flaConfigError.set(true);
-                }
-                else flaConfigError.set(false);
+                } else flaConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(0).get() - 0.647) * 360,
@@ -177,8 +176,7 @@ public class SwerveConstants {
                 if (!err.equals(REVLibError.kOk)) {
                   fraConfigError.setText("Front Right Angle Config Error: " + err.name());
                   fraConfigError.set(true);
-                }
-                else fraConfigError.set(false);
+                } else fraConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(1).get() - 0.930) * 360,
@@ -239,8 +237,7 @@ public class SwerveConstants {
                 if (!err.equals(REVLibError.kOk)) {
                   blaConfigError.setText("Back Left Angle Config Error: " + err.name());
                   blaConfigError.set(true);
-                }
-                else blaConfigError.set(false);
+                } else blaConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(2).get() - 0.022) * 360,
@@ -301,8 +298,7 @@ public class SwerveConstants {
                 if (!err.equals(REVLibError.kOk)) {
                   braConfigError.setText("Back Right Angle Config Error: " + err.name());
                   braConfigError.set(true);
-                }
-                else braConfigError.set(false);
+                } else braConfigError.set(false);
               },
               sim -> {},
               (new AnalogEncoder(3).get() - 0.879) * 360,

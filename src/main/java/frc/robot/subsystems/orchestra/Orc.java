@@ -52,9 +52,10 @@ public class Orc {
   }
 
   public static Command stopSinging() {
-    return Commands.runOnce(() -> {
-      orchestra.stop();
-      orchestra.clearInstruments();
-    });
+    return Commands.runOnce(
+        () -> {
+          orchestra.stop();
+          orchestra.clearInstruments();
+        });
   }
 }

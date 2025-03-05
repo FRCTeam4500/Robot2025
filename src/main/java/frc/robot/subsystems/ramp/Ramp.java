@@ -48,8 +48,7 @@ public class Ramp extends SubsystemBase implements Loggable {
               if (!err.equals(REVLibError.kOk)) {
                 configError.setText("Ramp Config Error: " + err.name());
                 configError.set(true);
-              }
-              else configError.set(false);
+              } else configError.set(false);
             },
             (FeedforwardSim jim) -> {
               jim.withHardstops(90, 270);
