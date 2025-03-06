@@ -67,6 +67,7 @@ public class Robot extends LoggedRobot {
     setupAuto();
     RobotModeTriggers.teleop().and(stick.axisGreaterThan(3, -0.1)).onTrue(structure.stow());
     RobotModeTriggers.disabled().and(() -> climbing).onTrue(structure.sing().ignoringDisable(true));
+    RobotModeTriggers.disabled().onFalse(structure.stopSinging());
   }
 
   private void setupOperatorController() {
@@ -262,7 +263,7 @@ public class Robot extends LoggedRobot {
     faceReefCoral.onFalse(structure.readyNextCoral());
     faceReefAlgae.whileTrue(swerve.reefCentric(xbox.getHID()));
     faceReefAlgae.onFalse(structure.readyNextAlgae());
-    stopMusic.onTrue(Orc.stopSinging());
+    stopMusic.onTrue(structure.stopSinging());
   }
 
   public void setupAuto() {

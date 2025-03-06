@@ -200,6 +200,10 @@ public class Superstructure implements Loggable {
     return Orc.startSinging().withName("Sing");
   }
 
+  public Command stopSinging() {
+    return Orc.stopSinging().withName("Stop Singing");
+  }
+
   public Command algaeGroundIntake() {
     return arm.algaeGround()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgae()))
