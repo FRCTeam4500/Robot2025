@@ -66,6 +66,7 @@ public class Robot extends LoggedRobot {
     setupOperatorController();
     setupAuto();
     RobotModeTriggers.teleop().and(stick.axisGreaterThan(3, -0.1)).onTrue(structure.stow());
+    RobotModeTriggers.disabled().and(() -> climbing).onTrue(structure.sing().ignoringDisable(true));
   }
 
   private void setupOperatorController() {

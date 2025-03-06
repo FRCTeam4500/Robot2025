@@ -189,11 +189,15 @@ public class Superstructure implements Loggable {
   }
 
   public Command climb() {
-    return climber.climb().andThen(Orc.startSinging()).withName("Climb");
+    return climber.climb().withName("Climb");
   }
 
   public Command pauseClimb() {
     return climber.pause().withName("Pause Climb");
+  }
+
+  public Command sing() {
+    return Orc.startSinging().withName("Sing");
   }
 
   public Command algaeGroundIntake() {
