@@ -77,7 +77,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                     config.idleMode(mode);
                     REVLibError idlerr =
                         spark.configure(
-                            config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                            config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
                     if (!idlerr.equals(REVLibError.kOk)) {
                       idleError.setText("Elevator Idle Config Error: " + idlerr.name());
                       idleError.set(true);
