@@ -44,7 +44,8 @@ public class SwerveConstants {
       new Alert("Back Right Drive Config Failed :(", AlertType.kError);
 
   /** The max speed the robot should travel at */
-  public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(3.5, 3.5, 6);
+  public static final ChassisSpeeds MAX_FIELD_REL_SPEEDS = new ChassisSpeeds(3.5, 3.5, 6);
+  public static final ChassisSpeeds MAX_ROBOT_REL_SPEEDS = new ChassisSpeeds(5, 3, 6);
 
   /** The minimum coefficient for slowmode */
   public static final double MIN_COEFFICIENT = 0.14546;

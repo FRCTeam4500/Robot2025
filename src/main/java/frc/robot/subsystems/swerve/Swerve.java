@@ -244,13 +244,13 @@ public class Swerve extends SubsystemBase implements Loggable {
                   new ChassisSpeeds(
                       coefficient
                           * withHardDeadzone(-xbox.getLeftY(), 0.1)
-                          * MAX_SPEEDS.vxMetersPerSecond,
+                          * MAX_FIELD_REL_SPEEDS.vxMetersPerSecond,
                       coefficient
                           * withHardDeadzone(-xbox.getLeftX(), 0.1)
-                          * MAX_SPEEDS.vyMetersPerSecond,
+                          * MAX_FIELD_REL_SPEEDS.vyMetersPerSecond,
                       coefficient
                           * withHardDeadzone(-xbox.getRightX(), 0.1)
-                          * MAX_SPEEDS.omegaRadiansPerSecond));
+                          * MAX_FIELD_REL_SPEEDS.omegaRadiansPerSecond));
             },
             this)
         .withName("Robot Centric");
@@ -439,7 +439,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             targetHeading.getRadians()
                 - withHardDeadzone(xbox.getRightX(), 0.1)
                     * speedCoefficient
-                    * MAX_SPEEDS.omegaRadiansPerSecond
+                    * MAX_FIELD_REL_SPEEDS.omegaRadiansPerSecond
                     * 0.02);
     double rotational =
         headingFeedback.calculate(currentHeading.getRadians(), targetHeading.getRadians());
@@ -450,9 +450,9 @@ public class Swerve extends SubsystemBase implements Loggable {
       speedCoefficient *= -1;
     }
     double forward =
-        speedCoefficient * withHardDeadzone(xbox.getLeftY(), 0.1) * MAX_SPEEDS.vxMetersPerSecond;
+        speedCoefficient * withHardDeadzone(xbox.getLeftY(), 0.1) * MAX_FIELD_REL_SPEEDS.vxMetersPerSecond;
     double sideways =
-        speedCoefficient * withHardDeadzone(xbox.getLeftX(), 0.1) * MAX_SPEEDS.vyMetersPerSecond;
+        speedCoefficient * withHardDeadzone(xbox.getLeftX(), 0.1) * MAX_FIELD_REL_SPEEDS.vyMetersPerSecond;
     ChassisSpeeds fieldRel = new ChassisSpeeds(forward, sideways, rotational);
     return ChassisSpeeds.fromFieldRelativeSpeeds(fieldRel, currentHeading);
   }
@@ -467,6 +467,27 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   private void drive(ChassisSpeeds speeds) {
+    double coefficient = MAX_ROBOT_REL_SPEEDS.vxMetersPerSecond / Math.abs(speeds.vxMetersPerSecond);
+    if (coefficient < 1) {
+      speeds = new ChassisSpeeds(
+        speeds.vxMetersPerSecond * coefficient, 
+        speeds.vyMetersPerSecond * coefficient, 
+        speeds.omegaRadiansPerSecond * coefficient);
+    }
+    coefficient = MAX_ROBOT_REL_SPEEDS.vyMetersPerSecond / Math.abs(speeds.vyMetersPerSecond);
+    if (coefficient < 1) {
+      speeds = new ChassisSpeeds(
+        speeds.vxMetersPerSecond * coefficient, 
+        speeds.vyMetersPerSecond * coefficient, 
+        speeds.omegaRadiansPerSecond * coefficient);
+    }
+    coefficient = MAX_ROBOT_REL_SPEEDS.omegaRadiansPerSecond / Math.abs(speeds.omegaRadiansPerSecond);
+    if (coefficient < 1) {
+      speeds = new ChassisSpeeds(
+        speeds.vxMetersPerSecond * coefficient, 
+        speeds.vyMetersPerSecond * coefficient, 
+        speeds.omegaRadiansPerSecond * coefficient);
+    }
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
     speeds = kinematics.toChassisSpeeds(states);
