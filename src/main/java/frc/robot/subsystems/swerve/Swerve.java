@@ -519,7 +519,7 @@ public class Swerve extends SubsystemBase implements Loggable {
       if (useMT1) {
         estimate = camera.getPoseMT1();
       }
-      if (estimate.exists() && (estimate.averageDistance() < 2) && camera.isEnabled()) {
+      if (estimate.exists() && (estimate.averageDistance() < 2|| DriverStation.isDisabled()) && camera.isEnabled()) {
         estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }
