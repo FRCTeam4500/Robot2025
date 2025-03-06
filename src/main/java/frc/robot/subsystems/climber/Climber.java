@@ -1,5 +1,8 @@
 package frc.robot.subsystems.climber;
 
+import java.util.function.Consumer;
+
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -22,13 +25,15 @@ import frc.robot.utilities.logging.Loggable;
 public class Climber extends SubsystemBase implements Loggable {
 
   private Motor winchMotor;
-
-  private final double latchPosition = 40;
-  private final double readyPosition = 140;
-
+  private Consumer<NeutralModeValue> setIdleMode;
+  
+  private final double latchPosition = 35;
+  private final double readyPosition = 150;
+  
   private Alert configError = new Alert("Climber Config Failed :(", AlertType.kError);
-
+  
   public Climber() {
+    setIdleMode = (mode) -> {};
     winchMotor =
         Motor.fromTalonFX(
                 ClimberWiring.CLIMBER_ID,
@@ -39,7 +44,7 @@ public class Climber extends SubsystemBase implements Loggable {
                   config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
                   config.CurrentLimits.StatorCurrentLimit = 60;
                   config.CurrentLimits.StatorCurrentLimitEnable = true;
-                  config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+                  config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
                   StatusCode status = StatusCode.StatusCodeNotInitialized;
                   for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                     status = motor.getConfigurator().apply(config);
@@ -48,6 +53,11 @@ public class Climber extends SubsystemBase implements Loggable {
                     configError.setText("Climber Config Error: " + status.name());
                     configError.set(true);
                   } else configError.set(false);
+                  setIdleMode = (mode) -> {
+                    config.MotorOutput.NeutralMode = mode;
+                    System.out.println(motor.getConfigurator().apply(config).name());
+
+                  };
                 },
                 (FeedforwardSim sim) -> {},
                 0.0,
@@ -75,7 +85,10 @@ public class Climber extends SubsystemBase implements Loggable {
   }
 
   public Command ready() {
-    return Commands.runOnce(() -> winchMotor.setTarget(readyPosition))
+    return Commands.runOnce(() -> {
+      winchMotor.setTarget(readyPosition);
+      setIdleMode.accept(NeutralModeValue.Coast);
+    })
         .andThen(
             Commands.runOnce(
                 () -> {
@@ -94,6 +107,7 @@ public class Climber extends SubsystemBase implements Loggable {
     return Commands.runOnce(
             () -> {
               winchMotor.setTarget(latchPosition);
+              setIdleMode.accept(NeutralModeValue.Brake);
             },
             this)
         .andThen(
