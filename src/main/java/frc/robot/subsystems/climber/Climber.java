@@ -86,7 +86,6 @@ public class Climber extends SubsystemBase implements Loggable {
 
   public Command ready() {
     return Commands.runOnce(() -> {
-      winchMotor.setTarget(readyPosition);
       setIdleMode.accept(NeutralModeValue.Coast);
     })
         .andThen(
@@ -106,7 +105,6 @@ public class Climber extends SubsystemBase implements Loggable {
   public Command climb() {
     return Commands.runOnce(
             () -> {
-              winchMotor.setTarget(latchPosition);
               setIdleMode.accept(NeutralModeValue.Brake);
             },
             this)
@@ -120,7 +118,7 @@ public class Climber extends SubsystemBase implements Loggable {
                 () -> {
                   return winchMotor.getPosition() <= latchPosition && winchMotor.getPosition() > 0;
                 }))
-        .andThen(Commands.runOnce(() -> winchMotor.setVoltage(0)));
+        .andThen(pause());
   }
 
   public Command off() {
