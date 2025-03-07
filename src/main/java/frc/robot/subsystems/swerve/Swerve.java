@@ -8,7 +8,6 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -99,9 +98,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             kinematics,
             gyro.getAngle(),
             getModulePositions(),
-            new Pose2d(),
-            VecBuilder.fill(0.5, 0.5, 0.5),
-            VecBuilder.fill(50, 50, 50));
+            new Pose2d());
     targetHeading = new Rotation2d();
     headingFeedback =
         FeedbackController.fromPID(
@@ -540,7 +537,7 @@ public class Swerve extends SubsystemBase implements Loggable {
       if (useMT1) {
         estimate = camera.getPoseMT1();
       }
-      if (estimate.exists() && (estimate.averageDistance() < 2|| DriverStation.isDisabled()) && camera.isEnabled()) {
+      if (estimate.exists() && (estimate.tagCount() > 1 || estimate.averageDistance() < 2|| DriverStation.isDisabled()) && camera.isEnabled()) {
         estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }
