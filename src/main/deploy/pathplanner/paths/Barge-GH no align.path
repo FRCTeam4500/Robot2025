@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 6.070641066787408,
-        "y": 4.198989988169456
+        "y": 4.01
       },
       "prevControl": {
         "x": 6.318710535965825,
-        "y": 4.229998671816759
+        "y": 4.041008683647303
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +48,7 @@
   "folder": "Backup Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -145.00797980144125
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }
