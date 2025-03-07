@@ -27,7 +27,7 @@ public class Climber extends SubsystemBase implements Loggable {
   private Motor winchMotor;
   private Consumer<NeutralModeValue> setIdleMode;
   
-  private final double latchPosition = 35;
+  private final double latchPosition = 33;
   private final double readyPosition = 150;
   
   private Alert configError = new Alert("Climber Config Failed :(", AlertType.kError);
@@ -111,7 +111,7 @@ public class Climber extends SubsystemBase implements Loggable {
         .andThen(
             Commands.runOnce(
                 () -> {
-                  winchMotor.setVoltage(-3);
+                  winchMotor.setVoltage(-5);
                 }))
         .andThen(
             Commands.waitUntil(
