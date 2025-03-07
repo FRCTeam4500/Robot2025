@@ -45,6 +45,7 @@ public class SwerveConstants {
 
   /** The max speed the robot should travel at */
   public static final ChassisSpeeds MAX_FIELD_REL_SPEEDS = new ChassisSpeeds(3.5, 3.5, 6);
+
   public static final ChassisSpeeds MAX_ROBOT_REL_SPEEDS = new ChassisSpeeds(5, 3, 6);
 
   /** The minimum coefficient for slowmode */

@@ -61,7 +61,6 @@ public class Robot extends LoggedRobot {
         new Pose2d(14.49, 3.98, Rotation2d.fromDegrees(180)),
         new Pose2d(11.64, 4.03, Rotation2d.fromDegrees(0)));
 
-        
     setupDriveController();
     setupOperatorController();
     setupAuto();

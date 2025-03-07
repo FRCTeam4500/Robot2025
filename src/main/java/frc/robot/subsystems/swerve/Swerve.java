@@ -95,10 +95,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             BACK_RIGHT_TRANSLATION);
     estimator =
         new SwerveDrivePoseEstimator(
-            kinematics,
-            gyro.getAngle(),
-            getModulePositions(),
-            new Pose2d());
+            kinematics, gyro.getAngle(), getModulePositions(), new Pose2d());
     targetHeading = new Rotation2d();
     headingFeedback =
         FeedbackController.fromPID(
@@ -447,9 +444,13 @@ public class Swerve extends SubsystemBase implements Loggable {
       speedCoefficient *= -1;
     }
     double forward =
-        speedCoefficient * withHardDeadzone(xbox.getLeftY(), 0.1) * MAX_FIELD_REL_SPEEDS.vxMetersPerSecond;
+        speedCoefficient
+            * withHardDeadzone(xbox.getLeftY(), 0.1)
+            * MAX_FIELD_REL_SPEEDS.vxMetersPerSecond;
     double sideways =
-        speedCoefficient * withHardDeadzone(xbox.getLeftX(), 0.1) * MAX_FIELD_REL_SPEEDS.vyMetersPerSecond;
+        speedCoefficient
+            * withHardDeadzone(xbox.getLeftX(), 0.1)
+            * MAX_FIELD_REL_SPEEDS.vyMetersPerSecond;
     ChassisSpeeds fieldRel = new ChassisSpeeds(forward, sideways, rotational);
     return ChassisSpeeds.fromFieldRelativeSpeeds(fieldRel, currentHeading);
   }
@@ -464,26 +465,31 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   private void drive(ChassisSpeeds speeds) {
-    double coefficient = MAX_ROBOT_REL_SPEEDS.vxMetersPerSecond / Math.abs(speeds.vxMetersPerSecond);
+    double coefficient =
+        MAX_ROBOT_REL_SPEEDS.vxMetersPerSecond / Math.abs(speeds.vxMetersPerSecond);
     if (coefficient < 1) {
-      speeds = new ChassisSpeeds(
-        speeds.vxMetersPerSecond * coefficient, 
-        speeds.vyMetersPerSecond * coefficient, 
-        speeds.omegaRadiansPerSecond * coefficient);
+      speeds =
+          new ChassisSpeeds(
+              speeds.vxMetersPerSecond * coefficient,
+              speeds.vyMetersPerSecond * coefficient,
+              speeds.omegaRadiansPerSecond * coefficient);
     }
     coefficient = MAX_ROBOT_REL_SPEEDS.vyMetersPerSecond / Math.abs(speeds.vyMetersPerSecond);
     if (coefficient < 1) {
-      speeds = new ChassisSpeeds(
-        speeds.vxMetersPerSecond * coefficient, 
-        speeds.vyMetersPerSecond * coefficient, 
-        speeds.omegaRadiansPerSecond * coefficient);
+      speeds =
+          new ChassisSpeeds(
+              speeds.vxMetersPerSecond * coefficient,
+              speeds.vyMetersPerSecond * coefficient,
+              speeds.omegaRadiansPerSecond * coefficient);
     }
-    coefficient = MAX_ROBOT_REL_SPEEDS.omegaRadiansPerSecond / Math.abs(speeds.omegaRadiansPerSecond);
+    coefficient =
+        MAX_ROBOT_REL_SPEEDS.omegaRadiansPerSecond / Math.abs(speeds.omegaRadiansPerSecond);
     if (coefficient < 1) {
-      speeds = new ChassisSpeeds(
-        speeds.vxMetersPerSecond * coefficient, 
-        speeds.vyMetersPerSecond * coefficient, 
-        speeds.omegaRadiansPerSecond * coefficient);
+      speeds =
+          new ChassisSpeeds(
+              speeds.vxMetersPerSecond * coefficient,
+              speeds.vyMetersPerSecond * coefficient,
+              speeds.omegaRadiansPerSecond * coefficient);
     }
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
@@ -537,7 +543,11 @@ public class Swerve extends SubsystemBase implements Loggable {
       if (useMT1) {
         estimate = camera.getPoseMT1();
       }
-      if (estimate.exists() && (estimate.tagCount() > 1 || estimate.averageDistance() < 2|| DriverStation.isDisabled()) && camera.isEnabled()) {
+      if (estimate.exists()
+          && (estimate.tagCount() > 1
+              || estimate.averageDistance() < 2
+              || DriverStation.isDisabled())
+          && camera.isEnabled()) {
         estimator.addVisionMeasurement(
             estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
       }

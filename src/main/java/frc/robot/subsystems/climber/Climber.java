@@ -1,7 +1,5 @@
 package frc.robot.subsystems.climber;
 
-import java.util.function.Consumer;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -20,17 +18,18 @@ import frc.robot.utilities.FeedforwardController;
 import frc.robot.utilities.FeedforwardSim;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.function.Consumer;
 
 public class Climber extends SubsystemBase implements Loggable {
 
   private Motor winchMotor;
   private Consumer<NeutralModeValue> setIdleMode;
-  
+
   private final double latchPosition = 33;
   private final double readyPosition = 150;
-  
+
   private Alert configError = new Alert("Climber Config Failed :(", AlertType.kError);
-  
+
   public Climber() {
     setIdleMode = (mode) -> {};
     winchMotor =
@@ -52,11 +51,11 @@ public class Climber extends SubsystemBase implements Loggable {
                     configError.setText("Climber Config Error: " + status.name());
                     configError.set(true);
                   } else configError.set(false);
-                  setIdleMode = (mode) -> {
-                    config.MotorOutput.NeutralMode = mode;
-                    System.out.println(motor.getConfigurator().apply(config).name());
-
-                  };
+                  setIdleMode =
+                      (mode) -> {
+                        config.MotorOutput.NeutralMode = mode;
+                        System.out.println(motor.getConfigurator().apply(config).name());
+                      };
                 },
                 (FeedforwardSim sim) -> {},
                 0.0,
@@ -84,9 +83,10 @@ public class Climber extends SubsystemBase implements Loggable {
   }
 
   public Command ready() {
-    return Commands.runOnce(() -> {
-      setIdleMode.accept(NeutralModeValue.Coast);
-    })
+    return Commands.runOnce(
+            () -> {
+              setIdleMode.accept(NeutralModeValue.Coast);
+            })
         .andThen(
             Commands.runOnce(
                 () -> {
