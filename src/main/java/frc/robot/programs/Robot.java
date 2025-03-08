@@ -167,10 +167,10 @@ public class Robot extends LoggedRobot {
     Trigger faceForwards = new Trigger(() -> xbox.getRightY() < -0.5);
     Trigger faceBackwards = new Trigger(() -> xbox.getRightY() > 0.5);
     Trigger resetHeading = xbox.a();
-    Trigger backCoralIntake = xbox.povRight();
-    Trigger frontCoralIntake = xbox.povUp();
-    Trigger algaeGroundIntake = xbox.povDown();
-    Trigger coralGroundIntake = xbox.povLeft();
+    Trigger backCoralIntake = xbox.povRight().debounce(0.2);
+    Trigger frontCoralIntake = xbox.povUp().debounce(0.2);
+    Trigger algaeGroundIntake = xbox.povDown().debounce(0.2);
+    Trigger coralGroundIntake = xbox.povLeft().debounce(0.2);
     Trigger alignReefLeft = xbox.x();
     Trigger alignReefMiddle = xbox.leftStick();
     Trigger alignReefRight = xbox.b();
