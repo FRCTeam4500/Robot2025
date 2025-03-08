@@ -56,8 +56,8 @@ public class Robot extends LoggedRobot {
         new Pose2d(5.89, 4.02, Rotation2d.fromDegrees(180)));
 
     ScoringLocations.setupRed(
-        new Pose2d(14.52, 3.86, Rotation2d.fromDegrees(180)),
-        new Pose2d(14.52, 4.19, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.52, 3.88, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.52, 4.20, Rotation2d.fromDegrees(180)),
         new Pose2d(14.49, 3.98, Rotation2d.fromDegrees(180)),
         new Pose2d(11.64, 4.03, Rotation2d.fromDegrees(0)));
 
@@ -124,8 +124,8 @@ public class Robot extends LoggedRobot {
         .and(swerve.closerToRight.negate())
         .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
     stowButton.onTrue(structure.stow());
-    confirmIntake.onTrue(structure.confirmIntake());
-    confirmIntake.onFalse(structure.stopPlacer());
+    confirmIntake.onTrue(structure.confirmIntake().asProxy());
+    confirmIntake.onFalse(structure.stopPlacer().asProxy());
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
     frontCoralIntake
@@ -276,8 +276,10 @@ public class Robot extends LoggedRobot {
 
     SendableChooser<Command> chooser = new SendableChooser<>();
     chooser.setDefaultOption("None", Commands.none());
-    chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
-    chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece", true));
+    chooser.addOption("3 Coral Left Red", new PathPlannerAuto("3 Piece Red"));
+    chooser.addOption("3 Coral Right Red", new PathPlannerAuto("3 Piece Red", true));
+    chooser.addOption("3 Coral Left Blue", new PathPlannerAuto("3 Piece Blue"));
+    chooser.addOption("3 Coral Right Blue", new PathPlannerAuto("3 Piece Blue", true));
     chooser.addOption("1 Coral Backup", new PathPlannerAuto("Backup"));
     SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));

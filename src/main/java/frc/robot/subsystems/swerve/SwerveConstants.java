@@ -120,7 +120,7 @@ public class SwerveConstants {
                 } else flaConfigError.set(false);
               },
               sim -> {},
-              (new AnalogEncoder(0).get() - 0.647) * 360,
+              (new AnalogEncoder(0).get() - 0.642) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
