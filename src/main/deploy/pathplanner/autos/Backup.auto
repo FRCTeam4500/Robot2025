@@ -66,6 +66,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "GH-Back"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "Stow"
