@@ -23,7 +23,6 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -79,11 +78,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   public Swerve() {
     tagCameras =
         new Limelight[] {new Limelight("limelight-hehehe"), new Limelight("limelight-hihihi")};
-    if (RobotBase.isReal()) { // running on hardware robot
-      gyro = Gyro.fromNavX(navx -> {});
-    } else { // running robot simulation
-      gyro = Gyro.fromSim(() -> getSpeeds().omegaRadiansPerSecond);
-    }
+    gyro = Gyro.fromNavX(() -> getSpeeds().omegaRadiansPerSecond, navx -> {});
     modules =
         new SwerveModule[] {
           FRONT_LEFT_MODULE, FRONT_RIGHT_MODULE, BACK_LEFT_MODULE, BACK_RIGHT_MODULE
