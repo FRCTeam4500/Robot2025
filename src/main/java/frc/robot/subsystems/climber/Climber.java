@@ -45,7 +45,9 @@ public class Climber extends SubsystemBase implements Loggable {
                     status = motor.getConfigurator().apply(config);
                   }
                   if (status != StatusCode.OK) {
-                    HoundLog.logFault("[Climber] Winch Motor Config Error: " + status.getName(), AlertType.kError);
+                    HoundLog.logFault(
+                        "[Climber] Winch Motor Config Error: " + status.getName(),
+                        AlertType.kError);
                   }
                   setIdleMode =
                       (mode) -> {

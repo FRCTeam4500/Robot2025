@@ -52,7 +52,8 @@ public class Placer extends SubsystemBase implements Loggable {
                 status = motor.getConfigurator().apply(config);
               }
               if (status != StatusCode.OK) {
-                HoundLog.logFault("[Placer] Run Motor Config Error: " + status.getName(), AlertType.kError);
+                HoundLog.logFault(
+                    "[Placer] Run Motor Config Error: " + status.getName(), AlertType.kError);
               } else {
                 Orc.addMotor(motor);
               }

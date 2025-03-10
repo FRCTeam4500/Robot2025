@@ -51,7 +51,9 @@ public interface Gyro extends Loggable {
     AHRS navx = new AHRS(NavXComType.kMXP_SPI);
     config.accept(navx);
     Trigger connected = new Trigger(navx::isConnected);
-    connected.onFalse(Commands.runOnce(() -> HoundLog.logFault("Gyro Disconnected...", AlertType.kError)).ignoringDisable(true));
+    connected.onFalse(
+        Commands.runOnce(() -> HoundLog.logFault("Gyro Disconnected...", AlertType.kError))
+            .ignoringDisable(true));
     return new Gyro() {
       double lastAngle = navx.getRotation2d().getRadians();
 

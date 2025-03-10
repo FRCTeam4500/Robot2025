@@ -43,7 +43,8 @@ public class Ramp extends SubsystemBase implements Loggable {
                   max.configure(
                       config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
               if (!err.equals(REVLibError.kOk)) {
-                HoundLog.logFault("[Ramp] Tilt Motor Config Error: " + err.name(), AlertType.kError);
+                HoundLog.logFault(
+                    "[Ramp] Tilt Motor Config Error: " + err.name(), AlertType.kError);
               }
             },
             (FeedforwardSim jim) -> {

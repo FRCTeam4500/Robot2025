@@ -253,7 +253,9 @@ public class Motor extends SubsystemBase implements Loggable {
     }
     if (encoder != null) {
       if (!encoder.isConnected())
-        HoundLog.logFault("[Motor]" + (name != "" ? " " + name : "") + " Encoder Disconnected...", AlertType.kError);
+        HoundLog.logFault(
+            "[Motor]" + (name != "" ? " " + name : "") + " Encoder Disconnected...",
+            AlertType.kError);
     }
   }
 

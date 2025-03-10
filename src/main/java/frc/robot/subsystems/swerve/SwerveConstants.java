@@ -75,7 +75,9 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  HoundLog.logFault("[Swerve] Front Left Drive Motor Config Error: " + status.getName(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Front Left Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
                 } else {
                   Orc.addMotor(motor);
                 }
@@ -99,7 +101,9 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  HoundLog.logFault("[Swerve] Front Left Angle Motor Config Error: " + err.name(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Front Left Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
                 }
               },
               sim -> {},
@@ -133,7 +137,9 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  HoundLog.logFault("[Swerve] Front Right Drive Motor Config Error: " + status.getName(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Front Right Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
                 } else {
                   Orc.addMotor(motor);
                 }
@@ -157,7 +163,9 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  HoundLog.logFault("[Swerve] Front Right Angle Motor Config Error: " + err.name(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Front Right Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
                 }
               },
               sim -> {},
@@ -191,7 +199,9 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  HoundLog.logFault("[Swerve] Back Left Drive Motor Config Error: " + status.getName(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Back Left Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
                 } else {
                   Orc.addMotor(motor);
                 }
@@ -215,7 +225,9 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  HoundLog.logFault("[Swerve] Back Left Angle Motor Config Error: " + err.name(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Back Left Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
                 }
               },
               sim -> {},
@@ -249,7 +261,9 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  HoundLog.logFault("[Swerve] Back Right Drive Motor Config Error: " + status.getName(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Back Right Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
                 } else {
                   Orc.addMotor(motor);
                 }
@@ -273,7 +287,9 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  HoundLog.logFault("[Swerve] Back Right Angle Motor Config Error: " + err.name(), AlertType.kError);
+                  HoundLog.logFault(
+                      "[Swerve] Back Right Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
                 }
               },
               sim -> {},

@@ -65,7 +65,8 @@ public class Elevator extends SubsystemBase implements Loggable {
                   spark.configure(
                       config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
               if (!err.equals(REVLibError.kOk)) {
-                HoundLog.logFault("[Elevator] Extension Motor Config Error: " + err.name(), AlertType.kError);
+                HoundLog.logFault(
+                    "[Elevator] Extension Motor Config Error: " + err.name(), AlertType.kError);
               }
               setIdleMode =
                   mode -> {
@@ -76,7 +77,8 @@ public class Elevator extends SubsystemBase implements Loggable {
                             ResetMode.kResetSafeParameters,
                             PersistMode.kNoPersistParameters);
                     if (!idlerr.equals(REVLibError.kOk)) {
-                      HoundLog.logFault("[Elevator] Idle Mode Config Error: " + err.name(), AlertType.kError);
+                      HoundLog.logFault(
+                          "[Elevator] Idle Mode Config Error: " + err.name(), AlertType.kError);
                     }
                   };
             },

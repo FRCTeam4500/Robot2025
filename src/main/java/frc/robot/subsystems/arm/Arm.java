@@ -56,7 +56,8 @@ public class Arm extends SubsystemBase implements Loggable {
                     status = motor.getConfigurator().apply(config);
                   }
                   if (status != StatusCode.OK) {
-                    HoundLog.logFault("[Arm] Tilt Motor Config Error: " + status.getName(), AlertType.kError);
+                    HoundLog.logFault(
+                        "[Arm] Tilt Motor Config Error: " + status.getName(), AlertType.kError);
                   } else {
                     Orc.addMotor(motor);
                   }
