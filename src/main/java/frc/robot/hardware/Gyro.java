@@ -4,8 +4,8 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -59,6 +59,7 @@ public interface Gyro extends Loggable {
     connected.onFalse(Commands.runOnce(() -> gyroDisconnect.set(true)).ignoringDisable(true));
     return new Gyro() {
       double lastAngle = navx.getRotation2d().getRadians();
+
       @Override
       public void log(String path) {
         HoundLog.log(path, "Connected", navx.isConnected());

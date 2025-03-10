@@ -314,9 +314,11 @@ public class SwerveConstants {
                   }),
               FeedforwardController.forConstantGravity(0, 0.25348, 0.0092287, 0.0014289),
               TargetType.Position));
-  
+
   public static class TagPoseCameraOffsets {
-    public static final Transform2d limelightHeHeHe = new Transform2d(0.431, 0.040, Rotation2d.fromRadians(Math.PI));
-    public static final Transform2d limelightHiHiHi = new Transform2d(0.431, -0.040, Rotation2d.fromRadians(Math.PI));
+    public static final Transform2d limelightHeHeHe =
+        new Transform2d(0.431, 0.040, Rotation2d.fromRadians(Math.PI));
+    public static final Transform2d limelightHiHiHi =
+        new Transform2d(0.431, -0.040, Rotation2d.fromRadians(Math.PI));
   }
 }

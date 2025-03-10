@@ -1,14 +1,5 @@
 package frc.robot.hardware;
 
-import java.util.List;
-
-import org.photonvision.PhotonCamera;
-import org.photonvision.simulation.PhotonCameraSim;
-import org.photonvision.simulation.SimCameraProperties;
-import org.photonvision.simulation.VisionSystemSim;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Pair;
@@ -26,6 +17,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.List;
+import org.photonvision.PhotonCamera;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Wrapper class for limelights. An object of this class doesn't own the underlying hardware. In
@@ -204,9 +202,8 @@ public class Limelight implements Loggable {
     if (RobotBase.isReal()) {
       double[] raw = table.getEntry("targetpose_cameraspace").getDoubleArray(new double[11]);
       return new Pair<>(
-        new Transform2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
-        hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1
-      );
+          new Transform2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
+          hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1);
     } else {
       List<PhotonPipelineResult> results = camera.getAllUnreadResults();
       if (results.size() == 0) {
@@ -218,13 +215,10 @@ public class Limelight implements Loggable {
         return new Pair<>(null, -1);
       }
       Transform3d transform = target.getBestCameraToTarget();
-      return new Pair<Transform2d,Integer>(
-        new Transform2d(
-          transform.getTranslation().toTranslation2d(), 
-          transform.getRotation().toRotation2d()
-        ), 
-        target.getFiducialId()
-      );
+      return new Pair<Transform2d, Integer>(
+          new Transform2d(
+              transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d()),
+          target.getFiducialId());
     }
   }
 
