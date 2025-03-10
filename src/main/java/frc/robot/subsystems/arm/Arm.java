@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -39,8 +38,6 @@ public class Arm extends SubsystemBase implements Loggable {
   public final Trigger canMoveElevator =
       new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);
 
-  private Alert configError = new Alert("Arm Config Failed :(", AlertType.kError);
-
   public Arm() {
     tiltMotor =
         Motor.fromTalonFX(
@@ -59,10 +56,8 @@ public class Arm extends SubsystemBase implements Loggable {
                     status = motor.getConfigurator().apply(config);
                   }
                   if (status != StatusCode.OK) {
-                    configError.setText("Arm Config Error: " + status.name());
-                    configError.set(true);
+                    HoundLog.logFault("[Arm] Tilt Motor Config Error: " + status.getName(), AlertType.kError);
                   } else {
-                    configError.set(false);
                     Orc.addMotor(motor);
                   }
                 },

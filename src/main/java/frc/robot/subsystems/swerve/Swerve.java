@@ -24,7 +24,6 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -170,9 +169,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     try {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
-      Alert alert = new Alert("READING AUTO CONFIG FILE FAILED!!", AlertType.kError);
-      alert.set(true);
-      alert.close();
+      HoundLog.logFault("[Swerve] Failed to read auto config...", AlertType.kError);
       System.out.println(e.getMessage());
       config =
           new RobotConfig(

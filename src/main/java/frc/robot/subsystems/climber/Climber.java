@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -28,8 +27,6 @@ public class Climber extends SubsystemBase implements Loggable {
   private final double latchPosition = 33;
   private final double readyPosition = 150;
 
-  private Alert configError = new Alert("Climber Config Failed :(", AlertType.kError);
-
   public Climber() {
     setIdleMode = (mode) -> {};
     winchMotor =
@@ -48,9 +45,8 @@ public class Climber extends SubsystemBase implements Loggable {
                     status = motor.getConfigurator().apply(config);
                   }
                   if (status != StatusCode.OK) {
-                    configError.setText("Climber Config Error: " + status.name());
-                    configError.set(true);
-                  } else configError.set(false);
+                    HoundLog.logFault("[Climber] Winch Motor Config Error: " + status.getName(), AlertType.kError);
+                  }
                   setIdleMode =
                       (mode) -> {
                         config.MotorOutput.NeutralMode = mode;

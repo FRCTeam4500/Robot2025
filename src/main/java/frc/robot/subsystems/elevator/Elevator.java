@@ -7,7 +7,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,9 +33,6 @@ public class Elevator extends SubsystemBase implements Loggable {
           () -> {
             return upMotor.getPosition() > 0.6;
           });
-
-  private Alert configError = new Alert("Elevator Config Failed :(", AlertType.kError);
-  private Alert idleError = new Alert("Elevator Idle Config Failed :(", AlertType.kError);
 
   private final double zeroedPosition = 0;
   private final double stowPosition = 0.02;
@@ -69,9 +65,8 @@ public class Elevator extends SubsystemBase implements Loggable {
                   spark.configure(
                       config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
               if (!err.equals(REVLibError.kOk)) {
-                configError.setText("Elevator Config Error: " + err.name());
-                configError.set(true);
-              } else configError.set(false);
+                HoundLog.logFault("[Elevator] Extension Motor Config Error: " + err.name(), AlertType.kError);
+              }
               setIdleMode =
                   mode -> {
                     config.idleMode(mode);
@@ -81,9 +76,8 @@ public class Elevator extends SubsystemBase implements Loggable {
                             ResetMode.kResetSafeParameters,
                             PersistMode.kNoPersistParameters);
                     if (!idlerr.equals(REVLibError.kOk)) {
-                      idleError.setText("Elevator Idle Config Error: " + idlerr.name());
-                      idleError.set(true);
-                    } else idleError.set(false);
+                      HoundLog.logFault("[Elevator] Idle Mode Config Error: " + err.name(), AlertType.kError);
+                    }
                   };
             },
             (FeedforwardSim sim) -> {

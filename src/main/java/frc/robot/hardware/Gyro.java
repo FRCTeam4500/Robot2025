@@ -3,7 +3,6 @@ package frc.robot.hardware;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -45,18 +44,14 @@ public interface Gyro extends Loggable {
    * @param config Method to configure the navX
    * @return the navX on the RIO wrapped as a {@link Gyro}
    */
-  @SuppressWarnings("resource")
   public static Gyro fromNavX(DoubleSupplier radiansPerSecond, Consumer<AHRS> config) {
     if (RobotBase.isSimulation()) {
       return fromSim(radiansPerSecond);
     }
-    Alert gyroDisconnect = new Alert("Gyro Disconnected!", AlertType.kError);
     AHRS navx = new AHRS(NavXComType.kMXP_SPI);
     config.accept(navx);
     Trigger connected = new Trigger(navx::isConnected);
-    gyroDisconnect.set(false);
-    connected.onTrue(Commands.runOnce(() -> gyroDisconnect.set(false)).ignoringDisable(true));
-    connected.onFalse(Commands.runOnce(() -> gyroDisconnect.set(true)).ignoringDisable(true));
+    connected.onFalse(Commands.runOnce(() -> HoundLog.logFault("Gyro Disconnected...", AlertType.kError)).ignoringDisable(true));
     return new Gyro() {
       double lastAngle = navx.getRotation2d().getRadians();
 

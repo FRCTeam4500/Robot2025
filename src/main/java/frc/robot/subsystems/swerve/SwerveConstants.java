@@ -17,7 +17,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.hardware.Motor;
@@ -25,25 +24,10 @@ import frc.robot.hardware.Motor.TargetType;
 import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
+import frc.robot.utilities.logging.HoundLog;
 
 @SuppressWarnings("resource")
 public class SwerveConstants {
-  private static Alert flaConfigError =
-      new Alert("Front Left Angle Config Failed :(", AlertType.kError);
-  private static Alert fraConfigError =
-      new Alert("Front Right Angle Config Failed :(", AlertType.kError);
-  private static Alert blaConfigError =
-      new Alert("Back Left Angle Config Failed :(", AlertType.kError);
-  private static Alert braConfigError =
-      new Alert("Back Right Angle Config Failed :(", AlertType.kError);
-  private static Alert fldConfigError =
-      new Alert("Front Left Drive Config Failed :(", AlertType.kError);
-  private static Alert frdConfigError =
-      new Alert("Front Right Drive Config Failed :(", AlertType.kError);
-  private static Alert bldConfigError =
-      new Alert("Back Left Drive Config Failed :(", AlertType.kError);
-  private static Alert brdConfigError =
-      new Alert("Back Right Drive Config Failed :(", AlertType.kError);
 
   /** The max speed the robot should travel at */
   public static final ChassisSpeeds MAX_FIELD_REL_SPEEDS = new ChassisSpeeds(3.5, 3.5, 6);
@@ -91,10 +75,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  fldConfigError.setText("Front Left Drive Config Error: " + status.name());
-                  fldConfigError.set(true);
+                  HoundLog.logFault("[Swerve] Front Left Drive Motor Config Error: " + status.getName(), AlertType.kError);
                 } else {
-                  fldConfigError.set(false);
                   Orc.addMotor(motor);
                 }
               },
@@ -117,9 +99,8 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  flaConfigError.setText("Front Left Angle Config Error: " + err.name());
-                  flaConfigError.set(true);
-                } else flaConfigError.set(false);
+                  HoundLog.logFault("[Swerve] Front Left Angle Motor Config Error: " + err.name(), AlertType.kError);
+                }
               },
               sim -> {},
               (new AnalogEncoder(0).get() - 0.642) * 360,
@@ -152,10 +133,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  frdConfigError.setText("Front Right Drive Config Error: " + status.name());
-                  frdConfigError.set(true);
+                  HoundLog.logFault("[Swerve] Front Right Drive Motor Config Error: " + status.getName(), AlertType.kError);
                 } else {
-                  frdConfigError.set(false);
                   Orc.addMotor(motor);
                 }
               },
@@ -178,9 +157,8 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  fraConfigError.setText("Front Right Angle Config Error: " + err.name());
-                  fraConfigError.set(true);
-                } else fraConfigError.set(false);
+                  HoundLog.logFault("[Swerve] Front Right Angle Motor Config Error: " + err.name(), AlertType.kError);
+                }
               },
               sim -> {},
               (new AnalogEncoder(1).get() - 0.930) * 360,
@@ -213,10 +191,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  bldConfigError.setText("Back Left Drive Config Error: " + status.name());
-                  bldConfigError.set(true);
+                  HoundLog.logFault("[Swerve] Back Left Drive Motor Config Error: " + status.getName(), AlertType.kError);
                 } else {
-                  bldConfigError.set(false);
                   Orc.addMotor(motor);
                 }
               },
@@ -239,9 +215,8 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  blaConfigError.setText("Back Left Angle Config Error: " + err.name());
-                  blaConfigError.set(true);
-                } else blaConfigError.set(false);
+                  HoundLog.logFault("[Swerve] Back Left Angle Motor Config Error: " + err.name(), AlertType.kError);
+                }
               },
               sim -> {},
               (new AnalogEncoder(2).get() - 0.022) * 360,
@@ -274,10 +249,8 @@ public class SwerveConstants {
                   status = motor.getConfigurator().apply(config);
                 }
                 if (status != StatusCode.OK) {
-                  brdConfigError.setText("Back Right Drive Config Error: " + status.name());
-                  brdConfigError.set(true);
+                  HoundLog.logFault("[Swerve] Back Right Drive Motor Config Error: " + status.getName(), AlertType.kError);
                 } else {
-                  brdConfigError.set(false);
                   Orc.addMotor(motor);
                 }
               },
@@ -300,9 +273,8 @@ public class SwerveConstants {
                     motor.configure(
                         config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
                 if (!err.equals(REVLibError.kOk)) {
-                  braConfigError.setText("Back Right Angle Config Error: " + err.name());
-                  braConfigError.set(true);
-                } else braConfigError.set(false);
+                  HoundLog.logFault("[Swerve] Back Right Angle Motor Config Error: " + err.name(), AlertType.kError);
+                }
               },
               sim -> {},
               (new AnalogEncoder(3).get() - 0.879) * 360,
