@@ -1,12 +1,27 @@
 package frc.robot.hardware;
 
+import java.util.List;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
@@ -34,6 +49,8 @@ import frc.robot.utilities.logging.Loggable;
 public class Limelight implements Loggable {
   private NetworkTable table;
   private String name;
+  private PhotonCamera camera;
+  private VisionSystemSim sim;
   private boolean enabled = true;
 
   /**
@@ -42,7 +59,7 @@ public class Limelight implements Loggable {
    * @param name The name of the limelight. Should be "limelight-xxx"
    * @param pipeline The pipeline to be used. These are configured in a web browser.
    */
-  public Limelight(String name, int pipeline) {
+  public Limelight(String name, int pipeline, Transform3d robotToCamera) {
     this.name = name;
     table = NetworkTableInstance.getDefault().getTable(this.name);
     table.getEntry("pipline").setInteger(pipeline);
@@ -59,6 +76,16 @@ public class Limelight implements Loggable {
           }
         };
     SmartDashboard.putData("[Limelight] " + this.name + " Enabled", isEnabledSendable);
+    if (RobotBase.isSimulation()) {
+      sim = new VisionSystemSim(name);
+      sim.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded));
+      SimCameraProperties camProperties = new SimCameraProperties();
+      camProperties.setCalibration(1280, 960, Rotation2d.fromDegrees(79.3565372228));
+      camProperties.setFPS(100);
+      camera = new PhotonCamera(name);
+      PhotonCameraSim cameraSim = new PhotonCameraSim(camera, camProperties);
+      sim.addCamera(cameraSim, robotToCamera);
+    }
   }
 
   /**
@@ -66,8 +93,8 @@ public class Limelight implements Loggable {
    *
    * @param name The name of the limelight. Should be "limelight-xxx"
    */
-  public Limelight(String name) {
-    this(name, 0);
+  public Limelight(String name, Transform3d robotToCamera) {
+    this(name, 0, robotToCamera);
   }
 
   /**
@@ -171,6 +198,40 @@ public class Limelight implements Loggable {
         raw[9],
         raw[10],
         hasTargets());
+  }
+
+  public Pair<Transform2d, Integer> getTargetPoseCameraSpace() {
+    if (RobotBase.isReal()) {
+      double[] raw = table.getEntry("targetpose_cameraspace").getDoubleArray(new double[11]);
+      return new Pair<>(
+        new Transform2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
+        hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1
+      );
+    } else {
+      List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+      if (results.size() == 0) {
+        return new Pair<>(null, -1);
+      }
+      PhotonPipelineResult latestResult = results.get(results.size() - 1);
+      PhotonTrackedTarget target = latestResult.getBestTarget();
+      if (target == null) {
+        return new Pair<>(null, -1);
+      }
+      Transform3d transform = target.getBestCameraToTarget();
+      return new Pair<Transform2d,Integer>(
+        new Transform2d(
+          transform.getTranslation().toTranslation2d(), 
+          transform.getRotation().toRotation2d()
+        ), 
+        target.getFiducialId()
+      );
+    }
+  }
+
+  public void updateSim(Pose2d robotPose) {
+    if (RobotBase.isSimulation()) {
+      sim.update(robotPose);
+    }
   }
 
   @Override

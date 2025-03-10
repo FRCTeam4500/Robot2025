@@ -8,10 +8,16 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -22,6 +28,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -54,6 +61,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   private PoseFeedbackController poseFeedback;
   private Pose2d targetPose;
   private boolean useMT1;
+  private int targetTag;
 
   public final Trigger closerToRight =
       new Trigger(
@@ -77,7 +85,16 @@ public class Swerve extends SubsystemBase implements Loggable {
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
     tagCameras =
-        new Limelight[] {new Limelight("limelight-hehehe"), new Limelight("limelight-hihihi")};
+        new Limelight[] {
+          new Limelight("limelight-hehehe", new Transform3d(
+            new Translation3d(0.2, -0.2, 0.2),
+            new Rotation3d(0, Math.toRadians(-10), 0)
+          )), 
+          new Limelight("limelight-hihihi", new Transform3d(
+            new Translation3d(0.2, 0.2, 0.2),
+            new Rotation3d(0, Math.toRadians(-10), 0)
+          ))
+        };
     gyro = Gyro.fromNavX(() -> getSpeeds().omegaRadiansPerSecond, navx -> {});
     modules =
         new SwerveModule[] {
@@ -112,14 +129,14 @@ public class Swerve extends SubsystemBase implements Loggable {
     poseFeedback =
         new PoseFeedbackController(
             FeedbackController.fromPID(
-                5,
+                3,
                 0,
                 0,
                 pid -> {
                   pid.setTolerance(0.005);
                 }),
             FeedbackController.fromPID(
-                5,
+                3,
                 0,
                 0,
                 pid -> {
@@ -260,6 +277,52 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .withName("Reef Centric");
+  }
+
+  public Command leftBranchCentric(XboxController xbox) {
+    return Commands.run(
+      () -> {
+        Pair<Transform2d, Integer> estimate = tagCameras[0].getTargetPoseCameraSpace();
+        Rotation2d rotationTarget = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
+        Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
+        ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
+        ChassisSpeeds speeds = new ChassisSpeeds(driverSpeeds.vxMetersPerSecond, driverSpeeds.vyMetersPerSecond, headingFeedback.calculate(currentHeading.getRadians(), rotationTarget.getRadians()));
+        if (estimate.getSecond() == targetTag) {
+          Transform2d tagPose = estimate.getFirst();
+          Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHeHeHe);
+          if (target.getTranslation().getNorm() <= 3) {
+            speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
+          }
+        }
+        drive(speeds);
+      }, this
+    ).beforeStarting(() -> {
+      poseFeedback.reset(Pose2d.kZero);
+      targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+    });
+  }
+
+  public Command rightBranchCentric(XboxController xbox) {
+    return Commands.run(
+      () -> {
+        Pair<Transform2d, Integer> estimate = tagCameras[1].getTargetPoseCameraSpace();
+        Rotation2d rotationTarget = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
+        Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
+        ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
+        ChassisSpeeds speeds = new ChassisSpeeds(driverSpeeds.vxMetersPerSecond, driverSpeeds.vyMetersPerSecond, headingFeedback.calculate(currentHeading.getRadians(), rotationTarget.getRadians()));
+        if (estimate.getSecond() == targetTag) {
+          Transform2d tagPose = estimate.getFirst();
+          Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHiHiHi);
+          if (target.getTranslation().getNorm() <= 3) {
+            speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
+          }
+        }
+        drive(speeds);
+      }, this
+    ).beforeStarting(() -> {
+      poseFeedback.reset(Pose2d.kZero);
+      targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+    });
   }
 
   public Command poseCentric(Pose2d target) {
@@ -535,6 +598,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   public void periodic() {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
+      if (RobotBase.isSimulation()) camera.updateSim(estimator.getEstimatedPosition());
       PoseEstimate estimate =
           camera.getPoseMT2(
               estimator.getEstimatedPosition().getRotation(),

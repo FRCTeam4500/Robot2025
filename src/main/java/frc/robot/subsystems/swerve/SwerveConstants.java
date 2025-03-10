@@ -13,6 +13,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Alert;
@@ -312,4 +314,9 @@ public class SwerveConstants {
                   }),
               FeedforwardController.forConstantGravity(0, 0.25348, 0.0092287, 0.0014289),
               TargetType.Position));
+  
+  public static class TagPoseCameraOffsets {
+    public static final Transform2d limelightHeHeHe = new Transform2d(0.431, 0.040, Rotation2d.fromRadians(Math.PI));
+    public static final Transform2d limelightHiHiHi = new Transform2d(0.431, -0.040, Rotation2d.fromRadians(Math.PI));
+  }
 }

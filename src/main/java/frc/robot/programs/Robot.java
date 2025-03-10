@@ -188,11 +188,13 @@ public class Robot extends LoggedRobot {
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     alignReefLeft.onFalse(structure.readyNextCoral());
-    alignReefLeft.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Left));
+    // alignReefLeft.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Left));
+    alignReefLeft.debounce(0.2).whileTrue(swerve.leftBranchCentric(xbox.getHID()));
     alignReefMiddle.onTrue(structure.readyNextAlgae());
     alignReefMiddle.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Middle));
     alignReefRight.onFalse(structure.readyNextCoral());
-    alignReefRight.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Right));
+    // alignReefRight.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Right));
+    alignReefRight.debounce(0.2).whileTrue(swerve.rightBranchCentric(xbox.getHID()));
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
