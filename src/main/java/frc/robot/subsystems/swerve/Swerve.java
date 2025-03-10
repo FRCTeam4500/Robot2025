@@ -140,9 +140,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                 }));
     targetPose = new Pose2d();
     useMT1 = true;
-    RobotModeTriggers.disabled()
-        .negate()
-        .onTrue(Commands.runOnce(() -> useMT1 = false).ignoringDisable(true));
+    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(() -> useMT1 = false).ignoringDisable(true));
     RobotModeTriggers.disabled()
         .onTrue(Commands.runOnce(() -> useMT1 = true).ignoringDisable(useMT1));
     SmartDashboard.putData(
