@@ -5,7 +5,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,7 +24,6 @@ import frc.robot.utilities.logging.Loggable;
 public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
 
-  private Alert configError = new Alert("Placer Config Failed :(", AlertType.kError);
   private final double intakeSpeed = -25;
   public final double coralEjectSpeed = 25;
   public final double algaeEjectSpeed = 38.974;
@@ -54,10 +52,9 @@ public class Placer extends SubsystemBase implements Loggable {
                 status = motor.getConfigurator().apply(config);
               }
               if (status != StatusCode.OK) {
-                configError.setText("Placer Config Error: " + status.name());
-                configError.set(true);
+                HoundLog.logFault(
+                    "[Placer] Run Motor Config Error: " + status.getName(), AlertType.kError);
               } else {
-                configError.set(false);
                 Orc.addMotor(motor);
               }
             },

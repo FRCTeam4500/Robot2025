@@ -7,7 +7,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -24,8 +23,6 @@ import frc.robot.utilities.logging.Loggable;
 /** The Ramp subsystem is used by the robot to intake game pieces. */
 public class Ramp extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
-
-  private Alert configError = new Alert("Ramp Config Failed :(", AlertType.kError);
 
   private double hideAngle = -390;
 
@@ -46,9 +43,9 @@ public class Ramp extends SubsystemBase implements Loggable {
                   max.configure(
                       config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
               if (!err.equals(REVLibError.kOk)) {
-                configError.setText("Ramp Config Error: " + err.name());
-                configError.set(true);
-              } else configError.set(false);
+                HoundLog.logFault(
+                    "[Ramp] Tilt Motor Config Error: " + err.name(), AlertType.kError);
+              }
             },
             (FeedforwardSim jim) -> {
               jim.withHardstops(90, 270);

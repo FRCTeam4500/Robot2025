@@ -9,7 +9,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -45,8 +44,6 @@ public class Motor extends SubsystemBase implements Loggable {
   private FeedforwardController ff;
   private Loggable motorInfo;
   private DutyCycleEncoder encoder;
-  private Alert encoderDisconnected =
-      new Alert("[Motor] External Encoder Disconnected :(", AlertType.kError);
 
   /**
    * Creates a new motor where the given parameters are used to interface with the hardware or sim
@@ -255,13 +252,10 @@ public class Motor extends SubsystemBase implements Loggable {
       HoundLog.log(path, "Target Type", type.name());
     }
     if (encoder != null) {
-      if (name != ""
-          && encoderDisconnected
-              .getText()
-              .contains("[Motor]")) // surely noone would name a motor "Motor"
-      encoderDisconnected.setText("[" + name + "] External Encoder Disconnected :(");
-      if (!encoder.isConnected()) encoderDisconnected.set(true);
-      else encoderDisconnected.set(false);
+      if (!encoder.isConnected())
+        HoundLog.logFault(
+            "[Motor]" + (name != "" ? " " + name : "") + " Encoder Disconnected...",
+            AlertType.kError);
     }
   }
 
