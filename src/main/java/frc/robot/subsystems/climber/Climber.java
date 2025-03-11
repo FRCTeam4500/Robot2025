@@ -58,7 +58,7 @@ public class Climber extends SubsystemBase implements Loggable {
                       };
                 },
                 (FeedforwardSim sim) -> {},
-                0.0,
+                40,
                 FeedbackController.fromPID(
                     0.1,
                     0,

@@ -14,6 +14,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.subsystems.placer.Placer;
 import frc.robot.subsystems.ramp.Ramp;
+import frc.robot.utilities.StopTilting;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 import java.util.Set;
@@ -86,6 +87,7 @@ public class Superstructure implements Loggable {
     Transform3d pieceSideways = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, 0, Math.PI / 2));
     HoundLog.log("Held Piece", robot.transformBy(armPose).transformBy(piece));
     HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
+    StopTilting.updateCenterOfMass(armPose, elevatorStagePose, carriagePose, climberPose, rampPose);
   }
 
   public Command confirmIntake() {

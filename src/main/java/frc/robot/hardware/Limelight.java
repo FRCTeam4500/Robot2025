@@ -204,7 +204,7 @@ public class Limelight implements Loggable {
     if (RobotBase.isReal()) {
       double[] raw = table.getEntry("targetpose_cameraspace").getDoubleArray(new double[11]);
       return new Pair<>(
-        new Transform2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
+        new Transform2d(raw[2], raw[0], Rotation2d.fromDegrees(raw[5])),
         hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1
       );
     } else {

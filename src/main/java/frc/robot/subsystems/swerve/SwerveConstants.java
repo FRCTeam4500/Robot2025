@@ -316,7 +316,7 @@ public class SwerveConstants {
               TargetType.Position));
   
   public static class TagPoseCameraOffsets {
-    public static final Transform2d limelightHeHeHe = new Transform2d(0.431, 0.040, Rotation2d.fromRadians(Math.PI));
+    public static final Transform2d limelightHeHeHe = new Transform2d(-0.5, 0, Rotation2d.fromRadians(0));
     public static final Transform2d limelightHiHiHi = new Transform2d(0.431, -0.040, Rotation2d.fromRadians(Math.PI));
   }
 }

@@ -44,6 +44,7 @@ import frc.robot.hardware.Limelight.PoseEstimate;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
+import frc.robot.utilities.StopTilting;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
@@ -106,6 +107,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             FRONT_RIGHT_TRANSLATION,
             BACK_LEFT_TRANSLATION,
             BACK_RIGHT_TRANSLATION);
+    StopTilting.setupKinematics(kinematics);
     estimator =
         new SwerveDrivePoseEstimator(
             kinematics,
@@ -114,6 +116,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             new Pose2d(),
             VecBuilder.fill(0.1, 0.1, 0.1),
             VecBuilder.fill(5, 5, 5));
+    StopTilting.setupPose(estimator::getEstimatedPosition);
     targetHeading = new Rotation2d();
     headingFeedback =
         FeedbackController.fromPID(
@@ -129,7 +132,14 @@ public class Swerve extends SubsystemBase implements Loggable {
     poseFeedback =
         new PoseFeedbackController(
             FeedbackController.fromPID(
-                3,
+                1,
+                0,
+                0,
+                pid -> {
+                  pid.setTolerance(0.005);
+                }),
+            FeedbackController.fromPID(
+                1,
                 0,
                 0,
                 pid -> {
@@ -137,13 +147,6 @@ public class Swerve extends SubsystemBase implements Loggable {
                 }),
             FeedbackController.fromPID(
                 3,
-                0,
-                0,
-                pid -> {
-                  pid.setTolerance(0.005);
-                }),
-            FeedbackController.fromPID(
-                6,
                 0,
                 0,
                 pid -> {
@@ -293,35 +296,42 @@ public class Swerve extends SubsystemBase implements Loggable {
           if (target.getTranslation().getNorm() <= 3) {
             speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
           }
+          HoundLog.log("Vision Debuggin", "targetPose", target);
+          HoundLog.log("Vision Debuggin", "TagPoseHeHeHe", tagPose);
         }
         drive(speeds);
+        HoundLog.log("Auto Align Speed", speeds);
       }, this
-    ).beforeStarting(() -> {
-      poseFeedback.reset(Pose2d.kZero);
-      targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
-    });
-  }
-
-  public Command rightBranchCentric(XboxController xbox) {
-    return Commands.run(
-      () -> {
-        Pair<Transform2d, Integer> estimate = tagCameras[1].getTargetPoseCameraSpace();
-        Rotation2d rotationTarget = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
-        Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-        ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
-        ChassisSpeeds speeds = new ChassisSpeeds(driverSpeeds.vxMetersPerSecond, driverSpeeds.vyMetersPerSecond, headingFeedback.calculate(currentHeading.getRadians(), rotationTarget.getRadians()));
-        if (estimate.getSecond() == targetTag) {
-          Transform2d tagPose = estimate.getFirst();
-          Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHiHiHi);
-          if (target.getTranslation().getNorm() <= 3) {
-            speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
+      ).beforeStarting(() -> {
+        poseFeedback.reset(Pose2d.kZero);
+        targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+        HoundLog.log("Vision Debuggin", "targetTag", targetTag);
+      });
+    }
+    
+    public Command rightBranchCentric(XboxController xbox) {
+      return Commands.run(
+        () -> {
+          Pair<Transform2d, Integer> estimate = tagCameras[1].getTargetPoseCameraSpace();
+          Rotation2d rotationTarget = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
+          Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
+          ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
+          ChassisSpeeds speeds = new ChassisSpeeds(driverSpeeds.vxMetersPerSecond, driverSpeeds.vyMetersPerSecond, headingFeedback.calculate(currentHeading.getRadians(), rotationTarget.getRadians()));
+          if (estimate.getSecond() == targetTag) {
+            Transform2d tagPose = estimate.getFirst();
+            Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHiHiHi);
+            if (target.getTranslation().getNorm() <= 3) {
+              // speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
+            }
+            HoundLog.log("Vision Debuggin", "targetPose", target);
           }
-        }
-        drive(speeds);
+        // drive(speeds);
+        HoundLog.log("Auto Align Speed", speeds);
       }, this
-    ).beforeStarting(() -> {
-      poseFeedback.reset(Pose2d.kZero);
-      targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+      ).beforeStarting(() -> {
+        poseFeedback.reset(Pose2d.kZero);
+        targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+        HoundLog.log("Vision Debuggin", "targetTag", targetTag);
     });
   }
 
@@ -556,6 +566,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
     speeds = kinematics.toChassisSpeeds(states);
+    speeds = StopTilting.limitAccel(speeds);
     HoundLog.log("Swerve", "Target Speed", speeds);
     states = kinematics.toSwerveModuleStates(applySkewCorrection(speeds));
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
