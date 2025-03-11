@@ -281,55 +281,78 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   public Command leftBranchCentric(XboxController xbox) {
     return Commands.run(
-      () -> {
-        Pair<Transform2d, Integer> estimate = tagCameras[0].getTargetPoseCameraSpace();
-        Rotation2d rotationTarget = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
-        Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-        ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
-        ChassisSpeeds speeds = new ChassisSpeeds(driverSpeeds.vxMetersPerSecond, driverSpeeds.vyMetersPerSecond, headingFeedback.calculate(currentHeading.getRadians(), rotationTarget.getRadians()));
-        if (estimate.getSecond() == targetTag) {
-          Transform2d tagPose = estimate.getFirst();
-          Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHeHeHe);
-          if (target.getTranslation().getNorm() <= 3) {
-            speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
-          }
-          HoundLog.log("Vision Debuggin", "targetPose", target);
-          HoundLog.log("Vision Debuggin", "TagPoseHeHeHe", tagPose);
-        }
-        drive(speeds);
-        HoundLog.log("Auto Align Speed", speeds);
-      }, this
-      ).beforeStarting(() -> {
-        poseFeedback.reset(Pose2d.kZero);
-        targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
-        HoundLog.log("Vision Debuggin", "targetTag", targetTag);
-      });
-    }
-    
-    public Command rightBranchCentric(XboxController xbox) {
-      return Commands.run(
-        () -> {
-          Pair<Transform2d, Integer> estimate = tagCameras[1].getTargetPoseCameraSpace();
-          Rotation2d rotationTarget = ScoringLocations.getDriveTarget(estimator.getEstimatedPosition().getTranslation(), Alignment.Middle).getRotation();
-          Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-          ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
-          ChassisSpeeds speeds = new ChassisSpeeds(driverSpeeds.vxMetersPerSecond, driverSpeeds.vyMetersPerSecond, headingFeedback.calculate(currentHeading.getRadians(), rotationTarget.getRadians()));
-          if (estimate.getSecond() == targetTag) {
-            Transform2d tagPose = estimate.getFirst();
-            Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHiHiHi);
-            if (target.getTranslation().getNorm() <= 3) {
-              // speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
-            }
-            HoundLog.log("Vision Debuggin", "targetPose", target);
-          }
-        // drive(speeds);
-        HoundLog.log("Auto Align Speed", speeds);
-      }, this
-      ).beforeStarting(() -> {
-        poseFeedback.reset(Pose2d.kZero);
-        targetTag = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
-        HoundLog.log("Vision Debuggin", "targetTag", targetTag);
-    });
+            () -> {
+              Pair<Transform2d, Integer> estimate = tagCameras[0].getTargetPoseCameraSpace();
+              Rotation2d rotationTarget =
+                  ScoringLocations.getDriveTarget(
+                          estimator.getEstimatedPosition().getTranslation(), Alignment.Middle)
+                      .getRotation();
+              Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
+              ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      driverSpeeds.vxMetersPerSecond,
+                      driverSpeeds.vyMetersPerSecond,
+                      headingFeedback.calculate(
+                          currentHeading.getRadians(), rotationTarget.getRadians()));
+              if (estimate.getSecond() == targetTag) {
+                Transform2d tagPose = estimate.getFirst();
+                Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHeHeHe);
+                if (target.getTranslation().getNorm() <= 3) {
+                  speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
+                }
+                HoundLog.log("Vision Debuggin", "targetPose", target);
+                HoundLog.log("Vision Debuggin", "TagPoseHeHeHe", tagPose);
+              }
+              drive(speeds);
+              HoundLog.log("Auto Align Speed", speeds);
+            },
+            this)
+        .beforeStarting(
+            () -> {
+              poseFeedback.reset(Pose2d.kZero);
+              targetTag =
+                  ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+              HoundLog.log("Vision Debuggin", "targetTag", targetTag);
+            });
+  }
+
+  public Command rightBranchCentric(XboxController xbox) {
+    return Commands.run(
+            () -> {
+              Pair<Transform2d, Integer> estimate = tagCameras[1].getTargetPoseCameraSpace();
+              Rotation2d rotationTarget =
+                  ScoringLocations.getDriveTarget(
+                          estimator.getEstimatedPosition().getTranslation(), Alignment.Middle)
+                      .getRotation();
+              Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
+              ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
+              ChassisSpeeds speeds =
+                  new ChassisSpeeds(
+                      driverSpeeds.vxMetersPerSecond,
+                      driverSpeeds.vyMetersPerSecond,
+                      headingFeedback.calculate(
+                          currentHeading.getRadians(), rotationTarget.getRadians()));
+              if (estimate.getSecond() == targetTag) {
+                Transform2d tagPose = estimate.getFirst();
+                Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHiHiHi);
+                if (target.getTranslation().getNorm() <= 3) {
+                  // speeds = poseFeedback.calculate(Pose2d.kZero,
+                  // Pose2d.kZero.transformBy(target));
+                }
+                HoundLog.log("Vision Debuggin", "targetPose", target);
+              }
+              // drive(speeds);
+              HoundLog.log("Auto Align Speed", speeds);
+            },
+            this)
+        .beforeStarting(
+            () -> {
+              poseFeedback.reset(Pose2d.kZero);
+              targetTag =
+                  ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+              HoundLog.log("Vision Debuggin", "targetTag", targetTag);
+            });
   }
 
   public Command poseCentric(Pose2d target) {
