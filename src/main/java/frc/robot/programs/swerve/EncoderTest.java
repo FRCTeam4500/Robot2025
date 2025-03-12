@@ -36,6 +36,5 @@ public class EncoderTest extends LoggedRobot {
     HoundLog.log("Arm Encoder", (armEncoder.get() - 0.288) * 360);
     HoundLog.log("Climber Encoder", 360 * (climberEncoder.get() + (0.25 - 0.177)));
     HoundLog.log("Elevator Switch", elevatorSwitch.get());
-
   }
 }
