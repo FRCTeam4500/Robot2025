@@ -169,7 +169,7 @@ public class SwerveConstants {
                 }
               },
               sim -> {},
-              (new AnalogEncoder(1).get() - 0.930) * 360,
+              (new AnalogEncoder(1).get() - 0.929) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {

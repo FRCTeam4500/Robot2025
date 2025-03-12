@@ -75,7 +75,7 @@ public class Arm extends SubsystemBase implements Loggable {
                 TargetType.Position)
             .withName("Arm Motor");
 
-    tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, .13);
+    tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, .288);
     tiltMotor.getSysIDCommands("Arm", 0.25, 0.5, 4).putOnDashboard("Arm", this);
   }
 

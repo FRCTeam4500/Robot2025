@@ -96,7 +96,7 @@ public class Elevator extends SubsystemBase implements Loggable {
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
     upMotor.getSysIDCommands("Elevator", 0.5, 2, 5).putOnDashboard("Elevator", this);
     upMotor.setMaxNegativeVoltage(-10);
-    switchHit = new Trigger(() -> !zeroingSwitch.get()).debounce(0.35);
+    switchHit = new Trigger(() -> zeroingSwitch.get()).debounce(0.35);
     switchHit.onTrue(
         Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
     RobotModeTriggers.autonomous()
@@ -301,7 +301,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   @Override
   public void log(String path) {
     HoundLog.log(path, "Up Motor", upMotor);
-    HoundLog.log(path, "Zeroing Switch", !zeroingSwitch.get());
+    HoundLog.log(path, "Zeroing Switch", zeroingSwitch.get());
   }
 
   public double getExtension() {
