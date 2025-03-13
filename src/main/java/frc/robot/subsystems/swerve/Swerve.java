@@ -586,7 +586,9 @@ public class Swerve extends SubsystemBase implements Loggable {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
     speeds = kinematics.toChassisSpeeds(states);
-    speeds = StopTilting.limitAccel(speeds);
+    if (DriverStation.isTeleopEnabled()) {
+      speeds = StopTilting.limitAccel(speeds);
+    }
     HoundLog.log("Swerve", "Target Speed", speeds);
     states = kinematics.toSwerveModuleStates(applySkewCorrection(speeds));
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
