@@ -30,7 +30,7 @@ import frc.robot.utilities.logging.HoundLog;
 public class SwerveConstants {
 
   /** The max speed the robot should travel at */
-  public static final ChassisSpeeds MAX_FIELD_REL_SPEEDS = new ChassisSpeeds(3.5, 3.5, 6);
+  public static final ChassisSpeeds MAX_FIELD_REL_SPEEDS = new ChassisSpeeds(3.75, 3.75, 6);
 
   public static final ChassisSpeeds MAX_ROBOT_REL_SPEEDS = new ChassisSpeeds(5, 3, 6);
 
@@ -169,7 +169,7 @@ public class SwerveConstants {
                 }
               },
               sim -> {},
-              (new AnalogEncoder(1).get() - 0.929) * 360,
+              (new AnalogEncoder(1).get() - 0.668) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
