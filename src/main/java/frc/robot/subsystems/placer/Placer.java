@@ -26,7 +26,7 @@ public class Placer extends SubsystemBase implements Loggable {
 
   private final double intakeSpeed = -25;
   public final double coralEjectSpeed = 30;
-  public final double algaeEjectSpeed = 38.974;
+  public final double algaeEjectSpeed = 45;
 
   public final Trigger hasPieceTrigger =
       new Trigger(
