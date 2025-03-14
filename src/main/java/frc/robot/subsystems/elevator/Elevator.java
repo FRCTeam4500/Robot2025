@@ -80,8 +80,7 @@ public class Elevator extends SubsystemBase implements Loggable {
                       HoundLog.logFault(
                           "[Elevator] Idle Mode Config Error: " + err.name(), AlertType.kError);
                     } else {
-                      HoundLog.clearFault(
-                          "[Elevator] Idle Mode Config Error: " + err.name());
+                      HoundLog.clearFault("[Elevator] Idle Mode Config Error: " + err.name());
                     }
                   };
             },
