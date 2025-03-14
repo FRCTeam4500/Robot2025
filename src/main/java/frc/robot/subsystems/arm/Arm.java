@@ -30,7 +30,7 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double placeL1Angle = 33.37915;
   private final double handoffAngle = -85;
   private final double stationAngle = 70;
-  private final double groundAngle = -30;
+  private final double groundAngle = -24.914;
   private final double climbAngle = -20;
   private final double dislodgeAngle = 40;
   private final double algaeGroundAngle = -20;
