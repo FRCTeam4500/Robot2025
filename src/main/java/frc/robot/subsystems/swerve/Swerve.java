@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
+import frc.robot.subsystems.swerve.SwerveConstants.TagPoseCameraOffsets;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
@@ -114,7 +115,11 @@ public class Swerve extends SubsystemBase implements Loggable {
             new Pose2d(),
             VecBuilder.fill(0.1, 0.1, 0.1),
             VecBuilder.fill(5, 5, 5));
-    StopTilting.setupPose(estimator::getEstimatedPosition);
+    StopTilting.setupBase(
+      estimator::getEstimatedPosition, 
+      new Transform3d(0, 0, 0.1, Rotation3d.kZero),
+      39.3468644
+    );
     targetHeading = new Rotation2d();
     headingFeedback =
         FeedbackController.fromPID(
