@@ -342,12 +342,12 @@ public class Swerve extends SubsystemBase implements Loggable {
                 Transform2d tagPose = estimate.getFirst();
                 Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHiHiHi);
                 if (target.getTranslation().getNorm() <= 3) {
-                  // speeds = poseFeedback.calculate(Pose2d.kZero,
-                  // Pose2d.kZero.transformBy(target));
+                  speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
                 }
                 HoundLog.log("Vision Debuggin", "targetPose", target);
+                HoundLog.log("Vision Debuggin", "TagPoseHiHiHi", tagPose);
               }
-              // drive(speeds);
+              drive(speeds);
               HoundLog.log("Auto Align Speed", speeds);
             },
             this)

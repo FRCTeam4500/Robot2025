@@ -217,7 +217,7 @@ public class Limelight implements Loggable {
       Transform3d transform = target.getBestCameraToTarget();
       return new Pair<Transform2d, Integer>(
           new Transform2d(
-              transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d()),
+              transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d().plus(Rotation2d.kPi)),
           target.getFiducialId());
     }
   }
