@@ -112,10 +112,7 @@ public class Swerve extends SubsystemBase implements Loggable {
             VecBuilder.fill(0.1, 0.1, 0.1),
             VecBuilder.fill(5, 5, 5));
     StopTilting.setupBase(
-      estimator::getEstimatedPosition, 
-      new Transform3d(0, 0, 0.1, Rotation3d.kZero),
-      39.3468644
-    );
+        estimator::getEstimatedPosition, new Transform3d(0, 0, 0.1, Rotation3d.kZero), 39.3468644);
     targetHeading = new Rotation2d();
     headingFeedback =
         FeedbackController.fromPID(
@@ -281,51 +278,57 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command leftBranchCentricV2(XboxController xbox) {
-    return Commands.run(() -> {
-      Limelight camera = tagCameras[0];
-      double tx = camera.getTX();
-      double ty = camera.getTY();
-      int id = camera.getID();
-      if (id == -1) {
-        drive(calculateVelRobotRel(xbox));
-      } else {
-        ChassisSpeeds speeds = poseFeedback.calculate(
-          new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()), 
-          new Pose2d(10, 16.3, ScoringLocations.getRotation(id))
-        );
-        speeds = new ChassisSpeeds(
-          speeds.vxMetersPerSecond,
-          -speeds.vyMetersPerSecond,
-          speeds.omegaRadiansPerSecond
-        );
-        drive(speeds);
-      }
-    }, this).beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-            .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
+    return Commands.run(
+            () -> {
+              Limelight camera = tagCameras[0];
+              double tx = camera.getTX();
+              double ty = camera.getTY();
+              int id = camera.getID();
+              if (id == -1) {
+                drive(calculateVelRobotRel(xbox));
+              } else {
+                ChassisSpeeds speeds =
+                    poseFeedback.calculate(
+                        new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
+                        new Pose2d(10, 16.3, ScoringLocations.getRotation(id)));
+                speeds =
+                    new ChassisSpeeds(
+                        speeds.vxMetersPerSecond,
+                        -speeds.vyMetersPerSecond,
+                        speeds.omegaRadiansPerSecond);
+                drive(speeds);
+              }
+            },
+            this)
+        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+        .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
   }
 
   public Command rightBranchCentricV2(XboxController xbox) {
-    return Commands.run(() -> {
-      Limelight camera = tagCameras[1];
-      double tx = camera.getTX();
-      double ty = camera.getTY();
-      int id = camera.getID();
-      if (id == -1) {
-        drive(calculateVelRobotRel(xbox));
-      } else {
-        ChassisSpeeds speeds = poseFeedback.calculate(
-          new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()), 
-          new Pose2d(12, -12, ScoringLocations.getRotation(id))
-        );
-        speeds = new ChassisSpeeds(
-          speeds.vxMetersPerSecond,
-          -speeds.vyMetersPerSecond,
-          speeds.omegaRadiansPerSecond
-        );
-        drive(speeds);
-      }
-    }, this).beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-            .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
+    return Commands.run(
+            () -> {
+              Limelight camera = tagCameras[1];
+              double tx = camera.getTX();
+              double ty = camera.getTY();
+              int id = camera.getID();
+              if (id == -1) {
+                drive(calculateVelRobotRel(xbox));
+              } else {
+                ChassisSpeeds speeds =
+                    poseFeedback.calculate(
+                        new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
+                        new Pose2d(12, -12, ScoringLocations.getRotation(id)));
+                speeds =
+                    new ChassisSpeeds(
+                        speeds.vxMetersPerSecond,
+                        -speeds.vyMetersPerSecond,
+                        speeds.omegaRadiansPerSecond);
+                drive(speeds);
+              }
+            },
+            this)
+        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+        .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
   }
 
   public Command turnToReef() {
