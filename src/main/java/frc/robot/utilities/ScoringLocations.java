@@ -58,29 +58,29 @@ public class ScoringLocations {
   public static Rotation2d getRotation(int id) {
     switch (id) {
       case 19:
-        return Rotation2d.fromDegrees(60);
+        return Rotation2d.fromDegrees(-60);
       case 18:
         return Rotation2d.fromDegrees(0);
       case 17:
-        return Rotation2d.fromDegrees(-60);
+        return Rotation2d.fromDegrees(60);
       case 22:
-        return Rotation2d.fromDegrees(-120);
+        return Rotation2d.fromDegrees(120);
       case 21:
         return Rotation2d.fromDegrees(180);
       case 20:
-        return Rotation2d.fromDegrees(120);
+        return Rotation2d.fromDegrees(-120);
       case 9:
-        return Rotation2d.fromDegrees(60);
+        return Rotation2d.fromDegrees(-60);
       case 10:
         return Rotation2d.fromDegrees(0);
       case 11:
-        return Rotation2d.fromDegrees(-60);
+        return Rotation2d.fromDegrees(60);
       case 6:
-        return Rotation2d.fromDegrees(-120);
+        return Rotation2d.fromDegrees(120);
       case 7:
         return Rotation2d.fromDegrees(180);
       case 8:
-        return Rotation2d.fromDegrees(120);
+        return Rotation2d.fromDegrees(-120);
       default:
         return Rotation2d.fromDegrees(0);
     }

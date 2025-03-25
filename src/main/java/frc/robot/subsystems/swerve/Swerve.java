@@ -8,13 +8,11 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -39,7 +37,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
-import frc.robot.subsystems.swerve.SwerveConstants.TagPoseCameraOffsets;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
@@ -61,7 +58,6 @@ public class Swerve extends SubsystemBase implements Loggable {
   private PoseFeedbackController poseFeedback;
   private Pose2d targetPose;
   private boolean useMT1;
-  private int targetTag;
 
   public final Trigger closerToRight =
       new Trigger(
@@ -135,18 +131,18 @@ public class Swerve extends SubsystemBase implements Loggable {
     poseFeedback =
         new PoseFeedbackController(
             FeedbackController.fromPID(
-                1,
+                .02,
                 0,
                 0,
                 pid -> {
-                  pid.setTolerance(0.005);
+                  pid.setTolerance(0.5);
                 }),
             FeedbackController.fromPID(
-                1,
+                .02,
                 0,
                 0,
                 pid -> {
-                  pid.setTolerance(0.005);
+                  pid.setTolerance(0.5);
                 }),
             FeedbackController.fromPID(
                 3,
@@ -284,112 +280,52 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Reef Centric");
   }
 
-  public Command leftBranchCentric(XboxController xbox) {
-    return Commands.run(
-            () -> {
-              Pair<Transform2d, Integer> estimate = tagCameras[0].getTargetPoseCameraSpace();
-              Rotation2d rotationTarget =
-                  ScoringLocations.getDriveTarget(
-                          estimator.getEstimatedPosition().getTranslation(), Alignment.Middle)
-                      .getRotation();
-              Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-              ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
-              ChassisSpeeds speeds =
-                  new ChassisSpeeds(
-                      driverSpeeds.vxMetersPerSecond,
-                      driverSpeeds.vyMetersPerSecond,
-                      headingFeedback.calculate(
-                          currentHeading.getRadians(), rotationTarget.getRadians()));
-              if (estimate.getSecond() == targetTag) {
-                Transform2d tagPose = estimate.getFirst();
-                Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHeHeHe);
-                if (target.getTranslation().getNorm() <= 3) {
-                  speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
-                }
-                HoundLog.log("Vision Debuggin", "targetPose", target);
-                HoundLog.log("Vision Debuggin", "TagPoseHeHeHe", tagPose);
-              }
-              drive(speeds);
-              HoundLog.log("Auto Align Speed", speeds);
-            },
-            this)
-        .beforeStarting(
-            () -> {
-              poseFeedback.reset(Pose2d.kZero);
-              targetTag =
-                  ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
-              HoundLog.log("Vision Debuggin", "targetTag", targetTag);
-            });
+  public Command leftBranchCentricV2(XboxController xbox) {
+    return Commands.run(() -> {
+      Limelight camera = tagCameras[0];
+      double tx = camera.getTX();
+      double ty = camera.getTY();
+      int id = camera.getID();
+      if (id == -1) {
+        drive(calculateVelRobotRel(xbox));
+      } else {
+        ChassisSpeeds speeds = poseFeedback.calculate(
+          new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()), 
+          new Pose2d(10, 16.3, ScoringLocations.getRotation(id))
+        );
+        speeds = new ChassisSpeeds(
+          speeds.vxMetersPerSecond,
+          -speeds.vyMetersPerSecond,
+          speeds.omegaRadiansPerSecond
+        );
+        drive(speeds);
+      }
+    }, this).beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+            .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
   }
 
-  public Command rightBranchCentric(XboxController xbox) {
-    return Commands.run(
-            () -> {
-              Pair<Transform2d, Integer> estimate = tagCameras[1].getTargetPoseCameraSpace();
-              Rotation2d rotationTarget =
-                  ScoringLocations.getDriveTarget(
-                          estimator.getEstimatedPosition().getTranslation(), Alignment.Middle)
-                      .getRotation();
-              Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-              ChassisSpeeds driverSpeeds = calculateVelRobotRel(xbox);
-              ChassisSpeeds speeds =
-                  new ChassisSpeeds(
-                      driverSpeeds.vxMetersPerSecond,
-                      driverSpeeds.vyMetersPerSecond,
-                      headingFeedback.calculate(
-                          currentHeading.getRadians(), rotationTarget.getRadians()));
-              if (estimate.getSecond() == targetTag) {
-                Transform2d tagPose = estimate.getFirst();
-                Transform2d target = tagPose.plus(TagPoseCameraOffsets.limelightHiHiHi);
-                if (target.getTranslation().getNorm() <= 3) {
-                  speeds = poseFeedback.calculate(Pose2d.kZero, Pose2d.kZero.transformBy(target));
-                }
-                HoundLog.log("Vision Debuggin", "targetPose", target);
-                HoundLog.log("Vision Debuggin", "TagPoseHiHiHi", tagPose);
-              }
-              drive(speeds);
-              HoundLog.log("Auto Align Speed", speeds);
-            },
-            this)
-        .beforeStarting(
-            () -> {
-              poseFeedback.reset(Pose2d.kZero);
-              targetTag =
-                  ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
-              HoundLog.log("Vision Debuggin", "targetTag", targetTag);
-            });
-  }
-
-  public Command poseCentric(Pose2d target) {
-    return Commands.run(
-            () -> {
-              Pose2d current = estimator.getEstimatedPosition();
-              ChassisSpeeds speeds = poseFeedback.calculate(current, target);
-              drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
-            },
-            this)
-        .beforeStarting(
-            () -> {
-              poseFeedback.reset(estimator.getEstimatedPosition());
-              this.targetPose = target;
-            })
-        .finallyDo(
-            () -> {
-              this.targetPose = new Pose2d();
-            })
-        .until(() -> poseFeedback.atTarget())
-        .withName("Pose Centric");
-  }
-
-  public Command alignToReef(Alignment position) {
-    return Commands.defer(
-            () -> {
-              return poseCentric(
-                  ScoringLocations.getDriveTarget(
-                      estimator.getEstimatedPosition().getTranslation(), position));
-            },
-            Set.of(this))
-        .withName("Align To Reef: " + position.name() + " Side");
+  public Command rightBranchCentricV2(XboxController xbox) {
+    return Commands.run(() -> {
+      Limelight camera = tagCameras[1];
+      double tx = camera.getTX();
+      double ty = camera.getTY();
+      int id = camera.getID();
+      if (id == -1) {
+        drive(calculateVelRobotRel(xbox));
+      } else {
+        ChassisSpeeds speeds = poseFeedback.calculate(
+          new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()), 
+          new Pose2d(12, -12, ScoringLocations.getRotation(id))
+        );
+        speeds = new ChassisSpeeds(
+          speeds.vxMetersPerSecond,
+          -speeds.vyMetersPerSecond,
+          speeds.omegaRadiansPerSecond
+        );
+        drive(speeds);
+      }
+    }, this).beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+            .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
   }
 
   public Command turnToReef() {

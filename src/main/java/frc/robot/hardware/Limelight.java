@@ -158,6 +158,10 @@ public class Limelight implements Loggable {
     return table.getEntry("cl").getDouble(0) + table.getEntry("tl").getDouble(0);
   }
 
+  public int getID() {
+    return hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1;
+  }
+
   /**
    * @return a {@link PoseEstimate} holding information about an estimated pose obtained using the
    *     megatag 1 algorithm.
@@ -233,6 +237,10 @@ public class Limelight implements Loggable {
     HoundLog.log(path, "MT1 Pose", getPoseMT1().pose());
     HoundLog.log(path, "MT2 Pose", getPoseMT2().pose());
     HoundLog.log(path, "Estimate Seconds", getPoseMT1().latencySeconds);
+    HoundLog.log(path, "tx", getTX());
+    HoundLog.log(path, "ty", getTY());
+    HoundLog.log(path, "ta", getTA());
+    HoundLog.log(path, "id", getID());
   }
 
   public String getName() {
