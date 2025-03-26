@@ -36,17 +36,12 @@ public class StopTilting {
     StopTilting.baseMass = baseMass;
   }
 
-  public static void setupSuperstructure(
-    Transform3d[] componentCOMs,
-    double[] componentMasses
-  ) {
+  public static void setupSuperstructure(Transform3d[] componentCOMs, double[] componentMasses) {
     StopTilting.COMs = componentCOMs;
     StopTilting.masses = componentMasses;
   }
 
-  public static void updateCenterOfMass(
-    Transform3d[] componentTransforms
-  ) {
+  public static void updateCenterOfMass(Transform3d[] componentTransforms) {
     double x = baseCOM.getX() * baseMass;
     double y = baseCOM.getY() * baseMass;
     double z = baseCOM.getZ() * baseMass;
@@ -58,10 +53,8 @@ public class StopTilting {
       z += componentCOM.getZ() * masses[i];
       mass += masses[i];
     }
-    Transform3d totalCOM = new Transform3d(
-      x / mass, y / mass, z / mass, Rotation3d.kZero
-    );
-    
+    Transform3d totalCOM = new Transform3d(x / mass, y / mass, z / mass, Rotation3d.kZero);
+
     HoundLog.log("COM", "COM", new Pose3d(pose.get()).plus(totalCOM));
     double number = 0;
     for (Translation2d tl : kinematics.getModules()) {

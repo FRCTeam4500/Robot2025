@@ -51,20 +51,14 @@ public class Superstructure implements Loggable {
     nextCoral = CoralState.L4;
     nextAlgae = AlgaeState.HIGH;
     StopTilting.setupSuperstructure(
-      new Transform3d[] {
-        new Transform3d(0.25, 0, 0, Rotation3d.kZero),
-        new Transform3d(0, 0, 0.4, Rotation3d.kZero),
-        new Transform3d(0, 0, 0.1, Rotation3d.kZero),
-        new Transform3d(0.2, 0, 0, Rotation3d.kZero),
-        new Transform3d(0.1, 0, 0, Rotation3d.kZero)
-      }, 
-      new double[] {
-        5.44311,
-        2.5197056,
-        1.81437,
-        3.17515,
-        2.5
-      });
+        new Transform3d[] {
+          new Transform3d(0.25, 0, 0, Rotation3d.kZero),
+          new Transform3d(0, 0, 0.4, Rotation3d.kZero),
+          new Transform3d(0, 0, 0.1, Rotation3d.kZero),
+          new Transform3d(0.2, 0, 0, Rotation3d.kZero),
+          new Transform3d(0.1, 0, 0, Rotation3d.kZero)
+        },
+        new double[] {5.44311, 2.5197056, 1.81437, 3.17515, 2.5});
   }
 
   public void log(String path) {
@@ -102,8 +96,8 @@ public class Superstructure implements Loggable {
     Transform3d pieceSideways = new Transform3d(0.49, 0, -0.1, new Rotation3d(0, 0, Math.PI / 2));
     HoundLog.log("Held Piece", robot.transformBy(armPose).transformBy(piece));
     HoundLog.log("Held Piece Sideways", robot.transformBy(armPose).transformBy(pieceSideways));
-    StopTilting.updateCenterOfMass(new Transform3d[] {
-      armPose, elevatorStagePose, carriagePose, climberPose, rampPose});
+    StopTilting.updateCenterOfMass(
+        new Transform3d[] {armPose, elevatorStagePose, carriagePose, climberPose, rampPose});
   }
 
   public Command confirmIntake() {
