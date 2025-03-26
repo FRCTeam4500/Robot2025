@@ -59,25 +59,6 @@ public class Swerve extends SubsystemBase implements Loggable {
   private Pose2d targetPose;
   private boolean useMT1;
 
-  public final Trigger closerToRight =
-      new Trigger(
-          () -> {
-            switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
-              case Blue:
-                return estimator.getEstimatedPosition().getY() < 4;
-              default:
-                return estimator.getEstimatedPosition().getY() > 4;
-            }
-          });
-
-  public final Trigger camerasDisabled =
-      new Trigger(
-          () -> {
-            boolean anyEnabled = false;
-            for (Limelight l : tagCameras) if (l.isEnabled()) anyEnabled = true;
-            return !anyEnabled;
-          });
-
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
     tagCameras =
@@ -278,6 +259,36 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .withName("Reef Centric");
+  }
+
+  public Command targetCoralStation(boolean forward) {
+    return Commands.runOnce(() -> {
+      boolean enabled = true;
+      for (Limelight camera : tagCameras) {
+        if (camera.isEnabled()) {
+          enabled = true;
+        }
+      }
+      if (!enabled) {
+        return;
+      }
+      switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
+        case Blue:
+          if (estimator.getEstimatedPosition().getY() < 4) {
+            targetHeading = Rotation2d.fromDegrees(forward ? -125 : 55);
+          } else {
+            targetHeading = Rotation2d.fromDegrees(forward ? 125 : -55);
+          }
+          return;
+        default:
+          if (estimator.getEstimatedPosition().getY() > 4) {
+            targetHeading = Rotation2d.fromDegrees(forward ? 55 : -125);
+          } else {
+            targetHeading = Rotation2d.fromDegrees(forward ? -55 : 125);
+          }
+          return;
+      }
+    });
   }
 
   public Command leftBranchCentricV2(XboxController xbox) {

@@ -103,46 +103,13 @@ public class Robot extends LoggedRobot {
         .onFalse(Commands.runOnce(() -> climbing = false));
     backCoralIntake.onTrue(structure.backCoralIntake());
     backCoralIntake.onFalse(structure.stow());
-    Trigger onBlue =
-        new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue);
-    Trigger onRed = onBlue.negate();
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
+    backCoralIntake.onTrue(swerve.targetCoralStation(false));
     stowButton.onTrue(structure.stow());
     confirmIntake.onTrue(structure.confirmIntake());
     confirmIntake.onFalse(structure.stopPlacer());
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
+    frontCoralIntake.onTrue(swerve.targetCoralStation(false));
 
     SmartDashboard.putData("Buttons/Target L1", structure.setNextCoral(CoralState.L1));
     SmartDashboard.putData("Buttons/Target L2", structure.setNextCoral(CoralState.L2));
@@ -157,6 +124,8 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Buttons/Ground Coral Intake", structure.groundIntake());
     SmartDashboard.putData("Buttons/Ground Algae Intake", structure.algaeGroundIntake());
     SmartDashboard.putData("Buttons/Stow", structure.stow());
+    SmartDashboard.putData("Buttons/Face Back Intake", swerve.targetCoralStation(false));
+    SmartDashboard.putData("Buttons/Face Front Intake", swerve.targetCoralStation(true));
   }
 
   private void setupDriveController() {
@@ -210,48 +179,10 @@ public class Robot extends LoggedRobot {
                 .shoot()
                 .andThen(Commands.runOnce(() -> structure.stow().schedule()))
                 .withName("Shoot and Stow"));
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
+    backCoralIntake.onTrue(swerve.targetCoralStation(false));
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .and(swerve.camerasDisabled.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
+    frontCoralIntake.onTrue(swerve.targetCoralStation(true));
     coralGroundIntake.onTrue(structure.groundIntake());
     coralGroundIntake.onFalse(structure.stow());
     algaeGroundIntake.onTrue(structure.algaeGroundIntake());
