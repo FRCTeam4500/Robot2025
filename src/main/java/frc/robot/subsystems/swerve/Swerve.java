@@ -260,33 +260,34 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command targetCoralStation(boolean forward) {
-    return Commands.runOnce(() -> {
-      boolean enabled = true;
-      for (Limelight camera : tagCameras) {
-        if (camera.isEnabled()) {
-          enabled = true;
-        }
-      }
-      if (!enabled) {
-        return;
-      }
-      switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
-        case Blue:
-          if (estimator.getEstimatedPosition().getY() < 4) {
-            targetHeading = Rotation2d.fromDegrees(forward ? -125 : 55);
-          } else {
-            targetHeading = Rotation2d.fromDegrees(forward ? 125 : -55);
+    return Commands.runOnce(
+        () -> {
+          boolean enabled = true;
+          for (Limelight camera : tagCameras) {
+            if (camera.isEnabled()) {
+              enabled = true;
+            }
           }
-          return;
-        default:
-          if (estimator.getEstimatedPosition().getY() > 4) {
-            targetHeading = Rotation2d.fromDegrees(forward ? 55 : -125);
-          } else {
-            targetHeading = Rotation2d.fromDegrees(forward ? -55 : 125);
+          if (!enabled) {
+            return;
           }
-          return;
-      }
-    });
+          switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
+            case Blue:
+              if (estimator.getEstimatedPosition().getY() < 4) {
+                targetHeading = Rotation2d.fromDegrees(forward ? -125 : 55);
+              } else {
+                targetHeading = Rotation2d.fromDegrees(forward ? 125 : -55);
+              }
+              return;
+            default:
+              if (estimator.getEstimatedPosition().getY() > 4) {
+                targetHeading = Rotation2d.fromDegrees(forward ? 55 : -125);
+              } else {
+                targetHeading = Rotation2d.fromDegrees(forward ? -55 : 125);
+              }
+              return;
+          }
+        });
   }
 
   public Command leftBranchCentricV2(XboxController xbox) {
