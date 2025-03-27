@@ -12,8 +12,12 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
@@ -63,6 +67,14 @@ public class Limelight implements Loggable {
     this.name = name;
     table = NetworkTableInstance.getDefault().getTable(this.name);
     table.getEntry("pipline").setInteger(pipeline);
+    Trigger isBlue = new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue));
+    isBlue.onTrue(Commands.runOnce(() -> 
+      table.getEntry("fiducial_id_filters_set").setDoubleArray(new double[] {17, 18, 19, 20, 21, 22})
+    ).ignoringDisable(true));
+    isBlue.onFalse(Commands.runOnce(() -> 
+      table.getEntry("fiducial_id_filters_set").setDoubleArray(new double[] {6, 7, 8, 9, 10, 11})
+    ).ignoringDisable(true));
+    
     Sendable isEnabledSendable =
         new Sendable() {
           @Override
