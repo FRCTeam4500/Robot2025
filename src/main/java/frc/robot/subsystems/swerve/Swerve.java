@@ -8,6 +8,7 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -475,13 +476,15 @@ public class Swerve extends SubsystemBase implements Loggable {
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
     double speedCoefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
     Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-    targetHeading =
-        Rotation2d.fromRadians(
-            targetHeading.getRadians()
-                - withHardDeadzone(xbox.getRightX(), 0.1)
-                    * speedCoefficient
-                    * MAX_FIELD_REL_SPEEDS.omegaRadiansPerSecond
-                    * 0.02);
+    if (Math.abs(currentHeading.minus(targetHeading).getDegrees()) < 10) {
+      targetHeading =
+          Rotation2d.fromRadians(
+              targetHeading.getRadians()
+                  - withHardDeadzone(xbox.getRightX(), 0.1)
+                      * speedCoefficient
+                      * MAX_FIELD_REL_SPEEDS.omegaRadiansPerSecond
+                      * 0.02);
+    }
     double rotational =
         headingFeedback.calculate(currentHeading.getRadians(), targetHeading.getRadians());
     if (headingFeedback.atGoal()) {
