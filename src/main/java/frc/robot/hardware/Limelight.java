@@ -51,6 +51,15 @@ public class Limelight implements Loggable {
   private VisionSystemSim sim;
   private boolean enabled = true;
 
+  private final PoseEstimate kEmpty = new PoseEstimate(
+    new Pose2d(), 
+    0, 
+    0, 
+    0, 
+    0, 
+    false
+  );
+
   /**
    * Make a limelight with the given name and pipeline
    *
@@ -79,7 +88,10 @@ public class Limelight implements Loggable {
       sim.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded));
       SimCameraProperties camProperties = new SimCameraProperties();
       camProperties.setCalibration(1280, 960, Rotation2d.fromDegrees(79.3565372228));
-      camProperties.setFPS(100);
+      camProperties.setCalibError(0.25, 0.08);
+      camProperties.setFPS(15);
+      camProperties.setAvgLatencyMs(70.593);
+      camProperties.setLatencyStdDevMs(4.318);
       camera = new PhotonCamera(name);
       PhotonCameraSim cameraSim = new PhotonCameraSim(camera, camProperties);
       sim.addCamera(cameraSim, robotToCamera);
@@ -159,7 +171,7 @@ public class Limelight implements Loggable {
   }
 
   public int getID() {
-    return hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1;
+    return (int) table.getEntry("tid").getInteger(-1);
   }
 
   /**
@@ -167,6 +179,9 @@ public class Limelight implements Loggable {
    *     megatag 1 algorithm.
    */
   public PoseEstimate getPoseMT1() {
+    if (RobotBase.isSimulation()) {
+      return kEmpty;
+    }
     double[] raw = table.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
     return new PoseEstimate(
         new Pose2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
@@ -192,6 +207,9 @@ public class Limelight implements Loggable {
   }
 
   private PoseEstimate getPoseMT2() {
+    if (RobotBase.isSimulation()) {
+      return kEmpty;
+    }
     double[] raw = table.getEntry("botpose_orb_wpiblue").getDoubleArray(new double[11]);
     return new PoseEstimate(
         new Pose2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
@@ -228,9 +246,33 @@ public class Limelight implements Loggable {
   }
 
   public void updateSim(Pose2d robotPose) {
-    if (RobotBase.isSimulation()) {
-      sim.update(robotPose);
+    if (RobotBase.isReal()) {
+      return;
     }
+    sim.update(robotPose);
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.size() == 0) {
+      return;
+    }
+    PhotonPipelineResult result = results.get(results.size() - 1);
+    if (!result.hasTargets()) {
+      table.getEntry("tv").setInteger(0);
+      table.getEntry("tx").setDouble(0);
+      table.getEntry("ty").setDouble(0);
+      table.getEntry("ta").setDouble(0);
+      table.getEntry("cl").setDouble(0);
+      table.getEntry("tl").setDouble(0);
+      table.getEntry("tid").setDouble(0);
+      return;
+    }
+    PhotonTrackedTarget target = result.getBestTarget();
+    table.getEntry("tv").setInteger(1);
+    table.getEntry("tx").setDouble(-target.getYaw());
+    table.getEntry("ty").setDouble(target.getPitch());
+    table.getEntry("ta").setDouble(target.getArea());
+    table.getEntry("cl").setDouble(0);
+    table.getEntry("tl").setDouble(camera.getCameraTable().getEntry("latencyMillis").getDouble(0));
+    table.getEntry("tid").setDouble(target.getFiducialId());
   }
 
   @Override
