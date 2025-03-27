@@ -155,10 +155,10 @@ public class Robot extends LoggedRobot {
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    alignReefLeft.debounce(0.2).whileTrue(swerve.leftBranchCentricV2(xbox.getHID()));
+    alignReefLeft.debounce(0.2).whileTrue(swerve.leftBranchCentric(xbox.getHID()));
     alignReefLeft.onFalse(structure.readyNextCoral());
     alignReefMiddle.onTrue(structure.readyNextAlgae());
-    alignReefRight.debounce(0.2).whileTrue(swerve.rightBranchCentricV2(xbox.getHID()));
+    alignReefRight.debounce(0.2).whileTrue(swerve.rightBranchCentric(xbox.getHID()));
     alignReefRight.onFalse(structure.readyNextCoral());
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));

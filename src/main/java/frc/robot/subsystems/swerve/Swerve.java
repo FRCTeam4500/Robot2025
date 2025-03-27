@@ -21,19 +21,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
@@ -42,10 +38,8 @@ import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.StopTilting;
-import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
-import java.util.Set;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
 public class Swerve extends SubsystemBase implements Loggable {
@@ -57,8 +51,6 @@ public class Swerve extends SubsystemBase implements Loggable {
   private Rotation2d targetHeading;
   private FeedbackController headingFeedback;
   private PoseFeedbackController poseFeedback;
-  private Pose2d targetPose;
-  private boolean useMT1;
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
@@ -84,15 +76,15 @@ public class Swerve extends SubsystemBase implements Loggable {
             FRONT_RIGHT_TRANSLATION,
             BACK_LEFT_TRANSLATION,
             BACK_RIGHT_TRANSLATION);
+            estimator =
+            new SwerveDrivePoseEstimator(
+              kinematics,
+              gyro.getAngle(),
+              getModulePositions(),
+              new Pose2d(),
+              VecBuilder.fill(0.1, 0.1, 0.1),
+              VecBuilder.fill(5, 5, 5));
     StopTilting.setupKinematics(kinematics);
-    estimator =
-        new SwerveDrivePoseEstimator(
-            kinematics,
-            gyro.getAngle(),
-            getModulePositions(),
-            new Pose2d(),
-            VecBuilder.fill(0.1, 0.1, 0.1),
-            VecBuilder.fill(5, 5, 5));
     StopTilting.setupBase(
         estimator::getEstimatedPosition, new Transform3d(0, 0, 0.1, Rotation3d.kZero), 39.3468644);
     targetHeading = new Rotation2d();
@@ -131,22 +123,6 @@ public class Swerve extends SubsystemBase implements Loggable {
                   pid.enableContinuousInput(0, 360);
                   pid.setTolerance(1);
                 }));
-    targetPose = new Pose2d();
-    useMT1 = true;
-    RobotModeTriggers.autonomous()
-        .onTrue(Commands.runOnce(() -> useMT1 = false).ignoringDisable(true));
-    RobotModeTriggers.disabled()
-        .onTrue(Commands.runOnce(() -> useMT1 = true).ignoringDisable(useMT1));
-    SmartDashboard.putData(
-        "Vision Method",
-        new Sendable() {
-          @Override
-          public void initSendable(SendableBuilder builder) {
-            builder.addBooleanProperty("MT1", () -> useMT1, toUse -> useMT1 = toUse);
-          }
-        });
-
-    GamepieceManager.setRobotPoseSupplier(estimator::getEstimatedPosition);
 
     RobotConfig config;
     try {
@@ -156,9 +132,9 @@ public class Swerve extends SubsystemBase implements Loggable {
       System.out.println(e.getMessage());
       config =
           new RobotConfig(
-              68, // robot's mass in kg
-              6.884, // Robot's moment of inertia
-              new ModuleConfig(0.5, 6, 1.2, DCMotor.getKrakenX60(1).withReduction(5.143), 60, 1),
+              53.126, // robot's mass in kg
+              4.954, // Robot's moment of inertia
+              new ModuleConfig(0.045, 4.500, 1.1, DCMotor.getKrakenX60(1).withReduction(6), 40, 1),
               FRONT_LEFT_TRANSLATION.getY()
                   * 2 // the trackwidth of the robot (dist. from top left to top right for example)
               );
@@ -175,35 +151,6 @@ public class Swerve extends SubsystemBase implements Loggable {
           return alliance == Alliance.Red;
         },
         this);
-
-    FRONT_LEFT_MODULE
-        .getAngleMotor()
-        .getSysIDCommands(
-            "Swerve Angle",
-            1,
-            5,
-            5,
-            FRONT_RIGHT_MODULE.getAngleMotor(),
-            BACK_LEFT_MODULE.getAngleMotor(),
-            BACK_RIGHT_MODULE.getAngleMotor())
-        .putOnDashboard("Swerve Angle", this);
-
-    FRONT_LEFT_MODULE
-        .getDriveMotor()
-        .getSysIDCommands(
-            "Swerve Drive",
-            1,
-            2.5,
-            3,
-            FRONT_RIGHT_MODULE.getDriveMotor(),
-            BACK_LEFT_MODULE.getDriveMotor(),
-            BACK_RIGHT_MODULE.getDriveMotor())
-        .putOnDashboard("Swerve Drive", this);
-
-    SmartDashboard.putData(
-        "Characterization/Swerve/Face wheels forward", makePushable(Rotation2d.kZero));
-    SmartDashboard.putData(
-        "Characterization/Swerve/Conversion Factor Finder", driveConversionFinder(0.25, 5));
   }
 
   /**
@@ -260,7 +207,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command targetCoralStation(boolean forward) {
-    return Commands.runOnce(
+    return Commands.run(
         () -> {
           boolean enabled = true;
           for (Limelight camera : tagCameras) {
@@ -290,7 +237,7 @@ public class Swerve extends SubsystemBase implements Loggable {
         });
   }
 
-  public Command leftBranchCentricV2(XboxController xbox) {
+  public Command leftBranchCentric(XboxController xbox) {
     return Commands.run(
             () -> {
               Limelight camera = tagCameras[0];
@@ -317,7 +264,7 @@ public class Swerve extends SubsystemBase implements Loggable {
         .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
   }
 
-  public Command rightBranchCentricV2(XboxController xbox) {
+  public Command rightBranchCentric(XboxController xbox) {
     return Commands.run(
             () -> {
               Limelight camera = tagCameras[1];
@@ -344,16 +291,6 @@ public class Swerve extends SubsystemBase implements Loggable {
         .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
   }
 
-  public Command turnToReef() {
-    return Commands.defer(
-        () -> {
-          return setTargetHeading(
-              ScoringLocations.getDriveTarget(
-                      estimator.getEstimatedPosition().getTranslation(), Alignment.Middle)
-                  .getRotation());
-        },
-        Set.of(this));
-  }
 
   /**
    * Updates the heading of the robot
@@ -477,7 +414,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
     double speedCoefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
     Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-    if (Math.abs(currentHeading.minus(targetHeading).getDegrees()) < 10) {
+    if (Math.abs(currentHeading.minus(targetHeading).getDegrees()) < 45) {
       targetHeading =
           Rotation2d.fromRadians(
               targetHeading.getRadians()
@@ -591,13 +528,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     estimator.update(gyro.getAngle(), getModulePositions());
     for (Limelight camera : tagCameras) {
       if (RobotBase.isSimulation()) camera.updateSim(estimator.getEstimatedPosition());
-      PoseEstimate estimate =
-          camera.getPoseMT2(
-              estimator.getEstimatedPosition().getRotation(),
-              Rotation2d.fromRadians(getSpeeds().omegaRadiansPerSecond));
-      if (useMT1) {
-        estimate = camera.getPoseMT1();
-      }
+      PoseEstimate estimate = camera.getPoseMT1();
       if (estimate.exists()
           && (estimate.tagCount() > 1
               || estimate.averageDistance() < 2
@@ -625,7 +556,6 @@ public class Swerve extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Back Right Module", modules[3]);
     HoundLog.log(path, "Gyro", gyro);
     HoundLog.log(path, "At Target Pose", poseFeedback.atTarget());
-    HoundLog.log(path, "Target Pose", targetPose);
     for (Limelight camera : tagCameras) {
       HoundLog.log(path, camera.getName(), camera);
     }
