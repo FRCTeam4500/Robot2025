@@ -51,14 +51,7 @@ public class Limelight implements Loggable {
   private VisionSystemSim sim;
   private boolean enabled = true;
 
-  private final PoseEstimate kEmpty = new PoseEstimate(
-    new Pose2d(), 
-    0, 
-    0, 
-    0, 
-    0, 
-    false
-  );
+  private final PoseEstimate kEmpty = new PoseEstimate(new Pose2d(), 0, 0, 0, 0, false);
 
   /**
    * Make a limelight with the given name and pipeline
