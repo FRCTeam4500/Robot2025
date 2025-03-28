@@ -3,6 +3,8 @@ package frc.robot.subsystems.swerve;
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
 
+import java.util.Set;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -236,6 +238,58 @@ public class Swerve extends SubsystemBase implements Loggable {
               return;
           }
         });
+  }
+
+  public Command upBranchCentric(XboxController xbox) {
+    return Commands.defer(() -> {
+      Limelight leftCam = tagCameras[0];
+      Limelight rightCam = tagCameras[1];
+      int leftID = leftCam.getID();
+      int rightID = rightCam.getID();
+      if (leftID == 19 || leftID == 20 || leftID == 11 || leftID == 6) {
+        return leftBranchCentric(xbox);
+      }
+      if (rightID == 17 || rightID == 22 || rightID == 9 || rightID == 8) {
+        return rightBranchCentric(xbox);
+      }
+      return Commands.waitUntil(() -> 
+        leftID == 19 || leftID == 20 || leftID == 11 || leftID == 6 ||
+        rightID == 17 || rightID == 22 || rightID == 9 || rightID == 8
+      ).andThen(
+        upBranchCentric(xbox)
+      );
+    }, Set.of(this))
+    .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+    .finallyDo(() -> {
+      targetHeading = estimator.getEstimatedPosition().getRotation();
+      targetID = 0;
+    });
+  }
+
+  public Command downBranchCentric(XboxController xbox) {
+    return Commands.defer(() -> {
+      Limelight leftCam = tagCameras[0];
+      Limelight rightCam = tagCameras[1];
+      int leftID = leftCam.getID();
+      int rightID = rightCam.getID();
+      if (leftID == 17 || leftID == 22 || leftID == 9 || leftID == 8) {
+        return leftBranchCentric(xbox);
+      }
+      if (rightID == 19 || rightID == 20 || rightID == 11 || rightID == 6) {
+        return rightBranchCentric(xbox);
+      }
+      return Commands.waitUntil(() -> 
+        leftID == 17 || leftID == 22 || leftID == 9 || leftID == 8 ||
+        rightID == 19 || rightID == 20 || rightID == 11 || rightID == 6
+      ).andThen(
+        downBranchCentric(xbox)
+      );
+    }, Set.of(this))
+    .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+    .finallyDo(() -> {
+      targetHeading = estimator.getEstimatedPosition().getRotation();
+      targetID = 0;
+    });
   }
 
   public Command leftBranchCentric(XboxController xbox) {
