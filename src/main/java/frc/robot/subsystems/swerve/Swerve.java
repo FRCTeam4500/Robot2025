@@ -3,8 +3,6 @@ package frc.robot.subsystems.swerve;
 import static frc.robot.subsystems.swerve.SwerveConstants.*;
 import static frc.robot.utilities.ExtendedMath.withHardDeadzone;
 
-import java.util.Set;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
@@ -41,6 +39,7 @@ import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.StopTilting;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.Set;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
 public class Swerve extends SubsystemBase implements Loggable {
@@ -78,14 +77,14 @@ public class Swerve extends SubsystemBase implements Loggable {
             FRONT_RIGHT_TRANSLATION,
             BACK_LEFT_TRANSLATION,
             BACK_RIGHT_TRANSLATION);
-            estimator =
-            new SwerveDrivePoseEstimator(
-              kinematics,
-              gyro.getAngle(),
-              getModulePositions(),
-              new Pose2d(),
-              VecBuilder.fill(0.1, 0.1, 0.1),
-              VecBuilder.fill(5, 5, 5));
+    estimator =
+        new SwerveDrivePoseEstimator(
+            kinematics,
+            gyro.getAngle(),
+            getModulePositions(),
+            new Pose2d(),
+            VecBuilder.fill(0.1, 0.1, 0.1),
+            VecBuilder.fill(5, 5, 5));
     StopTilting.setupKinematics(kinematics);
     StopTilting.setupBase(
         estimator::getEstimatedPosition, new Transform3d(0, 0, 0.1, Rotation3d.kZero), 39.3468644);
@@ -240,55 +239,71 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command upBranchCentric(XboxController xbox) {
-    return Commands.defer(() -> {
-      Limelight leftCam = tagCameras[0];
-      Limelight rightCam = tagCameras[1];
-      int leftID = leftCam.getID();
-      int rightID = rightCam.getID();
-      if (leftID == 19 || leftID == 20 || leftID == 11 || leftID == 6) {
-        return leftBranchCentric(xbox);
-      }
-      if (rightID == 17 || rightID == 22 || rightID == 9 || rightID == 8) {
-        return rightBranchCentric(xbox);
-      }
-      return Commands.waitUntil(() -> 
-        leftID == 19 || leftID == 20 || leftID == 11 || leftID == 6 ||
-        rightID == 17 || rightID == 22 || rightID == 9 || rightID == 8
-      ).andThen(
-        upBranchCentric(xbox)
-      );
-    }, Set.of(this))
-    .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-    .finallyDo(() -> {
-      targetHeading = estimator.getEstimatedPosition().getRotation();
-      targetID = 0;
-    });
+    return Commands.defer(
+            () -> {
+              Limelight leftCam = tagCameras[0];
+              Limelight rightCam = tagCameras[1];
+              int leftID = leftCam.getID();
+              int rightID = rightCam.getID();
+              if (leftID == 19 || leftID == 20 || leftID == 11 || leftID == 6) {
+                return leftBranchCentric(xbox);
+              }
+              if (rightID == 17 || rightID == 22 || rightID == 9 || rightID == 8) {
+                return rightBranchCentric(xbox);
+              }
+              return Commands.waitUntil(
+                      () ->
+                          leftID == 19
+                              || leftID == 20
+                              || leftID == 11
+                              || leftID == 6
+                              || rightID == 17
+                              || rightID == 22
+                              || rightID == 9
+                              || rightID == 8)
+                  .andThen(upBranchCentric(xbox));
+            },
+            Set.of(this))
+        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+        .finallyDo(
+            () -> {
+              targetHeading = estimator.getEstimatedPosition().getRotation();
+              targetID = 0;
+            });
   }
 
   public Command downBranchCentric(XboxController xbox) {
-    return Commands.defer(() -> {
-      Limelight leftCam = tagCameras[0];
-      Limelight rightCam = tagCameras[1];
-      int leftID = leftCam.getID();
-      int rightID = rightCam.getID();
-      if (leftID == 17 || leftID == 22 || leftID == 9 || leftID == 8) {
-        return leftBranchCentric(xbox);
-      }
-      if (rightID == 19 || rightID == 20 || rightID == 11 || rightID == 6) {
-        return rightBranchCentric(xbox);
-      }
-      return Commands.waitUntil(() -> 
-        leftID == 17 || leftID == 22 || leftID == 9 || leftID == 8 ||
-        rightID == 19 || rightID == 20 || rightID == 11 || rightID == 6
-      ).andThen(
-        downBranchCentric(xbox)
-      );
-    }, Set.of(this))
-    .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-    .finallyDo(() -> {
-      targetHeading = estimator.getEstimatedPosition().getRotation();
-      targetID = 0;
-    });
+    return Commands.defer(
+            () -> {
+              Limelight leftCam = tagCameras[0];
+              Limelight rightCam = tagCameras[1];
+              int leftID = leftCam.getID();
+              int rightID = rightCam.getID();
+              if (leftID == 17 || leftID == 22 || leftID == 9 || leftID == 8) {
+                return leftBranchCentric(xbox);
+              }
+              if (rightID == 19 || rightID == 20 || rightID == 11 || rightID == 6) {
+                return rightBranchCentric(xbox);
+              }
+              return Commands.waitUntil(
+                      () ->
+                          leftID == 17
+                              || leftID == 22
+                              || leftID == 9
+                              || leftID == 8
+                              || rightID == 19
+                              || rightID == 20
+                              || rightID == 11
+                              || rightID == 6)
+                  .andThen(downBranchCentric(xbox));
+            },
+            Set.of(this))
+        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
+        .finallyDo(
+            () -> {
+              targetHeading = estimator.getEstimatedPosition().getRotation();
+              targetID = 0;
+            });
   }
 
   public Command leftBranchCentric(XboxController xbox) {
@@ -320,10 +335,11 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-        .finallyDo(() -> {
-          targetHeading = estimator.getEstimatedPosition().getRotation();
-          targetID = 0;
-        });
+        .finallyDo(
+            () -> {
+              targetHeading = estimator.getEstimatedPosition().getRotation();
+              targetID = 0;
+            });
   }
 
   public Command rightBranchCentric(XboxController xbox) {
@@ -355,12 +371,12 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-        .finallyDo(() -> {
-          targetHeading = estimator.getEstimatedPosition().getRotation();
-          targetID = 0;
-        });
+        .finallyDo(
+            () -> {
+              targetHeading = estimator.getEstimatedPosition().getRotation();
+              targetID = 0;
+            });
   }
-
 
   /**
    * Updates the heading of the robot
