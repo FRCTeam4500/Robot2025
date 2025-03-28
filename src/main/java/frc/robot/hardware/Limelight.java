@@ -267,7 +267,7 @@ public class Limelight implements Loggable {
       table.getEntry("ta").setDouble(0);
       table.getEntry("cl").setDouble(0);
       table.getEntry("tl").setDouble(0);
-      table.getEntry("tid").setDouble(0);
+      table.getEntry("tid").setDouble(-1);
       return;
     }
     PhotonTrackedTarget target = result.getBestTarget();

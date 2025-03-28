@@ -51,6 +51,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   private Rotation2d targetHeading;
   private FeedbackController headingFeedback;
   private PoseFeedbackController poseFeedback;
+  private int targetID;
 
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
@@ -247,6 +248,11 @@ public class Swerve extends SubsystemBase implements Loggable {
               if (id == -1) {
                 drive(calculateVelRobotRel(xbox));
               } else {
+                if (targetID == 0) {
+                  targetID = id;
+                } else if (targetID != id) {
+                  return;
+                }
                 ChassisSpeeds speeds =
                     poseFeedback.calculate(
                         new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
@@ -261,7 +267,10 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-        .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
+        .finallyDo(() -> {
+          targetHeading = estimator.getEstimatedPosition().getRotation();
+          targetID = 0;
+        });
   }
 
   public Command rightBranchCentric(XboxController xbox) {
@@ -274,6 +283,11 @@ public class Swerve extends SubsystemBase implements Loggable {
               if (id == -1) {
                 drive(calculateVelRobotRel(xbox));
               } else {
+                if (targetID == 0) {
+                  targetID = id;
+                } else if (targetID != id) {
+                  return;
+                }
                 ChassisSpeeds speeds =
                     poseFeedback.calculate(
                         new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
@@ -288,7 +302,10 @@ public class Swerve extends SubsystemBase implements Loggable {
             },
             this)
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-        .finallyDo(() -> targetHeading = estimator.getEstimatedPosition().getRotation());
+        .finallyDo(() -> {
+          targetHeading = estimator.getEstimatedPosition().getRotation();
+          targetID = 0;
+        });
   }
 
 
@@ -559,6 +576,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     for (Limelight camera : tagCameras) {
       HoundLog.log(path, camera.getName(), camera);
     }
+    HoundLog.log(path, "Target ID", targetID);
   }
 
   public static enum Alignment {
