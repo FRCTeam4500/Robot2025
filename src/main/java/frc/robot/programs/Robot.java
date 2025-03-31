@@ -202,14 +202,8 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.backCoralIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
-    NamedCommands.registerCommand(
-      "Auto Score Top", 
-      autoScoreTop()
-    );
-    NamedCommands.registerCommand(
-      "Auto Score Bottom", 
-      autoScoreBottom()
-    );
+    NamedCommands.registerCommand("Auto Score Top", autoScoreTop());
+    NamedCommands.registerCommand("Auto Score Bottom", autoScoreBottom());
 
     SendableChooser<Command> chooser = new SendableChooser<>();
     chooser.setDefaultOption("None", Commands.none());
@@ -245,14 +239,10 @@ public class Robot extends LoggedRobot {
   }
 
   private Command autoScoreTop() {
-    return swerve.upBranchCentric()
-      .alongWith(structure.readyLevel4())
-      .andThen(structure.shoot());
+    return swerve.upBranchCentric().alongWith(structure.readyLevel4()).andThen(structure.shoot());
   }
 
   private Command autoScoreBottom() {
-    return swerve.downBranchCentric()
-      .alongWith(structure.readyLevel4())
-      .andThen(structure.shoot());
+    return swerve.downBranchCentric().alongWith(structure.readyLevel4()).andThen(structure.shoot());
   }
 }
