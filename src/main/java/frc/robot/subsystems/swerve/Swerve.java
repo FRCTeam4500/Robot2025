@@ -500,15 +500,13 @@ public class Swerve extends SubsystemBase implements Loggable {
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
     double speedCoefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
     Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
-    if (Math.abs(currentHeading.minus(targetHeading).getDegrees()) < 45) {
-      targetHeading =
-          Rotation2d.fromRadians(
-              targetHeading.getRadians()
-                  - withHardDeadzone(xbox.getRightX(), 0.1)
-                      * speedCoefficient
-                      * MAX_FIELD_REL_SPEEDS.omegaRadiansPerSecond
-                      * 0.02);
-    }
+    targetHeading =
+        Rotation2d.fromRadians(
+            targetHeading.getRadians()
+                - withHardDeadzone(xbox.getRightX(), 0.1)
+                    * speedCoefficient
+                    * MAX_FIELD_REL_SPEEDS.omegaRadiansPerSecond
+                    * 0.02);
     double rotational =
         headingFeedback.calculate(currentHeading.getRadians(), targetHeading.getRadians());
     if (headingFeedback.atGoal()) {
