@@ -155,10 +155,10 @@ public class Robot extends LoggedRobot {
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    alignReefLeft.debounce(0.2).whileTrue(swerve.leftBranchCentric(xbox.getHID()));
+    alignReefLeft.debounce(0.2).whileTrue(swerve.leftBranchCentric());
     alignReefLeft.onFalse(structure.readyNextCoral());
     alignReefMiddle.onTrue(structure.readyNextAlgae());
-    alignReefRight.debounce(0.2).whileTrue(swerve.rightBranchCentric(xbox.getHID()));
+    alignReefRight.debounce(0.2).whileTrue(swerve.rightBranchCentric());
     alignReefRight.onFalse(structure.readyNextCoral());
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
@@ -194,7 +194,7 @@ public class Robot extends LoggedRobot {
     stopMusic.onTrue(structure.stopSinging());
   }
 
-  public void setupAuto() {
+  private void setupAuto() {
     NamedCommands.registerCommand(
         "Ready L4", structure.readyLevel4().andThen(structure.stopPlacer()));
     NamedCommands.registerCommand("Ready High Algae", structure.readyAlgaeHigh());
@@ -202,6 +202,14 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.backCoralIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
+    NamedCommands.registerCommand(
+      "Auto Score Top", 
+      autoScoreTop()
+    );
+    NamedCommands.registerCommand(
+      "Auto Score Bottom", 
+      autoScoreBottom()
+    );
 
     SendableChooser<Command> chooser = new SendableChooser<>();
     chooser.setDefaultOption("None", Commands.none());
@@ -210,6 +218,7 @@ public class Robot extends LoggedRobot {
     chooser.addOption("3 Coral Left Blue", new PathPlannerAuto("3 Piece Blue"));
     chooser.addOption("3 Coral Right Blue", new PathPlannerAuto("3 Piece Blue", true));
     chooser.addOption("1 Coral Backup", new PathPlannerAuto("Backup"));
+    chooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
     SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
@@ -233,5 +242,17 @@ public class Robot extends LoggedRobot {
   @Override
   public void simulationPeriodic() {
     GamepieceManager.simulate();
+  }
+
+  private Command autoScoreTop() {
+    return swerve.upBranchCentric()
+      .alongWith(structure.readyLevel4())
+      .andThen(structure.shoot());
+  }
+
+  private Command autoScoreBottom() {
+    return swerve.downBranchCentric()
+      .alongWith(structure.readyLevel4())
+      .andThen(structure.shoot());
   }
 }

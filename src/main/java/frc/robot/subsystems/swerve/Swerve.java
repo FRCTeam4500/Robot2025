@@ -99,31 +99,57 @@ public class Swerve extends SubsystemBase implements Loggable {
               pid.setTolerance(Math.PI / 32, Math.PI / 32);
               pid.setSetpoint(0);
             });
-
-    poseFeedback =
-        new PoseFeedbackController(
-            FeedbackController.fromPID(
-                .02,
-                0,
-                0,
-                pid -> {
-                  pid.setTolerance(0.5);
-                }),
-            FeedbackController.fromPID(
-                .02,
-                0,
-                0,
-                pid -> {
-                  pid.setTolerance(0.5);
-                }),
-            FeedbackController.fromPID(
-                3,
-                0,
-                0,
-                pid -> {
-                  pid.enableContinuousInput(0, 360);
-                  pid.setTolerance(1);
-                }));
+    if (RobotBase.isReal()) {
+      poseFeedback =
+          new PoseFeedbackController(
+              FeedbackController.fromPID(
+                  .02,
+                  0,
+                  0,
+                  pid -> {
+                    pid.setTolerance(0.5);
+                  }),
+              FeedbackController.fromPID(
+                  .02,
+                  0,
+                  0,
+                  pid -> {
+                    pid.setTolerance(0.5);
+                  }),
+              FeedbackController.fromPID(
+                  3,
+                  0,
+                  0,
+                  pid -> {
+                    pid.enableContinuousInput(0, 360);
+                    pid.setTolerance(1);
+                  }));
+    } else {
+      poseFeedback =
+          new PoseFeedbackController(
+              FeedbackController.fromPID(
+                  5,
+                  0,
+                  0,
+                  pid -> {
+                    pid.setTolerance(0.02);
+                  }),
+              FeedbackController.fromPID(
+                  5,
+                  0,
+                  0,
+                  pid -> {
+                    pid.setTolerance(0.02);
+                  }),
+              FeedbackController.fromPID(
+                  3,
+                  0,
+                  0,
+                  pid -> {
+                    pid.enableContinuousInput(0, 360);
+                    pid.setTolerance(1);
+                  }));
+    }
 
     RobotConfig config;
     try {
@@ -238,7 +264,37 @@ public class Swerve extends SubsystemBase implements Loggable {
         });
   }
 
-  public Command upBranchCentric(XboxController xbox) {
+  public Command poseCentric(Pose2d target) {
+    return Commands.run(
+            () -> {
+              Pose2d current = estimator.getEstimatedPosition();
+              ChassisSpeeds speeds = poseFeedback.calculate(current, target);
+              drive(ChassisSpeeds.fromFieldRelativeSpeeds(speeds, current.getRotation()));
+            },
+            this)
+        .beforeStarting(
+            () -> {
+              poseFeedback.reset(estimator.getEstimatedPosition());
+            })
+        .until(() -> poseFeedback.atTarget())
+        .withName("Pose Centric");
+  }
+
+  public Command alignToReef(Alignment position) {
+    return Commands.defer(
+            () -> {
+              return poseCentric(
+                  ScoringLocations.getDriveTarget(
+                      estimator.getEstimatedPosition().getTranslation(), position));
+            },
+            Set.of(this))
+        .withName("Align To Reef: " + position.name() + " Side");
+  }
+
+  public Command upBranchCentric() {
+    if (RobotBase.isSimulation()) {
+      return alignToReef(Alignment.Top);
+    }
     return Commands.defer(
             () -> {
               Limelight leftCam = tagCameras[0];
@@ -246,10 +302,10 @@ public class Swerve extends SubsystemBase implements Loggable {
               int leftID = leftCam.getID();
               int rightID = rightCam.getID();
               if (leftID == 19 || leftID == 20 || leftID == 11 || leftID == 6) {
-                return leftBranchCentric(xbox);
+                return leftBranchCentric();
               }
               if (rightID == 17 || rightID == 22 || rightID == 9 || rightID == 8) {
-                return rightBranchCentric(xbox);
+                return rightBranchCentric();
               }
               return Commands.waitUntil(
                       () ->
@@ -261,7 +317,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                               || rightID == 22
                               || rightID == 9
                               || rightID == 8)
-                  .andThen(upBranchCentric(xbox));
+                  .andThen(upBranchCentric());
             },
             Set.of(this))
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
@@ -272,7 +328,10 @@ public class Swerve extends SubsystemBase implements Loggable {
             });
   }
 
-  public Command downBranchCentric(XboxController xbox) {
+  public Command downBranchCentric() {
+    if (RobotBase.isSimulation()) {
+      return alignToReef(Alignment.Bottom);
+    }
     return Commands.defer(
             () -> {
               Limelight leftCam = tagCameras[0];
@@ -280,10 +339,10 @@ public class Swerve extends SubsystemBase implements Loggable {
               int leftID = leftCam.getID();
               int rightID = rightCam.getID();
               if (leftID == 17 || leftID == 22 || leftID == 9 || leftID == 8) {
-                return leftBranchCentric(xbox);
+                return leftBranchCentric();
               }
               if (rightID == 19 || rightID == 20 || rightID == 11 || rightID == 6) {
-                return rightBranchCentric(xbox);
+                return rightBranchCentric();
               }
               return Commands.waitUntil(
                       () ->
@@ -295,7 +354,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                               || rightID == 20
                               || rightID == 11
                               || rightID == 6)
-                  .andThen(downBranchCentric(xbox));
+                  .andThen(downBranchCentric());
             },
             Set.of(this))
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
@@ -306,16 +365,17 @@ public class Swerve extends SubsystemBase implements Loggable {
             });
   }
 
-  public Command leftBranchCentric(XboxController xbox) {
+  public Command leftBranchCentric() {
+    if (RobotBase.isSimulation()) {
+      return alignToReef(Alignment.Left);
+    }
     return Commands.run(
             () -> {
               Limelight camera = tagCameras[0];
               double tx = camera.getTX();
               double ty = camera.getTY();
               int id = camera.getID();
-              if (id == -1) {
-                drive(calculateVelRobotRel(xbox));
-              } else {
+              if (id != -1) {
                 if (targetID == 0) {
                   targetID = id;
                 } else if (targetID != id) {
@@ -334,6 +394,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               }
             },
             this)
+        .until(poseFeedback::atTarget)
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
         .finallyDo(
             () -> {
@@ -342,16 +403,17 @@ public class Swerve extends SubsystemBase implements Loggable {
             });
   }
 
-  public Command rightBranchCentric(XboxController xbox) {
+  public Command rightBranchCentric() {
+    if (RobotBase.isSimulation()) {
+      return alignToReef(Alignment.Right);
+    }
     return Commands.run(
             () -> {
               Limelight camera = tagCameras[1];
               double tx = camera.getTX();
               double ty = camera.getTY();
               int id = camera.getID();
-              if (id == -1) {
-                drive(calculateVelRobotRel(xbox));
-              } else {
+              if (id != -1) {
                 if (targetID == 0) {
                   targetID = id;
                 } else if (targetID != id) {
@@ -370,6 +432,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               }
             },
             this)
+        .until(poseFeedback::atTarget)
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
         .finallyDo(
             () -> {
