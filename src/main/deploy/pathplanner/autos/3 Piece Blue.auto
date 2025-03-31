@@ -26,7 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Auto Score Top"
+            "name": "Auto Score Bottom"
           }
         },
         {
@@ -164,7 +164,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Auto Score Top"
+            "name": "Auto Score Bottom"
           }
         },
         {
@@ -182,7 +182,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }
