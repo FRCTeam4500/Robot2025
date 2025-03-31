@@ -11,6 +11,7 @@ public class LoggedRobot extends TimedRobot {
     HoundLog.setEnabled(true);
     HoundLog.setPdh(new PowerDistribution());
     HoundLog.setOptions(
-        new DogLogOptions(() -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> false));
+        new DogLogOptions(
+            () -> !DriverStation.isFMSAttached(), true, true, true, true, 1000, () -> false));
   }
 }
