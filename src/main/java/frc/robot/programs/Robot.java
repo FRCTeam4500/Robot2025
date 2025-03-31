@@ -155,11 +155,23 @@ public class Robot extends LoggedRobot {
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    alignReefLeft.debounce(0.2).whileTrue(swerve.leftBranchCentric().andThen(structure.readyNextCoral()).andThen(structure.shoot())
-    .andThen(Commands.runOnce(() -> structure.stow().schedule())));
+    alignReefLeft
+        .debounce(0.2)
+        .whileTrue(
+            swerve
+                .leftBranchCentric()
+                .andThen(structure.readyNextCoral())
+                .andThen(structure.shoot())
+                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
     alignReefMiddle.onTrue(structure.readyNextAlgae());
-    alignReefRight.debounce(0.2).whileTrue(swerve.rightBranchCentric().andThen(structure.readyNextCoral()).andThen(structure.shoot())
-    .andThen(Commands.runOnce(() -> structure.stow().schedule())));
+    alignReefRight
+        .debounce(0.2)
+        .whileTrue(
+            swerve
+                .rightBranchCentric()
+                .andThen(structure.readyNextCoral())
+                .andThen(structure.shoot())
+                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
     alignReefRight.onFalse(structure.readyNextCoral());
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
