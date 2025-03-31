@@ -26,6 +26,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Auto Score Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
           }
         },
@@ -89,6 +95,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Auto Score Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Shoot"
           }
         },
@@ -147,6 +159,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Auto Score Top"
           }
         },
         {
