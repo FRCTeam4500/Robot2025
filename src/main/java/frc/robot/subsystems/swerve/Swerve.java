@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -40,6 +41,7 @@ import frc.robot.utilities.StopTilting;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 
 /** The subsystem that controls our drivetrain, which is known as a swerve drive. */
 public class Swerve extends SubsystemBase implements Loggable {
@@ -53,18 +55,21 @@ public class Swerve extends SubsystemBase implements Loggable {
   private PoseFeedbackController poseFeedback;
   private int targetID;
 
+  public Trigger doesLeftCameraSeeTag;
+  public Trigger doesRightCameraSeeTag;
+
   /** Creates a new {@link Swerve} using the constants defined in {@link SwerveConstants} */
   public Swerve() {
     tagCameras =
         new Limelight[] {
           new Limelight(
-              "limelight-hehehe",
+              "limelight-right",
               new Transform3d(
-                  new Translation3d(0.2, -0.2, 0.2), new Rotation3d(0, Math.toRadians(-10), 0))),
+                  new Translation3d(0.2289, -0.1905, 0.1905), new Rotation3d(0, Math.toRadians(-16), 0))),
           new Limelight(
-              "limelight-hihihi",
+              "limelight-left",
               new Transform3d(
-                  new Translation3d(0.2, 0.2, 0.2), new Rotation3d(0, Math.toRadians(-10), 0)))
+                  new Translation3d(0.2286, 0.1905, 0.1905), new Rotation3d(0, Math.toRadians(-15), 0)))
         };
     gyro = Gyro.fromNavX(() -> getSpeeds().omegaRadiansPerSecond, navx -> {});
     modules =
@@ -103,14 +108,14 @@ public class Swerve extends SubsystemBase implements Loggable {
       poseFeedback =
           new PoseFeedbackController(
               FeedbackController.fromPID(
-                  .02,
+                  .0674,
                   0,
                   0,
                   pid -> {
                     pid.setTolerance(0.5);
                   }),
               FeedbackController.fromPID(
-                  .02,
+                  .01234,
                   0,
                   0,
                   pid -> {
@@ -178,6 +183,14 @@ public class Swerve extends SubsystemBase implements Loggable {
           return alliance == Alliance.Red;
         },
         this);
+    
+    doesLeftCameraSeeTag = new Trigger(() -> {
+      return ScoringLocations.isReef(tagCameras[1].getID());
+    });
+
+    doesRightCameraSeeTag = new Trigger(() -> {
+      return ScoringLocations.isReef(tagCameras[0].getID());
+    });
   }
 
   /**
@@ -384,7 +397,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                 ChassisSpeeds speeds =
                     poseFeedback.calculate(
                         new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(10, 16.3, ScoringLocations.getRotation(id)));
+                        new Pose2d(1, 9.23113, ScoringLocations.getRotation(id)));
                 speeds =
                     new ChassisSpeeds(
                         speeds.vxMetersPerSecond,
@@ -422,7 +435,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                 ChassisSpeeds speeds =
                     poseFeedback.calculate(
                         new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(12, -12, ScoringLocations.getRotation(id)));
+                        new Pose2d(2, 3.73, ScoringLocations.getRotation(id)));
                 speeds =
                     new ChassisSpeeds(
                         speeds.vxMetersPerSecond,

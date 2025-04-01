@@ -104,13 +104,13 @@ public class Robot extends LoggedRobot {
         .onFalse(Commands.runOnce(() -> climbing = false));
     backCoralIntake.onTrue(structure.backCoralIntake());
     backCoralIntake.onFalse(structure.stow());
-    backCoralIntake.onTrue(swerve.targetCoralStation(false));
+    backCoralIntake.whileTrue(swerve.targetCoralStation(false));
     stowButton.onTrue(structure.stow());
     confirmIntake.onTrue(structure.confirmIntake());
     confirmIntake.onFalse(structure.stopPlacer());
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake.onTrue(swerve.targetCoralStation(false));
+    frontCoralIntake.whileTrue(swerve.targetCoralStation(false));
 
     SmartDashboard.putData("Buttons/Target L1", structure.setNextCoral(CoralState.L1));
     SmartDashboard.putData("Buttons/Target L2", structure.setNextCoral(CoralState.L2));
@@ -165,21 +165,22 @@ public class Robot extends LoggedRobot {
     alignReefLeft
         .debounce(0.2)
         .whileTrue(
+          swerve.reefCentric(xbox.getHID()).until(swerve.doesRightCameraSeeTag).andThen(
             swerve
                 .leftBranchCentric()
                 .andThen(structure.readyNextCoral())
                 .andThen(structure.shoot())
-                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
+                .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     alignReefMiddle.onTrue(structure.readyNextAlgae());
     alignReefRight
         .debounce(0.2)
         .whileTrue(
+          swerve.reefCentric(xbox.getHID()).until(swerve.doesLeftCameraSeeTag).andThen(
             swerve
                 .rightBranchCentric()
                 .andThen(structure.readyNextCoral())
                 .andThen(structure.shoot())
-                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
-    alignReefRight.onFalse(structure.readyNextCoral());
+                .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
@@ -199,10 +200,10 @@ public class Robot extends LoggedRobot {
                 .shoot()
                 .andThen(Commands.runOnce(() -> structure.stow().schedule()))
                 .withName("Shoot and Stow"));
-    backCoralIntake.onTrue(swerve.targetCoralStation(false));
+    backCoralIntake.whileTrue(swerve.targetCoralStation(false));
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake.onTrue(swerve.targetCoralStation(true));
+    frontCoralIntake.whileTrue(swerve.targetCoralStation(true));
     coralGroundIntake.onTrue(structure.groundIntake());
     coralGroundIntake.onFalse(structure.stow());
     algaeGroundIntake.onTrue(structure.algaeGroundIntake());
