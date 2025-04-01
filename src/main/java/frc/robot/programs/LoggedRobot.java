@@ -2,7 +2,6 @@ package frc.robot.programs;
 
 import dev.doglog.DogLogOptions;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import frc.robot.utilities.logging.HoundLog;
 

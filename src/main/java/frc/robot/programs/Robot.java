@@ -164,22 +164,28 @@ public class Robot extends LoggedRobot {
     alignReefLeft
         .debounce(0.2)
         .whileTrue(
-          swerve.reefCentric(xbox.getHID()).until(swerve.doesRightCameraSeeTag).andThen(
             swerve
-                .leftBranchCentric()
-                .andThen(structure.readyNextCoral())
-                .andThen(structure.shoot())
-                .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
+                .reefCentric(xbox.getHID())
+                .until(swerve.doesRightCameraSeeTag)
+                .andThen(
+                    swerve
+                        .leftBranchCentric()
+                        .andThen(structure.readyNextCoral())
+                        .andThen(structure.shoot())
+                        .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     alignReefMiddle.onTrue(structure.readyNextAlgae());
     alignReefRight
         .debounce(0.2)
         .whileTrue(
-          swerve.reefCentric(xbox.getHID()).until(swerve.doesLeftCameraSeeTag).andThen(
             swerve
-                .rightBranchCentric()
-                .andThen(structure.readyNextCoral())
-                .andThen(structure.shoot())
-                .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
+                .reefCentric(xbox.getHID())
+                .until(swerve.doesLeftCameraSeeTag)
+                .andThen(
+                    swerve
+                        .rightBranchCentric()
+                        .andThen(structure.readyNextCoral())
+                        .andThen(structure.shoot())
+                        .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
