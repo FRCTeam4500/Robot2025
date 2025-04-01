@@ -53,12 +53,12 @@ public class Climber extends SubsystemBase implements Loggable {
                       (mode) -> {
                         config.MotorOutput.NeutralMode = mode;
                         StatusCode idleStatus = motor.getConfigurator().apply(config);
-                        if(idleStatus != StatusCode.OK) {
+                        if (idleStatus != StatusCode.OK) {
                           HoundLog.logFault(
-                            "[Climber] Winch Motor Config Error: " + idleStatus.name(),
-                            AlertType.kError
-                          );
-                        };
+                              "[Climber] Winch Motor Config Error: " + idleStatus.name(),
+                              AlertType.kError);
+                        }
+                        ;
                       };
                 },
                 (FeedforwardSim sim) -> {},
@@ -120,7 +120,10 @@ public class Climber extends SubsystemBase implements Loggable {
                 () -> {
                   return winchMotor.getPosition() <= latchPosition && winchMotor.getPosition() > 0;
                 }))
-        .andThen(() -> {winchMotor.setVoltage(0);});
+        .andThen(
+            () -> {
+              winchMotor.setVoltage(0);
+            });
   }
 
   public Command off() {
