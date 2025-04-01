@@ -256,6 +256,16 @@ public class Superstructure implements Loggable {
         Set.of());
   }
 
+  public Command shootL1() {
+    return Commands.defer(
+        () ->
+            placer
+                .eject(isPlacingAlgae ? placer.algaeEjectSpeed : placer.l1EjectSpeed)
+                .andThen(Commands.waitSeconds(0.35))
+                .withName("Shoot"),
+        Set.of());
+  }
+
   public Command stow() {
     return ramp.show()
         .alongWith(climber.off())

@@ -181,7 +181,7 @@ public class Robot extends LoggedRobot {
         .and(structure.moveAfterShoot)
         .onTrue(
             structure
-                .shoot()
+                .shootL1()
                 .andThen(swerve.backup())
                 .andThen(Commands.runOnce(() -> structure.stow().schedule()))
                 .withName("Shoot and Stow and Move"));

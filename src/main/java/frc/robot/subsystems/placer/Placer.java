@@ -26,6 +26,7 @@ public class Placer extends SubsystemBase implements Loggable {
 
   private final double intakeSpeed = -25;
   public final double coralEjectSpeed = 30;
+  public final double l1EjectSpeed = 20;
   public final double algaeEjectSpeed = 45;
 
   public final Trigger hasPieceTrigger =
@@ -115,20 +116,4 @@ public class Placer extends SubsystemBase implements Loggable {
     HoundLog.log(path, "Speed Motor", runMotor);
     HoundLog.log(path, "Intaked", hasPieceTrigger.getAsBoolean());
   }
-
-  //   /**
-  //  * @return Ejecting for algae because we need a different speed
-  //  */
-  // public Command ejectAlgae() {
-  //   return Commands.runOnce(
-  //           () -> {
-  //             runMotor.setTarget(algaeSpeed);
-  //           },
-  //           this)
-  //       .andThen(
-  //           Commands.waitUntil(
-  //               () -> {
-  //                 return runMotor.atTarget();
-  //               }));
-  // }
 }
