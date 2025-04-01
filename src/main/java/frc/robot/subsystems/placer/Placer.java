@@ -5,7 +5,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,19 +26,22 @@ import frc.robot.utilities.logging.Loggable;
 
 public class Placer extends SubsystemBase implements Loggable {
   private Motor runMotor;
+  private boolean fakeIntake;
 
   private final double intakeSpeed = -25;
   public final double coralEjectSpeed = 30;
   public final double l1EjectSpeed = 20;
   public final double algaeEjectSpeed = 45;
 
-  public final Trigger hasPieceTrigger =
+  public final Trigger intook =
       new Trigger(
               () -> {
-                return runMotor.getTarget() != 0
-                    && ExtendedMath.within(runMotor.getVelocity(), 0, 5);
+                return (runMotor.getTarget() != 0
+                    && ExtendedMath.within(runMotor.getVelocity(), 0, 5)
+                    && DriverStation.isEnabled())
+                    || fakeIntake;
               })
-          .debounce(1);
+          .debounce(.2);
 
   public Placer() {
     runMotor =
@@ -65,6 +71,12 @@ public class Placer extends SubsystemBase implements Loggable {
             FeedforwardController.forConstantGravity(0, 0.47622, 0.12973, 0.01321),
             TargetType.Velocity);
     runMotor.getSysIDCommands("Placer", 2, 8, 5).putOnDashboard("Placer");
+    SmartDashboard.putData(
+      "Fake Intake", 
+      Commands.runOnce(() -> fakeIntake = true)
+        .andThen(Commands.waitSeconds(0.3))
+        .andThen(Commands.runOnce(() -> fakeIntake = false))
+    );
   }
 
   /**
@@ -114,6 +126,6 @@ public class Placer extends SubsystemBase implements Loggable {
 
   public void log(String path) {
     HoundLog.log(path, "Speed Motor", runMotor);
-    HoundLog.log(path, "Intaked", hasPieceTrigger.getAsBoolean());
+    HoundLog.log(path, "Intaked", intook.getAsBoolean());
   }
 }

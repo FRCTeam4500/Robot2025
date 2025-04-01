@@ -40,6 +40,7 @@ public class Superstructure implements Loggable {
 
   private boolean shouldMoveBackAfterShoot = false;
   public Trigger moveAfterShoot = new Trigger(() -> shouldMoveBackAfterShoot);
+  public Trigger intook;
 
   public Superstructure(Supplier<Pose2d> robotPose) {
     climber = new Climber();
@@ -47,6 +48,7 @@ public class Superstructure implements Loggable {
     ramp = new Ramp();
     arm = new Arm();
     placer = new Placer();
+    intook = placer.intook;
     this.robotPose = robotPose;
     nextCoral = CoralState.L4;
     nextAlgae = AlgaeState.HIGH;

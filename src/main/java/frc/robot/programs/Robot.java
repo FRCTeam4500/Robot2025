@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -148,6 +149,12 @@ public class Robot extends LoggedRobot {
     Trigger faceReefCoral = xbox.rightBumper();
     Trigger faceReefAlgae = xbox.leftBumper();
     Trigger stopMusic = xbox.start();
+
+    structure.intook.onTrue(
+      Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 0.5))
+        .andThen(Commands.waitSeconds(0.25))
+        .andThen(Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 0)))
+    );
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
