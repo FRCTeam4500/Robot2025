@@ -222,7 +222,7 @@ public class Robot extends LoggedRobot {
 
   private void setupAuto() {
     NamedCommands.registerCommand(
-        "Ready L4", structure.readyLevel4().andThen(structure.stopPlacer()));
+        "Ready L4", structure.readyLevel4Auto().andThen(structure.stopPlacer()));
     NamedCommands.registerCommand("Ready High Algae", structure.readyAlgaeHigh());
     NamedCommands.registerCommand("Ready Low Algae", structure.readyAlgaeLow());
     NamedCommands.registerCommand("Shoot", structure.shoot());
@@ -230,6 +230,7 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Stow", structure.stow());
     NamedCommands.registerCommand("Auto Score Top", autoScoreTop());
     NamedCommands.registerCommand("Auto Score Bottom", autoScoreBottom());
+    NamedCommands.registerCommand("Wait For Intake", Commands.waitUntil(structure.intook));
 
     SendableChooser<Command> chooser = new SendableChooser<>();
     chooser.setDefaultOption("None", Commands.none());
@@ -265,10 +266,10 @@ public class Robot extends LoggedRobot {
   }
 
   private Command autoScoreTop() {
-    return swerve.upBranchCentric().alongWith(structure.readyLevel4()).andThen(structure.shoot());
+    return swerve.upBranchCentric().alongWith(structure.readyLevel4Auto()).andThen(structure.shoot());
   }
 
   private Command autoScoreBottom() {
-    return swerve.downBranchCentric().alongWith(structure.readyLevel4()).andThen(structure.shoot());
+    return swerve.downBranchCentric().alongWith(structure.readyLevel4Auto()).andThen(structure.shoot());
   }
 }

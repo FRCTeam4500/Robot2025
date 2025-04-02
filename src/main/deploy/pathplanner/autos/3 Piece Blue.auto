@@ -30,12 +30,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -68,9 +62,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "race",
           "data": {
-            "waitTime": 0.6
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait For Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -96,12 +103,6 @@
           "type": "named",
           "data": {
             "name": "Auto Score Top"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
           }
         },
         {
@@ -137,9 +138,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "race",
           "data": {
-            "waitTime": 0.6
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.6
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Wait For Intake"
+                }
+              }
+            ]
           }
         },
         {
@@ -165,12 +179,6 @@
           "type": "named",
           "data": {
             "name": "Auto Score Bottom"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
           }
         },
         {
