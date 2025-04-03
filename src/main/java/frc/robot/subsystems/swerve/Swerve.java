@@ -480,11 +480,11 @@ public class Swerve extends SubsystemBase implements Loggable {
                             output.getFirst().getTranslation(),
                             estimator.getEstimatedPosition().getRotation()),
                         new Pose2d(0.561, 0.149, ScoringLocations.getRotation(output.getSecond())));
-                drive(new ChassisSpeeds(
-                  -speeds.vxMetersPerSecond,
-                  speeds.vyMetersPerSecond,
-                  speeds.omegaRadiansPerSecond
-                ));
+                drive(
+                    new ChassisSpeeds(
+                        -speeds.vxMetersPerSecond,
+                        speeds.vyMetersPerSecond,
+                        speeds.omegaRadiansPerSecond));
               }
             },
             this)
@@ -512,11 +512,11 @@ public class Swerve extends SubsystemBase implements Loggable {
                             output.getFirst().getTranslation(),
                             estimator.getEstimatedPosition().getRotation()),
                         new Pose2d(0.61, -0.207, ScoringLocations.getRotation(output.getSecond())));
-                drive(new ChassisSpeeds(
-                  -speeds.vxMetersPerSecond,
-                  speeds.vyMetersPerSecond,
-                  speeds.omegaRadiansPerSecond
-                ));
+                drive(
+                    new ChassisSpeeds(
+                        -speeds.vxMetersPerSecond,
+                        speeds.vyMetersPerSecond,
+                        speeds.omegaRadiansPerSecond));
               }
             },
             this)
