@@ -8,11 +8,14 @@ import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -456,6 +459,56 @@ public class Swerve extends SubsystemBase implements Loggable {
               targetHeading = estimator.getEstimatedPosition().getRotation();
               targetID = 0;
             });
+  }
+
+  public Command leftBranchCentricV2() {
+    if (RobotBase.isSimulation()) {
+      return alignToReef(Alignment.Left);
+    }
+    return Commands.run(
+      () -> {
+        Limelight camera = tagCameras[0];
+        Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
+        if (ScoringLocations.isReef(output.getSecond())) {
+          if (targetID == -1) {
+            targetID = output.getSecond();
+          } else if (targetID != output.getSecond()) {
+            return;
+          }
+          ChassisSpeeds speeds = poseFeedback.calculate(
+            new Pose2d(output.getFirst().getTranslation(), ScoringLocations.getRotation(output.getSecond())),
+            new Pose2d(0, 0, ScoringLocations.getRotation(output.getSecond()))
+          );
+          drive(speeds);
+        }
+      }, this)
+      .until(poseFeedback::atTarget)
+      .finallyDo(() -> targetID = -1);
+  }
+
+  public Command rightBranchCentricV2() {
+    if (RobotBase.isSimulation()) {
+      return alignToReef(Alignment.Left);
+    }
+    return Commands.run(
+      () -> {
+        Limelight camera = tagCameras[1];
+        Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
+        if (ScoringLocations.isReef(output.getSecond())) {
+          if (targetID == -1) {
+            targetID = output.getSecond();
+          } else if (targetID != output.getSecond()) {
+            return;
+          }
+          ChassisSpeeds speeds = poseFeedback.calculate(
+            new Pose2d(output.getFirst().getTranslation(), ScoringLocations.getRotation(output.getSecond())),
+            new Pose2d(0, 0, ScoringLocations.getRotation(output.getSecond()))
+          );
+          drive(speeds);
+        }
+      }, this)
+      .until(poseFeedback::atTarget)
+      .finallyDo(() -> targetID = -1);
   }
 
   /**
