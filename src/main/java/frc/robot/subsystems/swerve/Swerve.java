@@ -22,7 +22,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -471,7 +470,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
               if (ScoringLocations.isReef(output.getSecond())) {
                 if (targetID == 0) {
-                  targetID = output.getSecond();
+                  targetID = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
                 } else if (targetID != output.getSecond()) {
                   return;
                 }
