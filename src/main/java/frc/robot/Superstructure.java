@@ -178,8 +178,8 @@ public class Superstructure implements Loggable {
 
   public Command readyLevel4Auto() {
     return arm.placeL4()
-      .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()))
-      .withName("Ready Level 4 Auto");
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.level4()))
+        .withName("Ready Level 4 Auto");
   }
 
   public Command readyAlgaeHigh() {
