@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.4709332191780824,
-        "y": 5.527568493150685
+        "x": 3.3883477451079522,
+        "y": 5.5084901595298765
       },
       "prevControl": {
-        "x": 3.233676860555806,
-        "y": 5.818133694688636
+        "x": 3.151091386485676,
+        "y": 5.799055361067827
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,34 +29,20 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.5,
-      "constraints": {
-        "maxVelocity": 4.0,
-        "maxAcceleration": 4.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": -59.99999999999999
+    "velocity": 0.5,
+    "rotation": -59.774550275046636
   },
   "reversed": false,
   "folder": "To Score",
@@ -64,5 +50,5 @@
     "velocity": 0.0,
     "rotation": -55.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

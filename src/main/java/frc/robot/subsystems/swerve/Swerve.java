@@ -108,18 +108,18 @@ public class Swerve extends SubsystemBase implements Loggable {
       poseFeedback =
           new PoseFeedbackController(
               FeedbackController.fromPID(
-                  .0674,
+                  .06,
                   0,
                   0,
                   pid -> {
-                    pid.setTolerance(0.5);
+                    pid.setTolerance(0.75);
                   }),
               FeedbackController.fromPID(
-                  .01234,
+                  .011,
                   0,
                   0,
                   pid -> {
-                    pid.setTolerance(0.5);
+                    pid.setTolerance(0.75);
                   }),
               FeedbackController.fromPID(
                   3,
@@ -127,7 +127,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                   0,
                   pid -> {
                     pid.enableContinuousInput(0, 360);
-                    pid.setTolerance(1);
+                    pid.setTolerance(2);
                   }));
     } else {
       poseFeedback =
@@ -401,7 +401,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                 ChassisSpeeds speeds =
                     poseFeedback.calculate(
                         new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(1, 9.23113, ScoringLocations.getRotation(id)));
+                        new Pose2d(3.97, 9.5, ScoringLocations.getRotation(id)));
                 speeds =
                     new ChassisSpeeds(
                         speeds.vxMetersPerSecond,
@@ -439,7 +439,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                 ChassisSpeeds speeds =
                     poseFeedback.calculate(
                         new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(2, 3.73, ScoringLocations.getRotation(id)));
+                        new Pose2d(4.8, 5.13, ScoringLocations.getRotation(id)));
                 speeds =
                     new ChassisSpeeds(
                         speeds.vxMetersPerSecond,
@@ -646,9 +646,7 @@ public class Swerve extends SubsystemBase implements Loggable {
     SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);
     speeds = kinematics.toChassisSpeeds(states);
-    if (DriverStation.isTeleopEnabled()) {
-      speeds = StopTilting.limitAccel(speeds);
-    }
+    speeds = StopTilting.limitAccel(speeds);
     HoundLog.log("Swerve", "Target Speed", speeds);
     states = kinematics.toSwerveModuleStates(applySkewCorrection(speeds));
     SwerveDriveKinematics.desaturateWheelSpeeds(states, MAX_MODULE_SPEED);

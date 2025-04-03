@@ -170,7 +170,7 @@ public class Robot extends LoggedRobot {
                 .andThen(
                     swerve
                         .leftBranchCentric()
-                        .andThen(structure.readyNextCoral())
+                        .alongWith(structure.readyNextCoral())
                         .andThen(structure.shoot())
                         .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     alignReefMiddle.onTrue(structure.readyNextAlgae());
@@ -183,7 +183,7 @@ public class Robot extends LoggedRobot {
                 .andThen(
                     swerve
                         .rightBranchCentric()
-                        .andThen(structure.readyNextCoral())
+                        .alongWith(structure.readyNextCoral())
                         .andThen(structure.shoot())
                         .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     stow.onTrue(structure.stow());
@@ -266,10 +266,10 @@ public class Robot extends LoggedRobot {
   }
 
   private Command autoScoreTop() {
-    return swerve.upBranchCentric().alongWith(structure.readyLevel4Auto()).andThen(structure.shoot());
+    return swerve.upBranchCentric().alongWith(structure.readyLevel4Auto());
   }
 
   private Command autoScoreBottom() {
-    return swerve.downBranchCentric().alongWith(structure.readyLevel4Auto()).andThen(structure.shoot());
+    return swerve.downBranchCentric().alongWith(structure.readyLevel4Auto());
   }
 }
