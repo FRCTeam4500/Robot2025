@@ -470,7 +470,9 @@ public class Swerve extends SubsystemBase implements Loggable {
               Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
               if (ScoringLocations.isReef(output.getSecond())) {
                 if (targetID == 0) {
-                  targetID = ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
+                  targetID =
+                      ScoringLocations.getDriveTag(
+                          estimator.getEstimatedPosition().getTranslation());
                 } else if (targetID != output.getSecond()) {
                   return;
                 }
