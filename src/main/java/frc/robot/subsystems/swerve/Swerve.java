@@ -22,7 +22,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -481,11 +480,11 @@ public class Swerve extends SubsystemBase implements Loggable {
                             output.getFirst().getTranslation(),
                             estimator.getEstimatedPosition().getRotation()),
                         new Pose2d(0.561, 0.149, ScoringLocations.getRotation(output.getSecond())));
-                drive(new ChassisSpeeds(
-                  -speeds.vxMetersPerSecond,
-                  speeds.vyMetersPerSecond,
-                  speeds.omegaRadiansPerSecond
-                ));
+                drive(
+                    new ChassisSpeeds(
+                        -speeds.vxMetersPerSecond,
+                        speeds.vyMetersPerSecond,
+                        speeds.omegaRadiansPerSecond));
               }
             },
             this)
@@ -513,11 +512,11 @@ public class Swerve extends SubsystemBase implements Loggable {
                             output.getFirst().getTranslation(),
                             estimator.getEstimatedPosition().getRotation()),
                         new Pose2d(0.61, -0.207, ScoringLocations.getRotation(output.getSecond())));
-                drive(new ChassisSpeeds(
-                  -speeds.vxMetersPerSecond,
-                  speeds.vyMetersPerSecond,
-                  speeds.omegaRadiansPerSecond
-                ));
+                drive(
+                    new ChassisSpeeds(
+                        -speeds.vxMetersPerSecond,
+                        speeds.vyMetersPerSecond,
+                        speeds.omegaRadiansPerSecond));
               }
             },
             this)
