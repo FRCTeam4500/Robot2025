@@ -300,6 +300,7 @@ public class Limelight implements Loggable {
   public void log(String path) {
     HoundLog.log(path, "MT1 Pose", getPoseMT1().pose());
     HoundLog.log(path, "MT2 Pose", getPoseMT2().pose());
+    HoundLog.log(path, "Target Pose (Robot Space)", getTargetPoseRobotSpace().getFirst());
     HoundLog.log(path, "Estimate Seconds", getPoseMT1().latencySeconds);
     HoundLog.log(path, "tx", getTX());
     HoundLog.log(path, "ty", getTY());
