@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -110,21 +111,21 @@ public class Swerve extends SubsystemBase implements Loggable {
       poseFeedback =
           new PoseFeedbackController(
               FeedbackController.fromPID(
-                  .06,
+                  1.5,
                   0,
                   0,
                   pid -> {
-                    pid.setTolerance(0.75);
+                    pid.setTolerance(0.02, 0.1);
                   }),
               FeedbackController.fromPID(
-                  .011,
+                  1.5,
                   0,
                   0,
                   pid -> {
-                    pid.setTolerance(0.75);
+                    pid.setTolerance(0.02, 0.1);
                   }),
               FeedbackController.fromPID(
-                  3,
+                  6,
                   0,
                   0,
                   pid -> {
@@ -469,7 +470,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               Limelight camera = tagCameras[0];
               Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
               if (ScoringLocations.isReef(output.getSecond())) {
-                if (targetID == -1) {
+                if (targetID == 0) {
                   targetID = output.getSecond();
                 } else if (targetID != output.getSecond()) {
                   return;
@@ -478,14 +479,18 @@ public class Swerve extends SubsystemBase implements Loggable {
                     poseFeedback.calculate(
                         new Pose2d(
                             output.getFirst().getTranslation(),
-                            ScoringLocations.getRotation(output.getSecond())),
-                        new Pose2d(0, 0, ScoringLocations.getRotation(output.getSecond())));
-                drive(speeds);
+                            estimator.getEstimatedPosition().getRotation()),
+                        new Pose2d(0.561, 0.149, ScoringLocations.getRotation(output.getSecond())));
+                drive(new ChassisSpeeds(
+                  -speeds.vxMetersPerSecond,
+                  speeds.vyMetersPerSecond,
+                  speeds.omegaRadiansPerSecond
+                ));
               }
             },
             this)
         .until(poseFeedback::atTarget)
-        .finallyDo(() -> targetID = -1);
+        .finallyDo(() -> targetID = 0);
   }
 
   public Command rightBranchCentricV2() {
@@ -497,7 +502,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               Limelight camera = tagCameras[1];
               Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
               if (ScoringLocations.isReef(output.getSecond())) {
-                if (targetID == -1) {
+                if (targetID == 0) {
                   targetID = output.getSecond();
                 } else if (targetID != output.getSecond()) {
                   return;
@@ -506,14 +511,18 @@ public class Swerve extends SubsystemBase implements Loggable {
                     poseFeedback.calculate(
                         new Pose2d(
                             output.getFirst().getTranslation(),
-                            ScoringLocations.getRotation(output.getSecond())),
-                        new Pose2d(0, 0, ScoringLocations.getRotation(output.getSecond())));
-                drive(speeds);
+                            estimator.getEstimatedPosition().getRotation()),
+                        new Pose2d(0.61, -0.207, ScoringLocations.getRotation(output.getSecond())));
+                drive(new ChassisSpeeds(
+                  -speeds.vxMetersPerSecond,
+                  speeds.vyMetersPerSecond,
+                  speeds.omegaRadiansPerSecond
+                ));
               }
             },
             this)
         .until(poseFeedback::atTarget)
-        .finallyDo(() -> targetID = -1);
+        .finallyDo(() -> targetID = 0);
   }
 
   /**
