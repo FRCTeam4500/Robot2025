@@ -201,7 +201,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @param xbox The {@link XboxController that will control the driving}
+   * @param xbox The {@link XboxController} that will control the driving
    * @return a {@link Command} that drives the robot using a {@link XboxController}.
    *     <ul>
    *       <li>Translation of the robot is controlled with the left stick, field relative
@@ -220,6 +220,14 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Angle Centric");
   }
 
+  /**
+   * @param xbox The {@link XboxController} that will control the driving
+   * @return a {@link Command} that drives the robot using a {@link XboxController}.
+   *  <ul>
+   *    <li>Translation of the robot is controlled with the left stick, robot relative
+   *    <li>Rotation of the robot is controlled with the right stick
+   *  </ul>
+   */
   public Command robotCentric(XboxController xbox) {
     return Commands.run(
             () -> {
@@ -240,6 +248,14 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Robot Centric");
   }
 
+  /**
+   * @param xbox The {@link XboxController} that will control the driving
+   * @return a {@link Command} that drives the robot using a {@link XboxController}.
+   *  <ul>
+   *    <li>Translation of the robot is controlled with the left stick, field relative
+   *    <li>Rotation is snapped to face the side of the reef the robot is currently in. (hexagon reef splits field into sections)
+   *  </ul>
+   */
   public Command reefCentric(XboxController xbox) {
     return Commands.run(
             () -> {
@@ -253,6 +269,11 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Reef Centric");
   }
 
+  /**
+   * 
+   * @param forward whether the front of the robot should face the station (dogbone intake vs. ramp intake).
+   * @return a {@link Command} that sets the target heading to the coral station angle the robot is closest to.
+   */
   public Command targetCoralStation(boolean forward) {
     return Commands.runOnce(
         () -> {
@@ -284,6 +305,10 @@ public class Swerve extends SubsystemBase implements Loggable {
         });
   }
 
+  /**
+   * @param target pose on the field which the robot should try to move toward.
+   * @return a {@link Command} that drives the robot to the provided target pose.
+   */
   public Command poseCentric(Pose2d target) {
     return Commands.run(
             () -> {
@@ -300,6 +325,10 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Pose Centric");
   }
 
+  /**
+   * @param position where on the reef the robot should move towards
+   * @return a {@link Command} that moves the robot poseCentric to the predetermined position on the reef.
+   */
   public Command alignToReef(Alignment position) {
     return Commands.defer(
             () -> {
@@ -311,6 +340,10 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Align To Reef: " + position.name() + " Side");
   }
 
+  /**
+   * @return a {@link Command} that runs auto-reef align with the branches furthest from the active driver station
+   *         depending on what tag is seen.
+   */
   public Command upBranchCentric() {
     if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Top);
@@ -348,6 +381,10 @@ public class Swerve extends SubsystemBase implements Loggable {
             });
   }
 
+  /**
+   * @return a {@link Command} that runs auto-reef align with the branches closest from the active driver station
+   *         depending on what tag is seen.
+   */
   public Command downBranchCentric() {
     if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Bottom);
@@ -385,6 +422,10 @@ public class Swerve extends SubsystemBase implements Loggable {
             });
   }
 
+  /**
+   * @return a {@link Command} that aligns the robot to the left branch of the driver station using
+   *         the right tagCamera and robot-relative position offset to the tag.
+   */
   public Command leftBranchCentric() {
     if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Left);
@@ -392,6 +433,10 @@ public class Swerve extends SubsystemBase implements Loggable {
     return cameraAlign(tagCameras[0], new Translation2d(0.561, 0.149));
   }
 
+  /**
+   * @return a {@link Command} that aligns the robot to the right branch of the driver station using
+   *         the left tagCamera and robot-relative position offset to the tag.
+   */
   public Command rightBranchCentric() {
     if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Left);
@@ -399,6 +444,12 @@ public class Swerve extends SubsystemBase implements Loggable {
     return cameraAlign(tagCameras[1], new Translation2d(0.61, -0.207));
   }
 
+  /**
+   * @param camera the limelight used to get april-tag reading
+   * @param offset the april-tag reading at the target position
+   * @return a {@link Command} that aligns the robot to an april-tag taking into account a provided offset
+   *         for the target position.
+   */
   private Command cameraAlign(Limelight camera, Translation2d offset) {
     return Commands.run(
             () -> {
@@ -503,6 +554,9 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Drive Conversion Factor Finder");
   }
 
+  /**
+   * @return a {@link Command} that moves the robot back at 2m/s for 0.25s
+   */
   public Command backup() {
     return Commands.run(
             () -> {
@@ -513,6 +567,10 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Backup");
   }
 
+  /**
+   * @param pushDirection the direction to face the wheels
+   * @return a {@link Command} that turns all wheels to face provided direction
+   */
   public Command makePushable(Rotation2d pushDirection) {
     return Commands.run(
             () -> {
@@ -532,6 +590,9 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Pushable: " + pushDirection.getDegrees() + " Degrees");
   }
 
+  /**
+   * @return a {@link Command} that faces all wheels to the middle of the robot (to minimize movement)
+   */
   public Command xLock() {
     return Commands.run(
             () -> {
@@ -548,6 +609,10 @@ public class Swerve extends SubsystemBase implements Loggable {
         .withName("Wheel Lock");
   }
 
+  /**
+   * @param xbox The {@link XboxController} that will control the driving
+   * @return The speeds (robot-relative) of the robot calculated from xbox inputs.
+   */
   private ChassisSpeeds calculateVelRobotRel(XboxController xbox) {
     double speedCoefficient = Math.max(1 - xbox.getLeftTriggerAxis(), MIN_COEFFICIENT);
     Rotation2d currentHeading = estimator.getEstimatedPosition().getRotation();
@@ -587,6 +652,10 @@ public class Swerve extends SubsystemBase implements Loggable {
         speeds.omegaRadiansPerSecond);
   }
 
+  /**
+   * moves the robot according to provided speeds.
+   * @param speeds the target speeds (robot-relative) of the robot
+   */
   private void drive(ChassisSpeeds speeds) {
     double coefficient =
         MAX_ROBOT_REL_SPEEDS.vxMetersPerSecond / Math.abs(speeds.vxMetersPerSecond);
@@ -663,12 +732,12 @@ public class Swerve extends SubsystemBase implements Loggable {
       if (RobotBase.isSimulation()) camera.updateSim(estimator.getEstimatedPosition());
       PoseEstimate estimate = camera.getPoseMT1();
       if (estimate.exists()
-          && (estimate.tagCount() > 1
-              || estimate.averageDistance() < 2
-              || DriverStation.isDisabled())
+          && (estimate.tagCount() > 1             // sees more than one tag
+              || estimate.averageDistance() < 2   // within 2m
+              || DriverStation.isDisabled())      // robot disabled
           && camera.isEnabled()) {
         estimator.addVisionMeasurement(
-            estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds());
+            estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds()); // update estimator with vision-determined pose
       }
     }
     for (SwerveModule module : modules) {
