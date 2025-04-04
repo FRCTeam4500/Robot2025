@@ -253,7 +253,7 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   public Command targetCoralStation(boolean forward) {
-    return Commands.run(
+    return Commands.runOnce(
         () -> {
           boolean enabled = true;
           for (Limelight camera : tagCameras) {
