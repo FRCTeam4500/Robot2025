@@ -461,8 +461,7 @@ public class Swerve extends SubsystemBase implements Loggable {
               Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
               if (targetID == 0) {
                 targetID =
-                      ScoringLocations.getDriveTag(
-                        estimator.getEstimatedPosition().getTranslation());
+                    ScoringLocations.getDriveTag(estimator.getEstimatedPosition().getTranslation());
               }
               ChassisSpeeds speeds =
                   poseFeedback.calculate(
@@ -471,14 +470,13 @@ public class Swerve extends SubsystemBase implements Loggable {
                           estimator.getEstimatedPosition().getRotation()),
                       new Pose2d(offset, ScoringLocations.getRotation(targetID)));
               if (output.getSecond() == targetID) {
-                drive(new ChassisSpeeds(
-                  -speeds.vxMetersPerSecond,
-                  speeds.vyMetersPerSecond,
-                  speeds.omegaRadiansPerSecond));
+                drive(
+                    new ChassisSpeeds(
+                        -speeds.vxMetersPerSecond,
+                        speeds.vyMetersPerSecond,
+                        speeds.omegaRadiansPerSecond));
               } else {
-                drive(new ChassisSpeeds(
-                  0, 0, speeds.omegaRadiansPerSecond
-                ));
+                drive(new ChassisSpeeds(0, 0, speeds.omegaRadiansPerSecond));
               }
             },
             this)
