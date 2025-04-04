@@ -344,8 +344,9 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return a {@link Command} that runs auto-reef align with the branches furthest from the active driver station
-   *         depending on what tag is seen. This refers to positions "D, F, I, K" on either side.
+   * @return a {@link Command} that runs auto-reef align with the branches furthest from the active
+   *     driver station depending on what tag is seen. This refers to positions "D, F, I, K" on
+   *     either side.
    */
   public Command forwardBranchCentric() {
     if (RobotBase.isSimulation()) {
@@ -385,8 +386,9 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return a {@link Command} that runs auto-reef align with the branches closest from the active driver station
-   *         depending on what tag is seen. This refers to positions "C, E, J, L" on either side.
+   * @return a {@link Command} that runs auto-reef align with the branches closest from the active
+   *     driver station depending on what tag is seen. This refers to positions "C, E, J, L" on
+   *     either side.
    */
   public Command backwardBranchCentric() {
     if (RobotBase.isSimulation()) {
