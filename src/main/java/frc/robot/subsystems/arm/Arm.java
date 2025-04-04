@@ -209,19 +209,6 @@ public class Arm extends SubsystemBase implements Loggable {
                 }));
   }
 
-  public Command raiseL1() {
-    return Commands.runOnce(
-            () -> {
-              tiltMotor.setTarget(40);
-            },
-            this)
-        .andThen(
-            Commands.waitUntil(
-                () -> {
-                  return tiltMotor.atTarget();
-                }));
-  }
-
   public Command stationPickup() {
     return Commands.runOnce(
             () -> {
