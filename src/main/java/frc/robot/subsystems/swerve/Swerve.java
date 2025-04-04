@@ -465,6 +465,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                       ScoringLocations.getDriveTag(
                           estimator.getEstimatedPosition().getTranslation());
                 } else if (targetID != output.getSecond()) {
+                  drive(new ChassisSpeeds());
                   return;
                 }
                 ChassisSpeeds speeds =
