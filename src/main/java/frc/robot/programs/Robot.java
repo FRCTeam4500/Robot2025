@@ -151,9 +151,12 @@ public class Robot extends LoggedRobot {
     Trigger stopMusic = xbox.start();
 
     structure.intook.onTrue(
-        structure.stow().andThen(Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 1.0))
-            .andThen(Commands.waitSeconds(0.25))
-            .andThen(Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 0)))));
+        structure
+            .stow()
+            .andThen(
+                Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 1.0))
+                    .andThen(Commands.waitSeconds(0.25))
+                    .andThen(Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 0)))));
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
