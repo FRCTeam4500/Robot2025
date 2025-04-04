@@ -269,8 +269,8 @@ public class Superstructure implements Loggable {
         () ->
             placer
                 .eject(isPlacingAlgae ? placer.algaeEjectSpeed : placer.l1EjectSpeed)
-                .andThen(Commands.waitSeconds(0.35))
-                .withName("Shoot"),
+                .alongWith(arm.raiseL1())
+                .withName("Shoot L1"),
         Set.of());
   }
 
