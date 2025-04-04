@@ -444,7 +444,7 @@ public class Swerve extends SubsystemBase implements Loggable {
    */
   public Command rightBranchCentric() {
     if (RobotBase.isSimulation()) {
-      return alignToReef(Alignment.Left);
+      return alignToReef(Alignment.Right);
     }
     return cameraAlign(tagCameras[1], new Translation2d(0.61, -0.207));
   }
