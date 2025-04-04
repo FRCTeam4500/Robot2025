@@ -110,7 +110,7 @@ public class Robot extends LoggedRobot {
     confirmIntake.onFalse(structure.stopPlacer());
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake.whileTrue(swerve.targetCoralStation(false));
+    frontCoralIntake.whileTrue(swerve.targetCoralStation(true));
 
     SmartDashboard.putData("Buttons/Target L1", structure.setNextCoral(CoralState.L1));
     SmartDashboard.putData("Buttons/Target L2", structure.setNextCoral(CoralState.L2));
