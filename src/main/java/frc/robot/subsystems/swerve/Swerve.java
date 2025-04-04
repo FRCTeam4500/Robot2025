@@ -223,10 +223,10 @@ public class Swerve extends SubsystemBase implements Loggable {
   /**
    * @param xbox The {@link XboxController} that will control the driving
    * @return a {@link Command} that drives the robot using a {@link XboxController}.
-   *  <ul>
-   *    <li>Translation of the robot is controlled with the left stick, robot relative
-   *    <li>Rotation of the robot is controlled with the right stick
-   *  </ul>
+   *     <ul>
+   *       <li>Translation of the robot is controlled with the left stick, robot relative
+   *       <li>Rotation of the robot is controlled with the right stick
+   *     </ul>
    */
   public Command robotCentric(XboxController xbox) {
     return Commands.run(
@@ -251,10 +251,11 @@ public class Swerve extends SubsystemBase implements Loggable {
   /**
    * @param xbox The {@link XboxController} that will control the driving
    * @return a {@link Command} that drives the robot using a {@link XboxController}.
-   *  <ul>
-   *    <li>Translation of the robot is controlled with the left stick, field relative
-   *    <li>Rotation is snapped to face the side of the reef the robot is currently in. (hexagon reef splits field into sections)
-   *  </ul>
+   *     <ul>
+   *       <li>Translation of the robot is controlled with the left stick, field relative
+   *       <li>Rotation is snapped to face the side of the reef the robot is currently in. (hexagon
+   *           reef splits field into sections)
+   *     </ul>
    */
   public Command reefCentric(XboxController xbox) {
     return Commands.run(
@@ -270,9 +271,10 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   /**
-   * 
-   * @param forward whether the front of the robot should face the station (dogbone intake vs. ramp intake).
-   * @return a {@link Command} that sets the target heading to the coral station angle the robot is closest to.
+   * @param forward whether the front of the robot should face the station (dogbone intake vs. ramp
+   *     intake).
+   * @return a {@link Command} that sets the target heading to the coral station angle the robot is
+   *     closest to.
    */
   public Command targetCoralStation(boolean forward) {
     return Commands.runOnce(
@@ -327,7 +329,8 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /**
    * @param position where on the reef the robot should move towards
-   * @return a {@link Command} that moves the robot poseCentric to the predetermined position on the reef.
+   * @return a {@link Command} that moves the robot poseCentric to the predetermined position on the
+   *     reef.
    */
   public Command alignToReef(Alignment position) {
     return Commands.defer(
@@ -341,8 +344,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return a {@link Command} that runs auto-reef align with the branches furthest from the active driver station
-   *         depending on what tag is seen.
+   * @return a {@link Command} that runs auto-reef align with the branches furthest from the active
+   *     driver station depending on what tag is seen.
    */
   public Command upBranchCentric() {
     if (RobotBase.isSimulation()) {
@@ -382,8 +385,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return a {@link Command} that runs auto-reef align with the branches closest from the active driver station
-   *         depending on what tag is seen.
+   * @return a {@link Command} that runs auto-reef align with the branches closest from the active
+   *     driver station depending on what tag is seen.
    */
   public Command downBranchCentric() {
     if (RobotBase.isSimulation()) {
@@ -424,7 +427,7 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /**
    * @return a {@link Command} that aligns the robot to the left branch of the driver station using
-   *         the right tagCamera and robot-relative position offset to the tag.
+   *     the right tagCamera and robot-relative position offset to the tag.
    */
   public Command leftBranchCentric() {
     if (RobotBase.isSimulation()) {
@@ -435,7 +438,7 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /**
    * @return a {@link Command} that aligns the robot to the right branch of the driver station using
-   *         the left tagCamera and robot-relative position offset to the tag.
+   *     the left tagCamera and robot-relative position offset to the tag.
    */
   public Command rightBranchCentric() {
     if (RobotBase.isSimulation()) {
@@ -447,8 +450,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   /**
    * @param camera the limelight used to get april-tag reading
    * @param offset the april-tag reading at the target position
-   * @return a {@link Command} that aligns the robot to an april-tag taking into account a provided offset
-   *         for the target position.
+   * @return a {@link Command} that aligns the robot to an april-tag taking into account a provided
+   *     offset for the target position.
    */
   private Command cameraAlign(Limelight camera, Translation2d offset) {
     return Commands.run(
@@ -591,7 +594,8 @@ public class Swerve extends SubsystemBase implements Loggable {
   }
 
   /**
-   * @return a {@link Command} that faces all wheels to the middle of the robot (to minimize movement)
+   * @return a {@link Command} that faces all wheels to the middle of the robot (to minimize
+   *     movement)
    */
   public Command xLock() {
     return Commands.run(
@@ -654,6 +658,7 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /**
    * moves the robot according to provided speeds.
+   *
    * @param speeds the target speeds (robot-relative) of the robot
    */
   private void drive(ChassisSpeeds speeds) {
@@ -732,12 +737,14 @@ public class Swerve extends SubsystemBase implements Loggable {
       if (RobotBase.isSimulation()) camera.updateSim(estimator.getEstimatedPosition());
       PoseEstimate estimate = camera.getPoseMT1();
       if (estimate.exists()
-          && (estimate.tagCount() > 1             // sees more than one tag
-              || estimate.averageDistance() < 2   // within 2m
-              || DriverStation.isDisabled())      // robot disabled
+          && (estimate.tagCount() > 1 // sees more than one tag
+              || estimate.averageDistance() < 2 // within 2m
+              || DriverStation.isDisabled()) // robot disabled
           && camera.isEnabled()) {
         estimator.addVisionMeasurement(
-            estimate.pose(), Timer.getFPGATimestamp() - estimate.latencySeconds()); // update estimator with vision-determined pose
+            estimate.pose(),
+            Timer.getFPGATimestamp()
+                - estimate.latencySeconds()); // update estimator with vision-determined pose
       }
     }
     for (SwerveModule module : modules) {
