@@ -342,9 +342,9 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /**
    * @return a {@link Command} that runs auto-reef align with the branches furthest from the active driver station
-   *         depending on what tag is seen.
+   *         depending on what tag is seen. This refers to positions "D, F, I, K" on either side.
    */
-  public Command upBranchCentric() {
+  public Command forwardBranchCentric() {
     if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Top);
     }
@@ -370,7 +370,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                               || rightID == 22
                               || rightID == 9
                               || rightID == 8)
-                  .andThen(upBranchCentric());
+                  .andThen(forwardBranchCentric());
             },
             Set.of(this))
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
@@ -383,9 +383,9 @@ public class Swerve extends SubsystemBase implements Loggable {
 
   /**
    * @return a {@link Command} that runs auto-reef align with the branches closest from the active driver station
-   *         depending on what tag is seen.
+   *         depending on what tag is seen. This refers to positions "C, E, J, L" on either side.
    */
-  public Command downBranchCentric() {
+  public Command backwardBranchCentric() {
     if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Bottom);
     }
@@ -411,7 +411,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                               || rightID == 20
                               || rightID == 11
                               || rightID == 6)
-                  .andThen(downBranchCentric());
+                  .andThen(backwardBranchCentric());
             },
             Set.of(this))
         .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())

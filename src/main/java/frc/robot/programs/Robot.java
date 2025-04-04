@@ -269,10 +269,10 @@ public class Robot extends LoggedRobot {
   }
 
   private Command autoScoreTop() {
-    return swerve.upBranchCentric().alongWith(structure.readyLevel4Auto());
+    return swerve.forwardBranchCentric().alongWith(structure.readyLevel4Auto());
   }
 
   private Command autoScoreBottom() {
-    return swerve.downBranchCentric().alongWith(structure.readyLevel4Auto());
+    return swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto());
   }
 }
