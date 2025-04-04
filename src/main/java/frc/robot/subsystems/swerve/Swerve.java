@@ -459,26 +459,26 @@ public class Swerve extends SubsystemBase implements Loggable {
     return Commands.run(
             () -> {
               Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
-              if (ScoringLocations.isReef(output.getSecond())) {
-                if (targetID == 0) {
-                  targetID =
+              if (targetID == 0) {
+                targetID =
                       ScoringLocations.getDriveTag(
-                          estimator.getEstimatedPosition().getTranslation());
-                } else if (targetID != output.getSecond()) {
-                  drive(new ChassisSpeeds());
-                  return;
-                }
-                ChassisSpeeds speeds =
-                    poseFeedback.calculate(
-                        new Pose2d(
-                            output.getFirst().getTranslation(),
-                            estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(offset, ScoringLocations.getRotation(targetID)));
-                drive(
-                    new ChassisSpeeds(
-                        -speeds.vxMetersPerSecond,
-                        speeds.vyMetersPerSecond,
-                        speeds.omegaRadiansPerSecond));
+                        estimator.getEstimatedPosition().getTranslation());
+              }
+              ChassisSpeeds speeds =
+                  poseFeedback.calculate(
+                      new Pose2d(
+                          output.getFirst().getTranslation(),
+                          estimator.getEstimatedPosition().getRotation()),
+                      new Pose2d(offset, ScoringLocations.getRotation(targetID)));
+              if (output.getSecond() == targetID) {
+                drive(new ChassisSpeeds(
+                  -speeds.vxMetersPerSecond,
+                  speeds.vyMetersPerSecond,
+                  speeds.omegaRadiansPerSecond));
+              } else {
+                drive(new ChassisSpeeds(
+                  0, 0, speeds.omegaRadiansPerSecond
+                ));
               }
             },
             this)
