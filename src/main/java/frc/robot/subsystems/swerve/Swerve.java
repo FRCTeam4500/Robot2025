@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -388,85 +389,19 @@ public class Swerve extends SubsystemBase implements Loggable {
     if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Left);
     }
-    return Commands.run(
-            () -> {
-              Limelight camera = tagCameras[0];
-              double tx = camera.getTX();
-              double ty = camera.getTY();
-              int id = camera.getID();
-              if (id != -1) {
-                if (targetID == 0) {
-                  targetID = id;
-                } else if (targetID != id) {
-                  return;
-                }
-                ChassisSpeeds speeds =
-                    poseFeedback.calculate(
-                        new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(3.97, 9.5, ScoringLocations.getRotation(id)));
-                speeds =
-                    new ChassisSpeeds(
-                        speeds.vxMetersPerSecond,
-                        -speeds.vyMetersPerSecond,
-                        speeds.omegaRadiansPerSecond);
-                drive(speeds);
-              }
-            },
-            this)
-        .until(poseFeedback::atTarget)
-        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-        .finallyDo(
-            () -> {
-              targetHeading = estimator.getEstimatedPosition().getRotation();
-              targetID = 0;
-            });
+    return cameraAlign(tagCameras[0], new Translation2d(0.561, 0.149));
   }
 
   public Command rightBranchCentric() {
     if (RobotBase.isSimulation()) {
-      return alignToReef(Alignment.Right);
-    }
-    return Commands.run(
-            () -> {
-              Limelight camera = tagCameras[1];
-              double tx = camera.getTX();
-              double ty = camera.getTY();
-              int id = camera.getID();
-              if (id != -1) {
-                if (targetID == 0) {
-                  targetID = id;
-                } else if (targetID != id) {
-                  return;
-                }
-                ChassisSpeeds speeds =
-                    poseFeedback.calculate(
-                        new Pose2d(ty, tx, estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(4.8, 5.13, ScoringLocations.getRotation(id)));
-                speeds =
-                    new ChassisSpeeds(
-                        speeds.vxMetersPerSecond,
-                        -speeds.vyMetersPerSecond,
-                        speeds.omegaRadiansPerSecond);
-                drive(speeds);
-              }
-            },
-            this)
-        .until(poseFeedback::atTarget)
-        .beforeStarting(() -> targetHeading = estimator.getEstimatedPosition().getRotation())
-        .finallyDo(
-            () -> {
-              targetHeading = estimator.getEstimatedPosition().getRotation();
-              targetID = 0;
-            });
-  }
-
-  public Command leftBranchCentricV2() {
-    if (RobotBase.isSimulation()) {
       return alignToReef(Alignment.Left);
     }
+    return cameraAlign(tagCameras[1], new Translation2d(0.61, -0.207));
+  }
+
+  private Command cameraAlign(Limelight camera, Translation2d offset) {
     return Commands.run(
             () -> {
-              Limelight camera = tagCameras[0];
               Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
               if (ScoringLocations.isReef(output.getSecond())) {
                 if (targetID == 0) {
@@ -479,39 +414,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                         new Pose2d(
                             output.getFirst().getTranslation(),
                             estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(0.561, 0.149, ScoringLocations.getRotation(output.getSecond())));
-                drive(
-                    new ChassisSpeeds(
-                        -speeds.vxMetersPerSecond,
-                        speeds.vyMetersPerSecond,
-                        speeds.omegaRadiansPerSecond));
-              }
-            },
-            this)
-        .until(poseFeedback::atTarget)
-        .finallyDo(() -> targetID = 0);
-  }
-
-  public Command rightBranchCentricV2() {
-    if (RobotBase.isSimulation()) {
-      return alignToReef(Alignment.Left);
-    }
-    return Commands.run(
-            () -> {
-              Limelight camera = tagCameras[1];
-              Pair<Transform2d, Integer> output = camera.getTargetPoseRobotSpace();
-              if (ScoringLocations.isReef(output.getSecond())) {
-                if (targetID == 0) {
-                  targetID = output.getSecond();
-                } else if (targetID != output.getSecond()) {
-                  return;
-                }
-                ChassisSpeeds speeds =
-                    poseFeedback.calculate(
-                        new Pose2d(
-                            output.getFirst().getTranslation(),
-                            estimator.getEstimatedPosition().getRotation()),
-                        new Pose2d(0.61, -0.207, ScoringLocations.getRotation(output.getSecond())));
+                        new Pose2d(offset, ScoringLocations.getRotation(targetID)));
                 drive(
                     new ChassisSpeeds(
                         -speeds.vxMetersPerSecond,

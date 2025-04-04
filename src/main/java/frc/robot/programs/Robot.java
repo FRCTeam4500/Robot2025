@@ -169,7 +169,7 @@ public class Robot extends LoggedRobot {
                 .until(swerve.doesRightCameraSeeTag)
                 .andThen(
                     swerve
-                        .leftBranchCentricV2()
+                        .leftBranchCentric()
                         .alongWith(structure.readyNextCoral())
                         .andThen(structure.shoot())
                         .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
@@ -182,7 +182,7 @@ public class Robot extends LoggedRobot {
                 .until(swerve.doesLeftCameraSeeTag)
                 .andThen(
                     swerve
-                        .rightBranchCentricV2()
+                        .rightBranchCentric()
                         .alongWith(structure.readyNextCoral())
                         .andThen(structure.shoot())
                         .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
