@@ -227,14 +227,14 @@ public class Superstructure implements Loggable {
   public Command algaeGroundIntake() {
     return arm.algaeGround()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgae()))
-        .alongWith(placer.intake())
+        .alongWith(placer.intakeGround())
         .withName("Algae Ground Intake");
   }
 
   public Command groundIntake() {
     return arm.ground()
         .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundPickup()))
-        .alongWith(placer.intake())
+        .alongWith(placer.intakeGround())
         .withName("Coral Ground Intake");
   }
 

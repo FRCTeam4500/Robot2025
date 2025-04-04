@@ -79,7 +79,7 @@ public class Robot extends LoggedRobot {
     Trigger readyClimb = stick.povUp();
     Trigger climb = stick.povDown();
     Trigger stowButton = stick.button(11);
-    Trigger backCoralIntake = stick.button(2);
+    Trigger backCoralIntake = stick.button(2).debounce(0.2);
     Trigger confirmIntake = stick.button(4);
     Trigger frontCoralIntake = stick.button(3);
     Trigger climbLocked = stick.axisGreaterThan(3, -0.1);

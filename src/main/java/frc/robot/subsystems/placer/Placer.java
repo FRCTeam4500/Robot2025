@@ -32,12 +32,15 @@ public class Placer extends SubsystemBase implements Loggable {
   public final double l1EjectSpeed = 20;
   public final double algaeEjectSpeed = 45;
 
+  private boolean groundIntaking = false;
+
   public final Trigger intook =
       new Trigger(
               () -> {
                 return (runMotor.getTarget() != 0
                         && ExtendedMath.within(runMotor.getVelocity(), 0, 5)
-                        && DriverStation.isEnabled())
+                        && DriverStation.isEnabled()
+                        && !groundIntaking)
                     || fakeIntake;
               })
           .debounce(.2);
@@ -98,6 +101,23 @@ public class Placer extends SubsystemBase implements Loggable {
   public Command intake() {
     return Commands.runOnce(
             () -> {
+              groundIntaking = false;
+              runMotor.setTarget(intakeSpeed);
+            })
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return runMotor.atTarget();
+                }));
+  }
+
+  /**
+   * @return A command that makes the intaker suck
+   */
+  public Command intakeGround() {
+    return Commands.runOnce(
+            () -> {
+              groundIntaking = true;
               runMotor.setTarget(intakeSpeed);
             })
         .andThen(
