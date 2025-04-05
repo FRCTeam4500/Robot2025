@@ -122,9 +122,8 @@ public class Elevator extends SubsystemBase implements Loggable {
   }
 
   public Command groundAlgaeHold() {
-    return Commands.runOnce(
-      () -> upMotor.setTarget(groundAlgaeHoldPosition), 
-      this).andThen(Commands.waitUntil(() -> upMotor.atTarget()));
+    return Commands.runOnce(() -> upMotor.setTarget(groundAlgaeHoldPosition), this)
+        .andThen(Commands.waitUntil(() -> upMotor.atTarget()));
   }
 
   /**

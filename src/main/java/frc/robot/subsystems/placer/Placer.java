@@ -40,7 +40,7 @@ public class Placer extends SubsystemBase implements Loggable {
                 return (runMotor.getTarget() != 0
                         && ExtendedMath.within(runMotor.getVelocity(), 0, 5)
                         && DriverStation.isEnabled()
-                        && !groundIntaking )
+                        && !groundIntaking)
                     || fakeIntake;
               })
           .debounce(.2);

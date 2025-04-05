@@ -148,9 +148,7 @@ public class Robot extends LoggedRobot {
     Trigger faceReefCoral = xbox.rightBumper();
     Trigger stopMusic = xbox.start();
 
-    structure.intook.and(RobotModeTriggers.teleop()).onTrue(
-        structure
-            .stow());
+    structure.intook.and(RobotModeTriggers.teleop()).onTrue(structure.stow());
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
