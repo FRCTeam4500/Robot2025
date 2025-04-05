@@ -113,7 +113,8 @@ public class Climber extends SubsystemBase implements Loggable {
         .andThen(
             Commands.runOnce(
                 () -> {
-                  winchMotor.setVoltage(-10);
+                  
+                  winchMotor.setVoltage(-5);
                 }))
         .andThen(
             Commands.waitUntil(
