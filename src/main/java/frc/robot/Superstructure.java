@@ -200,6 +200,12 @@ public class Superstructure implements Loggable {
     return placer.stop();
   }
 
+  public Command algaeGroundHold() {
+    return placer.stop()
+      .andThen(arm.algaeGroundHold())
+      .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgaeHold()));
+  }
+
   public Command readyClimb() {
     return arm.climb()
         .alongWith(placer.stop())
@@ -225,8 +231,8 @@ public class Superstructure implements Loggable {
   }
 
   public Command algaeGroundIntake() {
-    return arm.algaeGround()
-        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgae()))
+    return arm.algaeGroundIntake()
+        .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.groundAlgaeIntake()))
         .alongWith(placer.intakeGround())
         .withName("Algae Ground Intake");
   }
@@ -279,7 +285,7 @@ public class Superstructure implements Loggable {
         .alongWith(climber.off())
         .andThen(
             arm.stow()
-                .andThen(placer.stop())
+                .alongWith(Commands.waitSeconds(0.5).andThen(placer.stop()))
                 .alongWith(Commands.waitUntil(arm.canMoveElevator).andThen(elevator.stow()))
                 .withName("Stow")
                 .alongWith(Commands.runOnce(() -> shouldMoveBackAfterShoot = false)));

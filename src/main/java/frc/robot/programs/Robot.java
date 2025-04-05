@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -81,7 +80,7 @@ public class Robot extends LoggedRobot {
     Trigger stowButton = stick.button(11);
     Trigger backCoralIntake = stick.button(2).debounce(0.2);
     Trigger confirmIntake = stick.button(4);
-    Trigger frontCoralIntake = stick.button(3);
+    Trigger frontCoralIntake = stick.button(3).debounce(0.2);
     Trigger climbLocked = stick.axisGreaterThan(3, -0.1);
     Trigger climbActive = new Trigger(() -> climbing);
 
@@ -139,7 +138,7 @@ public class Robot extends LoggedRobot {
     Trigger backCoralIntake = xbox.povRight().debounce(0.2);
     Trigger frontCoralIntake = xbox.povUp().debounce(0.2);
     Trigger algaeGroundIntake = xbox.povDown().debounce(0.2);
-    Trigger coralGroundIntake = xbox.povLeft().debounce(0.2);
+    Trigger coralGroundIntake = xbox.leftBumper();
     Trigger alignReefLeft = xbox.x();
     Trigger alignReefMiddle = xbox.leftStick();
     Trigger alignReefRight = xbox.b();
@@ -147,16 +146,11 @@ public class Robot extends LoggedRobot {
     Trigger readyProcessor = xbox.rightStick();
     Trigger shoot = xbox.rightTrigger();
     Trigger faceReefCoral = xbox.rightBumper();
-    Trigger faceReefAlgae = xbox.leftBumper();
     Trigger stopMusic = xbox.start();
 
     structure.intook.and(RobotModeTriggers.teleop()).onTrue(
         structure
-            .stow()
-            .andThen(
-                Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 1.0))
-                    .andThen(Commands.waitSeconds(0.25))
-                    .andThen(Commands.runOnce(() -> xbox.setRumble(RumbleType.kBothRumble, 0)))));
+            .stow());
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
@@ -215,11 +209,9 @@ public class Robot extends LoggedRobot {
     coralGroundIntake.onTrue(structure.groundIntake());
     coralGroundIntake.onFalse(structure.stow());
     algaeGroundIntake.onTrue(structure.algaeGroundIntake());
-    algaeGroundIntake.onFalse(structure.stopPlacer());
+    algaeGroundIntake.onFalse(structure.algaeGroundHold());
     faceReefCoral.whileTrue(swerve.reefCentric(xbox.getHID()));
     faceReefCoral.onFalse(structure.readyNextCoral());
-    faceReefAlgae.whileTrue(swerve.reefCentric(xbox.getHID()));
-    faceReefAlgae.onFalse(structure.readyNextAlgae());
     stopMusic.onTrue(structure.stopSinging());
   }
 

@@ -33,7 +33,8 @@ public class Arm extends SubsystemBase implements Loggable {
   private final double groundAngle = -20;
   private final double climbAngle = -20;
   private final double dislodgeAngle = 40;
-  private final double algaeGroundAngle = -20;
+  private final double algaeGroundIntakeAngle = -20;
+  private final double algaeGroundHoldAngle = -24.53;
 
   public final Trigger canMoveElevator =
       new Trigger(() -> tiltMotor.getPosition() > -25 && tiltMotor.getPosition() < 77);
@@ -118,10 +119,23 @@ public class Arm extends SubsystemBase implements Loggable {
                 }));
   }
 
-  public Command algaeGround() {
+  public Command algaeGroundIntake() {
     return Commands.runOnce(
             () -> {
-              tiltMotor.setTarget(algaeGroundAngle);
+              tiltMotor.setTarget(algaeGroundIntakeAngle);
+            },
+            this)
+        .andThen(
+            Commands.waitUntil(
+                () -> {
+                  return tiltMotor.atTarget();
+                }));
+  }
+
+  public Command algaeGroundHold() {
+    return Commands.runOnce(
+            () -> {
+              tiltMotor.setTarget(algaeGroundHoldAngle);
             },
             this)
         .andThen(

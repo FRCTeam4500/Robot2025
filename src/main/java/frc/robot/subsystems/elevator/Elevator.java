@@ -41,9 +41,10 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double l3Position = 0.45;
   private final double l2Position = 0.02;
   private final double l1Position = 0.02;
-  private final double stationPosition = 0.15; // intake from coral station
+  private final double stationPosition = 0.17; // intake from coral station
   private final double groundPosition = 0.03; // ground intake?
-  private final double groundAlgaePosition = 0.25;
+  private final double groundAlgaeIntakePosition = 0.25;
+  private final double groundAlgaeHoldPosition = 0.30;
   private final double processingPosition = 0.02; // algae processor
   private final double lowAlgaePosition = 0.2; // between l2 and l3
   private final double highAlgaePosition = 0.55; // between l3 and l4
@@ -107,10 +108,10 @@ public class Elevator extends SubsystemBase implements Loggable {
         .onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)).ignoringDisable(true));
   }
 
-  public Command groundAlgae() {
+  public Command groundAlgaeIntake() {
     return Commands.runOnce(
             () -> {
-              upMotor.setTarget(groundAlgaePosition);
+              upMotor.setTarget(groundAlgaeIntakePosition);
             },
             this)
         .andThen(
@@ -118,6 +119,12 @@ public class Elevator extends SubsystemBase implements Loggable {
                 () -> {
                   return upMotor.atTarget();
                 }));
+  }
+
+  public Command groundAlgaeHold() {
+    return Commands.runOnce(
+      () -> upMotor.setTarget(groundAlgaeHoldPosition), 
+      this).andThen(Commands.waitUntil(() -> upMotor.atTarget()));
   }
 
   /**
