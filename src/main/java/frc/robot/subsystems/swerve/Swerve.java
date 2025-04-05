@@ -118,11 +118,11 @@ public class Swerve extends SubsystemBase implements Loggable {
                     pid.setTolerance(0.02, 0.1);
                   }),
               FeedbackController.fromPID(
-                  1.5,
+                  2,
                   0,
                   0,
                   pid -> {
-                    pid.setTolerance(0.02, 0.1);
+                    pid.setTolerance(0.015, 0.1);
                   }),
               FeedbackController.fromPID(
                   6,
