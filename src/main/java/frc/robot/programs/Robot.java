@@ -150,7 +150,7 @@ public class Robot extends LoggedRobot {
     Trigger faceReefAlgae = xbox.leftBumper();
     Trigger stopMusic = xbox.start();
 
-    structure.intook.onTrue(
+    structure.intook.and(RobotModeTriggers.teleop()).onTrue(
         structure
             .stow()
             .andThen(

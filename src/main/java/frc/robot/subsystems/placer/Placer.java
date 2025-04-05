@@ -29,7 +29,7 @@ public class Placer extends SubsystemBase implements Loggable {
 
   private final double intakeSpeed = -25;
   public final double coralEjectSpeed = 30;
-  public final double l1EjectSpeed = 20;
+  public final double l1EjectSpeed = 15;
   public final double algaeEjectSpeed = 45;
 
   private boolean groundIntaking = false;
@@ -40,7 +40,7 @@ public class Placer extends SubsystemBase implements Loggable {
                 return (runMotor.getTarget() != 0
                         && ExtendedMath.within(runMotor.getVelocity(), 0, 5)
                         && DriverStation.isEnabled()
-                        && !groundIntaking)
+                        && !groundIntaking )
                     || fakeIntake;
               })
           .debounce(.2);
