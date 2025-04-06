@@ -227,12 +227,9 @@ public class Robot extends LoggedRobot {
 
     SendableChooser<Command> chooser = new SendableChooser<>();
     chooser.setDefaultOption("None", Commands.none());
-    chooser.addOption("3 Coral Left Red", new PathPlannerAuto("3 Piece Red"));
-    chooser.addOption("3 Coral Right Red", new PathPlannerAuto("3 Piece Red", true));
-    chooser.addOption("3 Coral Left Blue", new PathPlannerAuto("3 Piece Blue"));
-    chooser.addOption("3 Coral Right Blue", new PathPlannerAuto("3 Piece Blue", true));
+    chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
+    chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece", true));
     chooser.addOption("1 Coral Backup", new PathPlannerAuto("Backup"));
-    chooser.addOption("Test Auto", new PathPlannerAuto("Test Auto"));
     SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
