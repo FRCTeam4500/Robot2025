@@ -46,7 +46,6 @@ public class Robot extends LoggedRobot {
     xbox = new CommandXboxController(2);
     stick = new CommandJoystick(1);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
-    SmartDashboard.putData("Debug/Command Scheduler", CommandScheduler.getInstance());
 
     ScoringLocations.setupBlue(
         new Pose2d(3.00, 4.19, Rotation2d.fromDegrees(0)),
@@ -191,15 +190,13 @@ public class Robot extends LoggedRobot {
             structure
                 .shootL1()
                 .andThen(swerve.backup())
-                .andThen(Commands.runOnce(() -> structure.stow().schedule()))
-                .withName("Shoot and Stow and Move"));
+                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
     shoot
         .and(structure.moveAfterShoot.negate())
         .onTrue(
             structure
                 .shoot()
-                .andThen(Commands.runOnce(() -> structure.stow().schedule()))
-                .withName("Shoot and Stow"));
+                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
     backCoralIntake.onTrue(swerve.targetCoralStation(false));
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
