@@ -1,5 +1,5 @@
 {
-    "name": "2025",
+    "name": "2025_Gyarados",
     "disableSimplification": true,
     "rotations": [
         {"axis": "x", "degrees": 90},
@@ -11,9 +11,9 @@
             "name": "limelight-hehehe",
             "rotations": [
                 {"axis": "x", "degrees": 180},
-                {"axis": "y", "degrees": -10}
+                {"axis": "y", "degrees": -14}
             ],
-            "position": [0.2, -0.2, 0.2],
+            "position": [0.2286, -0.1905, 0.1905],
             "resolution": [1280, 960],
             "fov": 54
         },
@@ -21,9 +21,9 @@
             "name": "limelight-hihihi",
             "rotations": [
                 {"axis": "x", "degrees": 180},
-                {"axis": "y", "degrees": -10}
+                {"axis": "y", "degrees": -14}
             ],
-            "position": [0.2, 0.2, 0.2],
+            "position": [0.2286, 0.1905, 0.1905],
             "resolution": [1280, 960],
             "fov": 54
         }
