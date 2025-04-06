@@ -3,9 +3,8 @@
   "robotLength": 0.9652,
   "holonomicMode": true,
   "pathFolders": [
-    "To Score",
-    "To Coral Station",
-    "Backup Paths"
+    "3 Piece",
+    "Backup"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,

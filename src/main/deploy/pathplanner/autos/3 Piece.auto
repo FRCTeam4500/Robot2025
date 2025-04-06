@@ -36,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Score Bottom"
+                  "name": "Auto Align Bottom"
                 }
               }
             ]
@@ -131,7 +131,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Score Top"
+                  "name": "Auto Align Top"
                 }
               }
             ]
@@ -226,7 +226,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto Score Bottom"
+                  "name": "Auto Align Bottom"
                 }
               }
             ]

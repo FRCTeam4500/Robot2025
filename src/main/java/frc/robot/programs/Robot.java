@@ -103,13 +103,13 @@ public class Robot extends LoggedRobot {
         .onFalse(Commands.runOnce(() -> climbing = false));
     backCoralIntake.onTrue(structure.backCoralIntake());
     backCoralIntake.onFalse(structure.stow());
-    backCoralIntake.whileTrue(swerve.targetCoralStation(false));
+    backCoralIntake.onTrue(swerve.targetCoralStation(false));
     stowButton.onTrue(structure.stow());
     confirmIntake.onTrue(structure.confirmIntake());
     confirmIntake.onFalse(structure.stopPlacer());
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake.whileTrue(swerve.targetCoralStation(true));
+    frontCoralIntake.onTrue(swerve.targetCoralStation(true));
 
     SmartDashboard.putData("Buttons/Target L1", structure.setNextCoral(CoralState.L1));
     SmartDashboard.putData("Buttons/Target L2", structure.setNextCoral(CoralState.L2));
@@ -200,15 +200,15 @@ public class Robot extends LoggedRobot {
                 .shoot()
                 .andThen(Commands.runOnce(() -> structure.stow().schedule()))
                 .withName("Shoot and Stow"));
-    backCoralIntake.whileTrue(swerve.targetCoralStation(false));
+    backCoralIntake.onTrue(swerve.targetCoralStation(false));
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake.whileTrue(swerve.targetCoralStation(true));
+    frontCoralIntake.onTrue(swerve.targetCoralStation(true));
     coralGroundIntake.onTrue(structure.groundIntake());
     coralGroundIntake.onFalse(structure.stow());
     algaeGroundIntake.onTrue(structure.algaeGroundIntake());
     algaeGroundIntake.onFalse(structure.algaeGroundHold());
-    faceReefCoral.whileTrue(swerve.reefCentric(xbox.getHID()));
+    faceReefCoral.debounce(0.1).whileTrue(swerve.reefCentric(xbox.getHID()));
     faceReefCoral.onFalse(structure.readyNextCoral());
     stopMusic.onTrue(structure.stopSinging());
   }
@@ -221,8 +221,8 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.backCoralIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
-    NamedCommands.registerCommand("Auto Score Top", autoScoreTop());
-    NamedCommands.registerCommand("Auto Score Bottom", autoScoreBottom());
+    NamedCommands.registerCommand("Auto Align Top", swerve.forwardBranchCentric().alongWith(structure.readyLevel4Auto()));
+    NamedCommands.registerCommand("Auto Align Bottom", swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto()));
     NamedCommands.registerCommand("Wait For Intake", Commands.waitUntil(structure.intook));
 
     SendableChooser<Command> chooser = new SendableChooser<>();
@@ -253,13 +253,5 @@ public class Robot extends LoggedRobot {
   @Override
   public void simulationPeriodic() {
     GamepieceManager.simulate();
-  }
-
-  private Command autoScoreTop() {
-    return swerve.forwardBranchCentric().alongWith(structure.readyLevel4Auto());
-  }
-
-  private Command autoScoreBottom() {
-    return swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto());
   }
 }
