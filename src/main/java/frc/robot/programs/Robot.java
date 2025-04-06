@@ -193,10 +193,7 @@ public class Robot extends LoggedRobot {
                 .andThen(Commands.runOnce(() -> structure.stow().schedule())));
     shoot
         .and(structure.moveAfterShoot.negate())
-        .onTrue(
-            structure
-                .shoot()
-                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
+        .onTrue(structure.shoot().andThen(Commands.runOnce(() -> structure.stow().schedule())));
     backCoralIntake.onTrue(swerve.targetCoralStation(false));
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
@@ -218,8 +215,10 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.backCoralIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
-    NamedCommands.registerCommand("Auto Align Top", swerve.forwardBranchCentric().alongWith(structure.readyLevel4Auto()));
-    NamedCommands.registerCommand("Auto Align Bottom", swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto()));
+    NamedCommands.registerCommand(
+        "Auto Align Top", swerve.forwardBranchCentric().alongWith(structure.readyLevel4Auto()));
+    NamedCommands.registerCommand(
+        "Auto Align Bottom", swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto()));
     NamedCommands.registerCommand("Wait For Intake", Commands.waitUntil(structure.intook));
 
     SendableChooser<Command> chooser = new SendableChooser<>();
