@@ -44,7 +44,7 @@ public class Robot extends LoggedRobot {
     DriverStation.silenceJoystickConnectionWarning(true);
     CameraServer.startAutomaticCapture();
     xbox = new CommandXboxController(2);
-    stick = new CommandJoystick(1);
+    stick = new CommandJoystick(3);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
 
     ScoringLocations.setupBlue(
