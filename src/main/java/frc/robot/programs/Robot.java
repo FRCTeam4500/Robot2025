@@ -7,7 +7,6 @@ package frc.robot.programs;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -42,7 +41,6 @@ public class Robot extends LoggedRobot {
     swerve = new Swerve();
     structure = new Superstructure(swerve::getPose);
     DriverStation.silenceJoystickConnectionWarning(true);
-    CameraServer.startAutomaticCapture();
     xbox = new CommandXboxController(2);
     stick = new CommandJoystick(1);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));

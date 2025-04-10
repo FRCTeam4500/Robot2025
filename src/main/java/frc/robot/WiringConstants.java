@@ -45,6 +45,6 @@ public class WiringConstants {
   }
 
   public static class RampWiring {
-    public static final int RAMP_ID = 5;
+    public static final int RAMP_ID = 4;
   }
 }
