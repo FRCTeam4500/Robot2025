@@ -23,6 +23,10 @@ public class ExtendedMath {
     return a.getAngle().minus(b.getAngle());
   }
 
+  public static double signedSquared(double a) {
+    return Math.signum(a) * Math.pow(a, 2);
+  }
+
   /**
    * Returns the length of a in the direction of b. Calculated as dot(a, b)/|b|, or 0 if b is 0.
    *

@@ -36,18 +36,18 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   private final double zeroedPosition = 0;
   private final double stowPosition = 0.02;
-  private final double handoffPosition = .735;
-  private final double l4Position = 1.02;
-  private final double l3Position = 0.45;
-  private final double l2Position = 0.02;
+  private final double handoffPosition = .801;
+  private final double l4Position = 1.125;
+  private final double l3Position = 0.526;
+  private final double l2Position = 0.096;
   private final double l1Position = 0.02;
-  private final double stationPosition = 0.17; // intake from coral station
-  private final double groundPosition = 0.03; // ground intake?
-  private final double groundAlgaeIntakePosition = 0.25;
-  private final double groundAlgaeHoldPosition = 0.30;
-  private final double processingPosition = 0.02; // algae processor
-  private final double lowAlgaePosition = 0.2; // between l2 and l3
-  private final double highAlgaePosition = 0.55; // between l3 and l4
+  private final double stationPosition = 0.246; // intake from coral station
+  private final double groundPosition = 0.1; // ground intake?
+  private final double groundAlgaeIntakePosition = 0.326;
+  private final double groundAlgaeHoldPosition = 0.376;
+  private final double processingPosition = 0.096; // algae processor
+  private final double lowAlgaePosition = 0.276; // between l2 and l3
+  private final double highAlgaePosition = 0.626; // between l3 and l4
   private Consumer<IdleMode> setIdleMode;
 
   public Elevator() {
@@ -188,8 +188,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             Commands.waitUntil(
                 () -> {
                   return upMotor.atTarget();
-                }))
-        .andThen(Commands.runOnce(() -> upMotor.setVoltage(0)));
+                }));
   }
 
   /**

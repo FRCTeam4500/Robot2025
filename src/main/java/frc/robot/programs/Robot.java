@@ -135,7 +135,7 @@ public class Robot extends LoggedRobot {
     Trigger backCoralIntake = xbox.povRight().debounce(0.2);
     Trigger frontCoralIntake = xbox.povUp().debounce(0.2);
     Trigger algaeGroundIntake = xbox.povDown().debounce(0.2);
-    Trigger coralGroundIntake = xbox.leftBumper();
+    Trigger coralGroundIntake = xbox.povLeft().debounce(0.2);
     Trigger alignReefLeft = xbox.x();
     Trigger alignReefMiddle = xbox.leftStick();
     Trigger alignReefRight = xbox.b();
@@ -187,7 +187,6 @@ public class Robot extends LoggedRobot {
         .onTrue(
             structure
                 .shootL1()
-                .andThen(swerve.backup())
                 .andThen(Commands.runOnce(() -> structure.stow().schedule())));
     shoot
         .and(structure.moveAfterShoot.negate())

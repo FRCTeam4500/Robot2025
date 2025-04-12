@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
+import frc.robot.utilities.ExtendedMath;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
@@ -111,14 +112,14 @@ public class Swerve extends SubsystemBase implements Loggable {
       poseFeedback =
           new PoseFeedbackController(
               FeedbackController.fromPID(
-                  1.5,
+                  1.25,
                   0,
                   0,
                   pid -> {
                     pid.setTolerance(0.02, 0.1);
                   }),
               FeedbackController.fromPID(
-                  2,
+                  1.5,
                   0,
                   0,
                   pid -> {
@@ -130,7 +131,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                   0,
                   pid -> {
                     pid.enableContinuousInput(0, 360);
-                    pid.setTolerance(2);
+                    pid.setTolerance(5);
                   }));
     } else {
       poseFeedback =
@@ -638,11 +639,11 @@ public class Swerve extends SubsystemBase implements Loggable {
     }
     double forward =
         speedCoefficient
-            * withHardDeadzone(xbox.getLeftY(), 0.1)
+            * withHardDeadzone(xbox.getLeftY(), 0.15)
             * MAX_FIELD_REL_SPEEDS.vxMetersPerSecond;
     double sideways =
         speedCoefficient
-            * withHardDeadzone(xbox.getLeftX(), 0.1)
+            * withHardDeadzone(xbox.getLeftX(), 0.15)
             * MAX_FIELD_REL_SPEEDS.vyMetersPerSecond;
     ChassisSpeeds fieldRel = new ChassisSpeeds(forward, sideways, rotational);
     return ChassisSpeeds.fromFieldRelativeSpeeds(fieldRel, currentHeading);
