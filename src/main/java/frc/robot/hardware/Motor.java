@@ -260,6 +260,7 @@ public class Motor extends SubsystemBase implements Loggable {
         HoundLog.clearFault(
             "[Motor]" + (name != "" ? " " + name : "") + " Encoder Disconnected...");
       }
+      HoundLog.log(path, "EncoderVal", encoder.get());
     }
   }
 
