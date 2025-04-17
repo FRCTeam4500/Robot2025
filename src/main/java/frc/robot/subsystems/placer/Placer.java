@@ -28,8 +28,9 @@ public class Placer extends SubsystemBase implements Loggable {
   private boolean fakeIntake;
 
   private final double intakeSpeed = -25;
-  public final double coralEjectSpeed = 30;
+  public final double coralEjectSpeed = 20;
   public final double l1EjectSpeed = 15;
+  public final double l4EjectSpeed = 30;
   public final double algaeEjectSpeed = 15;
   public final double dealgifySpeed = 45;
 

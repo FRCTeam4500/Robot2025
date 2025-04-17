@@ -247,7 +247,7 @@ public class Superstructure implements Loggable {
     return Commands.defer(
         () ->
             placer
-                .eject(isPlacingAlgae ? placer.algaeEjectSpeed : placer.coralEjectSpeed)
+                .eject(isPlacingAlgae ? placer.algaeEjectSpeed : nextCoral == CoralState.L4 ? placer.l4EjectSpeed : placer.coralEjectSpeed)
                 .andThen(Commands.waitSeconds(0.35)),
         Set.of());
   }
