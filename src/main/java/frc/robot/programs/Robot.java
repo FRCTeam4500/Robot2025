@@ -129,8 +129,8 @@ public class Robot extends LoggedRobot {
     Trigger onBlue =
         new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue);
     Trigger onRed = onBlue.negate();
-    Trigger faceForwards = new Trigger(() -> xbox.getRightY() < -0.5);
-    Trigger faceBackwards = new Trigger(() -> xbox.getRightY() > 0.5);
+    Trigger faceForwards = new Trigger(() -> xbox.getRightY() < -0.8);
+    Trigger faceBackwards = new Trigger(() -> xbox.getRightY() > 0.8);
     Trigger resetHeading = xbox.a();
     Trigger backCoralIntake = xbox.povRight().debounce(0.2);
     Trigger frontCoralIntake = xbox.povUp().debounce(0.2);
