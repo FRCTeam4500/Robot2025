@@ -39,7 +39,7 @@ public class Elevator extends SubsystemBase implements Loggable {
   private final double handoffPosition = .801;
   private final double l4Position = 1.125;
   private final double l3Position = 0.526;
-  private final double l2Position = 0.096;
+  private final double l2Position = 0.106;
   private final double l1Position = 0.02;
   private final double stationPosition = 0.246; // intake from coral station
   private final double groundPosition = 0.1; // ground intake?
@@ -58,7 +58,7 @@ public class Elevator extends SubsystemBase implements Loggable {
             false,
             (SparkMax spark) -> {
               SparkMaxConfig config = new SparkMaxConfig();
-              config.idleMode(IdleMode.kCoast);
+              config.idleMode(IdleMode.kBrake);
               config.encoder.positionConversionFactor(1 / 63.1167979003);
               config.encoder.velocityConversionFactor(1 / 63.1167979003);
               config.smartCurrentLimit(60);
@@ -102,10 +102,10 @@ public class Elevator extends SubsystemBase implements Loggable {
     switchHit = new Trigger(() -> zeroingSwitch.get()).debounce(0.35);
     switchHit.onTrue(
         Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
-    RobotModeTriggers.autonomous()
-        .onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)).ignoringDisable(true));
-    RobotModeTriggers.disabled()
-        .onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)).ignoringDisable(true));
+    // RobotModeTriggers.teleop()
+    //     .onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)).ignoringDisable(true));
+    RobotModeTriggers.teleop()
+        .onTrue(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)).ignoringDisable(true));
   }
 
   public Command groundAlgaeIntake() {
