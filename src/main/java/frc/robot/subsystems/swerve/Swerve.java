@@ -36,7 +36,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.hardware.Gyro;
 import frc.robot.hardware.Limelight;
 import frc.robot.hardware.Limelight.PoseEstimate;
-import frc.robot.utilities.ExtendedMath;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.PoseFeedbackController;
 import frc.robot.utilities.ScoringLocations;
@@ -119,7 +118,7 @@ public class Swerve extends SubsystemBase implements Loggable {
                     pid.setTolerance(0.02, 0.1);
                   }),
               FeedbackController.fromPID(
-                  1.5,
+                  2,
                   0,
                   0,
                   pid -> {
