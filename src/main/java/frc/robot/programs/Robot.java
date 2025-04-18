@@ -212,12 +212,16 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand(
         "Auto Align Bottom", swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto()));
     NamedCommands.registerCommand("Wait For Intake", Commands.waitUntil(structure.intook));
+    NamedCommands.registerCommand("Auto Align Left", swerve.leftBranchCentric().alongWith(structure.readyLevel4()));
+    NamedCommands.registerCommand("Auto Align Right", swerve.rightBranchCentric().alongWith(structure.readyLevel4()));
+
 
     SendableChooser<Command> chooser = new SendableChooser<>();
     chooser.setDefaultOption("None", Commands.none());
     chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
     chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece", true));
     chooser.addOption("1 Coral Backup", new PathPlannerAuto("Backup"));
+    chooser.addOption("1 Coral Backup w/ Auto Align", new PathPlannerAuto("Backup + Auto Align"));
     SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
