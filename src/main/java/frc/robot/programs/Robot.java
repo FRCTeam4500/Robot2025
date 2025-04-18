@@ -182,10 +182,7 @@ public class Robot extends LoggedRobot {
 
     shoot
         .and(structure.moveAfterShoot)
-        .onTrue(
-            structure
-                .shootL1()
-                .andThen(Commands.runOnce(() -> structure.stow().schedule())));
+        .onTrue(structure.shootL1().andThen(Commands.runOnce(() -> structure.stow().schedule())));
     shoot
         .and(structure.moveAfterShoot.negate())
         .onTrue(structure.shoot().andThen(Commands.runOnce(() -> structure.stow().schedule())));
