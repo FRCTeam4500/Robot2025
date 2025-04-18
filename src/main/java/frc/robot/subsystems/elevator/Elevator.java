@@ -36,7 +36,7 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   private final double zeroedPosition = 0;
   private final double stowPosition = 0.02;
-  private final double handoffPosition = .801;
+  private final double handoffPosition = .79;
   private final double l4Position = 1.125;
   private final double l3Position = 0.526;
   private final double l2Position = 0.106;
