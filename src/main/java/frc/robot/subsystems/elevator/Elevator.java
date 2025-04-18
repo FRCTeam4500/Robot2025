@@ -103,7 +103,8 @@ public class Elevator extends SubsystemBase implements Loggable {
     switchHit.onTrue(
         Commands.runOnce(() -> upMotor.resetPosition(zeroedPosition)).ignoringDisable(true));
     // RobotModeTriggers.teleop()
-    //     .onFalse(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kBrake)).ignoringDisable(true));
+    //     .onFalse(Commands.runOnce(() ->
+    // setIdleMode.accept(IdleMode.kBrake)).ignoringDisable(true));
     RobotModeTriggers.teleop()
         .onTrue(Commands.runOnce(() -> setIdleMode.accept(IdleMode.kCoast)).ignoringDisable(true));
   }
