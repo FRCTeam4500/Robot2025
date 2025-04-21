@@ -7,26 +7,35 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import frc.robot.hardware.Motor;
 import frc.robot.hardware.Motor.TargetType;
+import frc.robot.subsystems.orchestra.Orc;
 import frc.robot.utilities.FeedbackController;
 import frc.robot.utilities.FeedforwardController;
+import frc.robot.utilities.logging.HoundLog;
 
 @SuppressWarnings("resource")
 public class SwerveConstants {
+
   /** The max speed the robot should travel at */
-  public static final ChassisSpeeds MAX_SPEEDS = new ChassisSpeeds(3.5, 3.5, 4);
+  public static final ChassisSpeeds MAX_FIELD_REL_SPEEDS = new ChassisSpeeds(3.75, 3.75, 6);
+
+  public static final ChassisSpeeds MAX_ROBOT_REL_SPEEDS = new ChassisSpeeds(5, 3, 6);
 
   /** The minimum coefficient for slowmode */
-  public static final double MIN_COEFFICIENT = 0.2;
+  public static final double MIN_COEFFICIENT = 0.14546;
 
   /** The absolute max acheivable module speed */
   public static final double MAX_MODULE_SPEED = 5.4;
@@ -65,6 +74,13 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) {
+                  HoundLog.logFault(
+                      "[Swerve] Front Left Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
+                } else {
+                  Orc.addMotor(motor);
+                }
               },
               sim -> {},
               0,
@@ -81,11 +97,17 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) {
+                  HoundLog.logFault(
+                      "[Swerve] Front Left Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
+                }
               },
               sim -> {},
-              (new AnalogEncoder(0).get() - 0.647) * 360,
+              (new AnalogEncoder(0).get() - 0.642) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
@@ -114,6 +136,13 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) {
+                  HoundLog.logFault(
+                      "[Swerve] Front Right Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
+                } else {
+                  Orc.addMotor(motor);
+                }
               },
               sim -> {},
               0,
@@ -130,11 +159,17 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) {
+                  HoundLog.logFault(
+                      "[Swerve] Front Right Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
+                }
               },
               sim -> {},
-              (new AnalogEncoder(1).get() - 0.930) * 360,
+              (new AnalogEncoder(1).get() - 0.668) * 360,
               FeedbackController.fromPID(
                   new PIDController(0.1, 0, 0),
                   controller -> {
@@ -163,6 +198,13 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) {
+                  HoundLog.logFault(
+                      "[Swerve] Back Left Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
+                } else {
+                  Orc.addMotor(motor);
+                }
               },
               sim -> {},
               0,
@@ -179,8 +221,14 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) {
+                  HoundLog.logFault(
+                      "[Swerve] Back Left Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
+                }
               },
               sim -> {},
               (new AnalogEncoder(2).get() - 0.022) * 360,
@@ -212,6 +260,13 @@ public class SwerveConstants {
                 for (int i = 0; i < 5 && status != StatusCode.OK; i++) {
                   status = motor.getConfigurator().apply(config);
                 }
+                if (status != StatusCode.OK) {
+                  HoundLog.logFault(
+                      "[Swerve] Back Right Drive Motor Config Error: " + status.getName(),
+                      AlertType.kError);
+                } else {
+                  Orc.addMotor(motor);
+                }
               },
               sim -> {},
               0,
@@ -228,8 +283,14 @@ public class SwerveConstants {
                     .encoder
                     .positionConversionFactor(1.0 / 25 * 360)
                     .velocityConversionFactor(1.0 / 25 * 360);
-                motor.configure(
-                    config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                REVLibError err =
+                    motor.configure(
+                        config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+                if (!err.equals(REVLibError.kOk)) {
+                  HoundLog.logFault(
+                      "[Swerve] Back Right Angle Motor Config Error: " + err.name(),
+                      AlertType.kError);
+                }
               },
               sim -> {},
               (new AnalogEncoder(3).get() - 0.879) * 360,
@@ -241,4 +302,11 @@ public class SwerveConstants {
                   }),
               FeedforwardController.forConstantGravity(0, 0.25348, 0.0092287, 0.0014289),
               TargetType.Position));
+
+  public static class TagPoseCameraOffsets {
+    public static final Transform2d limelightHeHeHe =
+        new Transform2d(-0.431, -0.03, Rotation2d.fromRadians(0));
+    public static final Transform2d limelightHiHiHi =
+        new Transform2d(-0.431, 0.03, Rotation2d.fromRadians(0));
+  }
 }

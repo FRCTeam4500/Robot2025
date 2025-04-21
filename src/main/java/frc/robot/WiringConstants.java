@@ -31,7 +31,7 @@ public class WiringConstants {
 
   public static class ArmWiring {
     public static final int ARM_ID = 13;
-    public static final int ENCODER_CHANNEL = 1;
+    public static final int ENCODER_CHANNEL = 0;
   }
 
   public static class ElevatorWiring {
@@ -40,10 +40,11 @@ public class WiringConstants {
   }
 
   public static class ClimberWiring {
-    public static final int CLIMBER_ID = -201;
+    public static final int CLIMBER_ID = 30;
+    public static final int ENCODER_CHANNEL = 2;
   }
 
   public static class RampWiring {
-    public static final int RAMP_ID = 5;
+    public static final int RAMP_ID = 4;
   }
 }

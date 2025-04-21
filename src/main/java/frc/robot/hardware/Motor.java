@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -29,8 +30,11 @@ import java.util.function.DoubleSupplier;
 
 /** A class representing a motor */
 public class Motor extends SubsystemBase implements Loggable {
+  private String name;
   private double target;
   private boolean useVoltage;
+  private double maxVolts;
+  private double negativeMaxVolts;
   private TargetType type;
   private DoubleConsumer positionSetter;
   private DoubleConsumer voltageSetter;
@@ -70,6 +74,8 @@ public class Motor extends SubsystemBase implements Loggable {
       Loggable motorInfo) {
     target = 0;
     useVoltage = true;
+    maxVolts = 12;
+    negativeMaxVolts = -12;
     this.type = type;
     this.positionSetter = positionSetter;
     this.voltageSetter = voltageSetter;
@@ -86,6 +92,11 @@ public class Motor extends SubsystemBase implements Loggable {
         fb.reset(velocityGetter.getAsDouble());
         break;
     }
+  }
+
+  public Motor withName(String name) {
+    this.name = name;
+    return this;
   }
 
   /**
@@ -123,9 +134,6 @@ public class Motor extends SubsystemBase implements Loggable {
    * @apiNote Using this method causes {@link #atTarget()} to always return true!
    */
   public void setVoltage(double volts) {
-    if (Math.abs(volts) > 12) {
-      volts = 12 * Math.signum(volts);
-    }
     target = volts;
     useVoltage = true;
   }
@@ -172,6 +180,14 @@ public class Motor extends SubsystemBase implements Loggable {
     return fb.atGoal();
   }
 
+  public void setMaxVoltage(double volts) {
+    maxVolts = volts;
+  }
+
+  public void setMaxNegativeVoltage(double volts) {
+    negativeMaxVolts = volts;
+  }
+
   public void changeEncoder(
       DoubleConsumer positionSetter, DoubleSupplier positionGetter, DoubleSupplier velocityGetter) {
     this.positionSetter = positionSetter;
@@ -202,7 +218,7 @@ public class Motor extends SubsystemBase implements Loggable {
       return;
     }
     if (useVoltage) {
-      voltageSetter.accept(target);
+      voltageSetter.accept(MathUtil.clamp(target, negativeMaxVolts, maxVolts));
       return;
     }
     double fbVolts = 0;
@@ -219,11 +235,12 @@ public class Motor extends SubsystemBase implements Loggable {
         ffVolts = ff.calculateVoltage(getPosition(), target, 0);
         break;
     }
-    voltageSetter.accept(fbVolts + ffVolts);
+    voltageSetter.accept(MathUtil.clamp(fbVolts + ffVolts, negativeMaxVolts, maxVolts));
   }
 
   @Override
   public void log(String path) {
+    if (name != "") HoundLog.log(path, "Name", name);
     HoundLog.log(path, "Motor Info", motorInfo);
     HoundLog.log(path, "Position", getPosition());
     HoundLog.log(path, "Velocity", getVelocity());
@@ -233,6 +250,17 @@ public class Motor extends SubsystemBase implements Loggable {
       HoundLog.log(path, "Target Type", "Voltage");
     } else {
       HoundLog.log(path, "Target Type", type.name());
+    }
+    if (encoder != null) {
+      if (!encoder.isConnected()) {
+        HoundLog.logFault(
+            "[Motor]" + (name != "" ? " " + name : "") + " Encoder Disconnected...",
+            AlertType.kError);
+      } else {
+        HoundLog.clearFault(
+            "[Motor]" + (name != "" ? " " + name : "") + " Encoder Disconnected...");
+      }
+      HoundLog.log(path, "EncoderVal", encoder.get());
     }
   }
 

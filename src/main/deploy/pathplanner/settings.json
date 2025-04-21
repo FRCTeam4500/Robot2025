@@ -3,9 +3,8 @@
   "robotLength": 0.9652,
   "holonomicMode": true,
   "pathFolders": [
-    "To Score",
-    "To Coral Station",
-    "Backup Paths"
+    "3 Piece",
+    "Backup"
   ],
   "autoFolders": [],
   "defaultMaxVel": 4.0,
@@ -13,7 +12,7 @@
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,
-  "robotMass": 53.126227109918,
+  "robotMass": 53.126,
   "robotMOI": 4.954,
   "robotTrackwidth": 0.546,
   "driveWheelRadius": 0.045,

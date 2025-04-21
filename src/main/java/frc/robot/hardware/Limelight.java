@@ -1,13 +1,33 @@
 package frc.robot.hardware;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
 import frc.robot.utilities.logging.Loggable;
+import java.util.List;
+import org.photonvision.PhotonCamera;
+import org.photonvision.simulation.PhotonCameraSim;
+import org.photonvision.simulation.SimCameraProperties;
+import org.photonvision.simulation.VisionSystemSim;
+import org.photonvision.targeting.PhotonPipelineResult;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 /**
  * Wrapper class for limelights. An object of this class doesn't own the underlying hardware. In
@@ -31,6 +51,11 @@ import frc.robot.utilities.logging.Loggable;
 public class Limelight implements Loggable {
   private NetworkTable table;
   private String name;
+  private PhotonCamera camera;
+  private VisionSystemSim sim;
+  private boolean enabled = true;
+
+  private final PoseEstimate kEmpty = new PoseEstimate(new Pose2d(), 0, 0, 0, 0, false);
 
   /**
    * Make a limelight with the given name and pipeline
@@ -38,10 +63,53 @@ public class Limelight implements Loggable {
    * @param name The name of the limelight. Should be "limelight-xxx"
    * @param pipeline The pipeline to be used. These are configured in a web browser.
    */
-  public Limelight(String name, int pipeline) {
-    table = NetworkTableInstance.getDefault().getTable(name);
-    table.getEntry("pipline").setInteger(pipeline);
+  public Limelight(String name, int pipeline, Transform3d robotToCamera) {
     this.name = name;
+    table = NetworkTableInstance.getDefault().getTable(this.name);
+    table.getEntry("pipline").setInteger(pipeline);
+    Trigger isBlue =
+        new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Blue));
+    isBlue.onTrue(
+        Commands.runOnce(
+                () ->
+                    table
+                        .getEntry("fiducial_id_filters_set")
+                        .setDoubleArray(new double[] {17, 18, 19, 20, 21, 22}))
+            .ignoringDisable(true));
+    isBlue.onFalse(
+        Commands.runOnce(
+                () ->
+                    table
+                        .getEntry("fiducial_id_filters_set")
+                        .setDoubleArray(new double[] {6, 7, 8, 9, 10, 11}))
+            .ignoringDisable(true));
+
+    Sendable isEnabledSendable =
+        new Sendable() {
+          @Override
+          public void initSendable(SendableBuilder builder) {
+            builder.addBooleanProperty(
+                name,
+                () -> enabled,
+                (boolean val) -> {
+                  enabled = val;
+                });
+          }
+        };
+    SmartDashboard.putData("[Limelight] " + this.name + " Enabled", isEnabledSendable);
+    if (RobotBase.isSimulation()) {
+      sim = new VisionSystemSim(name);
+      sim.addAprilTags(AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded));
+      SimCameraProperties camProperties = new SimCameraProperties();
+      camProperties.setCalibration(1280, 960, Rotation2d.fromDegrees(79.3565372228));
+      camProperties.setCalibError(0.25, 0.08);
+      camProperties.setFPS(15);
+      camProperties.setAvgLatencyMs(70.593);
+      camProperties.setLatencyStdDevMs(4.318);
+      camera = new PhotonCamera(name);
+      PhotonCameraSim cameraSim = new PhotonCameraSim(camera, camProperties);
+      sim.addCamera(cameraSim, robotToCamera);
+    }
   }
 
   /**
@@ -49,8 +117,8 @@ public class Limelight implements Loggable {
    *
    * @param name The name of the limelight. Should be "limelight-xxx"
    */
-  public Limelight(String name) {
-    this(name, 0);
+  public Limelight(String name, Transform3d robotToCamera) {
+    this(name, 0, robotToCamera);
   }
 
   /**
@@ -116,11 +184,18 @@ public class Limelight implements Loggable {
     return table.getEntry("cl").getDouble(0) + table.getEntry("tl").getDouble(0);
   }
 
+  public int getID() {
+    return (int) table.getEntry("tid").getInteger(-1);
+  }
+
   /**
    * @return a {@link PoseEstimate} holding information about an estimated pose obtained using the
    *     megatag 1 algorithm.
    */
   public PoseEstimate getPoseMT1() {
+    if (RobotBase.isSimulation()) {
+      return kEmpty;
+    }
     double[] raw = table.getEntry("botpose_wpiblue").getDoubleArray(new double[11]);
     return new PoseEstimate(
         new Pose2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
@@ -146,6 +221,9 @@ public class Limelight implements Loggable {
   }
 
   private PoseEstimate getPoseMT2() {
+    if (RobotBase.isSimulation()) {
+      return kEmpty;
+    }
     double[] raw = table.getEntry("botpose_orb_wpiblue").getDoubleArray(new double[11]);
     return new PoseEstimate(
         new Pose2d(raw[0], raw[1], Rotation2d.fromDegrees(raw[5])),
@@ -156,15 +234,86 @@ public class Limelight implements Loggable {
         hasTargets());
   }
 
+  public Pair<Transform2d, Integer> getTargetPoseCameraSpace() {
+    if (RobotBase.isReal()) {
+      double[] raw = table.getEntry("targetpose_cameraspace").getDoubleArray(new double[11]);
+      return new Pair<>(
+          new Transform2d(raw[2], raw[0], Rotation2d.fromDegrees(raw[5])),
+          hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1);
+    } else {
+      List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+      if (results.size() == 0) {
+        return new Pair<>(null, -1);
+      }
+      PhotonPipelineResult latestResult = results.get(results.size() - 1);
+      PhotonTrackedTarget target = latestResult.getBestTarget();
+      if (target == null) {
+        return new Pair<>(null, -1);
+      }
+      Transform3d transform = target.getBestCameraToTarget();
+      return new Pair<Transform2d, Integer>(
+          new Transform2d(
+              transform.getTranslation().toTranslation2d(),
+              transform.getRotation().toRotation2d().plus(Rotation2d.kPi)),
+          target.getFiducialId());
+    }
+  }
+
+  public Pair<Transform2d, Integer> getTargetPoseRobotSpace() {
+    double[] raw = table.getEntry("targetpose_robotspace").getDoubleArray(new double[11]);
+    return new Pair<>(
+        new Transform2d(raw[2], raw[0], Rotation2d.fromDegrees(raw[5])),
+        hasTargets() ? (int) table.getEntry("tid").getInteger(-1) : -1);
+  }
+
+  public void updateSim(Pose2d robotPose) {
+    if (RobotBase.isReal()) {
+      return;
+    }
+    sim.update(robotPose);
+    List<PhotonPipelineResult> results = camera.getAllUnreadResults();
+    if (results.size() == 0) {
+      return;
+    }
+    PhotonPipelineResult result = results.get(results.size() - 1);
+    if (!result.hasTargets()) {
+      table.getEntry("tv").setInteger(0);
+      table.getEntry("tx").setDouble(0);
+      table.getEntry("ty").setDouble(0);
+      table.getEntry("ta").setDouble(0);
+      table.getEntry("cl").setDouble(0);
+      table.getEntry("tl").setDouble(0);
+      table.getEntry("tid").setDouble(-1);
+      return;
+    }
+    PhotonTrackedTarget target = result.getBestTarget();
+    table.getEntry("tv").setInteger(1);
+    table.getEntry("tx").setDouble(-target.getYaw());
+    table.getEntry("ty").setDouble(target.getPitch());
+    table.getEntry("ta").setDouble(target.getArea());
+    table.getEntry("cl").setDouble(0);
+    table.getEntry("tl").setDouble(camera.getCameraTable().getEntry("latencyMillis").getDouble(0));
+    table.getEntry("tid").setDouble(target.getFiducialId());
+  }
+
   @Override
   public void log(String path) {
     HoundLog.log(path, "MT1 Pose", getPoseMT1().pose());
     HoundLog.log(path, "MT2 Pose", getPoseMT2().pose());
+    HoundLog.log(path, "Target Pose (Robot Space)", getTargetPoseRobotSpace().getFirst());
     HoundLog.log(path, "Estimate Seconds", getPoseMT1().latencySeconds);
+    HoundLog.log(path, "tx", getTX());
+    HoundLog.log(path, "ty", getTY());
+    HoundLog.log(path, "ta", getTA());
+    HoundLog.log(path, "id", getID());
   }
 
   public String getName() {
     return name;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
   }
 
   /** Holds an estimated position from a vison system. */

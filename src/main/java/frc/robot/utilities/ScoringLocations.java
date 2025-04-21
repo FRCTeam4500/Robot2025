@@ -55,6 +55,41 @@ public class ScoringLocations {
     }
   }
 
+  public static Rotation2d getRotation(int id) {
+    switch (id) {
+      case 19:
+        return Rotation2d.fromDegrees(-60);
+      case 18:
+        return Rotation2d.fromDegrees(0);
+      case 17:
+        return Rotation2d.fromDegrees(60);
+      case 22:
+        return Rotation2d.fromDegrees(120);
+      case 21:
+        return Rotation2d.fromDegrees(180);
+      case 20:
+        return Rotation2d.fromDegrees(-120);
+      case 9:
+        return Rotation2d.fromDegrees(-60);
+      case 10:
+        return Rotation2d.fromDegrees(0);
+      case 11:
+        return Rotation2d.fromDegrees(60);
+      case 6:
+        return Rotation2d.fromDegrees(120);
+      case 7:
+        return Rotation2d.fromDegrees(180);
+      case 8:
+        return Rotation2d.fromDegrees(-120);
+      default:
+        return Rotation2d.fromDegrees(0);
+    }
+  }
+
+  public static boolean isReef(int id) {
+    return (id >= 6 && id <= 11) || (id >= 17 && id <= 22);
+  }
+
   public static void setupBlue(Pose2d A, Pose2d B, Pose2d AB, Pose2d GH) {
     blueA = A;
     blueB = B;
@@ -74,6 +109,41 @@ public class ScoringLocations {
       ScoringLocations.center = redCenter;
       ScoringLocations.A = redA;
       ScoringLocations.B = redB;
+    }
+  }
+
+  public static int getDriveTag(Translation2d robotPose) {
+    double angle = robotPose.minus(center).getAngle().getDegrees();
+    angle = MathUtil.inputModulus(angle, -30, 330);
+    switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
+      case Blue:
+        if (angle <= 30) {
+          return 21;
+        } else if (angle <= 90) {
+          return 20;
+        } else if (angle <= 150) {
+          return 19;
+        } else if (angle <= 210) {
+          return 18;
+        } else if (angle <= 270) {
+          return 17;
+        } else {
+          return 22;
+        }
+      default:
+        if (angle <= 30) {
+          return 7;
+        } else if (angle <= 90) {
+          return 8;
+        } else if (angle <= 150) {
+          return 9;
+        } else if (angle <= 210) {
+          return 10;
+        } else if (angle <= 270) {
+          return 11;
+        } else {
+          return 6;
+        }
     }
   }
 

@@ -25,7 +25,6 @@ import frc.robot.Superstructure;
 import frc.robot.Superstructure.AlgaeState;
 import frc.robot.Superstructure.CoralState;
 import frc.robot.subsystems.swerve.Swerve;
-import frc.robot.subsystems.swerve.Swerve.Alignment;
 import frc.robot.utilities.ScoringLocations;
 import frc.robot.utilities.gamepieces.GamepieceManager;
 import frc.robot.utilities.logging.HoundLog;
@@ -35,6 +34,7 @@ public class Robot extends LoggedRobot {
   private Superstructure structure;
   private CommandXboxController xbox;
   private CommandJoystick stick;
+  private boolean climbing = false;
 
   /** make a robot */
   public Robot() {
@@ -44,23 +44,25 @@ public class Robot extends LoggedRobot {
     xbox = new CommandXboxController(2);
     stick = new CommandJoystick(1);
     swerve.setDefaultCommand(swerve.angleCentric(xbox.getHID()));
-    SmartDashboard.putData("Debug/Command Scheduler", CommandScheduler.getInstance());
 
     ScoringLocations.setupBlue(
-        new Pose2d(3.03, 4.19, Rotation2d.fromDegrees(0)),
-        new Pose2d(3.03, 3.86, Rotation2d.fromDegrees(0)),
-        new Pose2d(2.99, 4.025, Rotation2d.fromDegrees(0)),
-        new Pose2d(5.97, 4.025, Rotation2d.fromDegrees(180)));
+        new Pose2d(3.00, 4.19, Rotation2d.fromDegrees(0)),
+        new Pose2d(3.00, 3.86, Rotation2d.fromDegrees(0)),
+        new Pose2d(3.09, 4.04, Rotation2d.fromDegrees(0)),
+        new Pose2d(5.89, 4.02, Rotation2d.fromDegrees(180)));
 
     ScoringLocations.setupRed(
-        new Pose2d(14.52, 3.86, Rotation2d.fromDegrees(180)),
-        new Pose2d(14.52, 4.19, Rotation2d.fromDegrees(180)),
-        new Pose2d(14.56, 4.025, Rotation2d.fromDegrees(180)),
-        new Pose2d(11.58, 4.025, Rotation2d.fromDegrees(0)));
+        new Pose2d(14.52, 3.88, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.52, 4.20, Rotation2d.fromDegrees(180)),
+        new Pose2d(14.49, 3.98, Rotation2d.fromDegrees(180)),
+        new Pose2d(11.64, 4.03, Rotation2d.fromDegrees(0)));
 
     setupDriveController();
     setupOperatorController();
     setupAuto();
+    RobotModeTriggers.teleop().and(stick.axisGreaterThan(3, -0.1)).onTrue(structure.stow());
+    RobotModeTriggers.disabled().and(() -> climbing).onTrue(structure.sing().ignoringDisable(true));
+    RobotModeTriggers.disabled().onFalse(structure.stopSinging());
   }
 
   private void setupOperatorController() {
@@ -73,9 +75,11 @@ public class Robot extends LoggedRobot {
     Trigger readyClimb = stick.povUp();
     Trigger climb = stick.povDown();
     Trigger stowButton = stick.button(11);
-    Trigger backCoralIntake = stick.button(2);
+    Trigger backCoralIntake = stick.button(2).debounce(0.2);
     Trigger confirmIntake = stick.button(4);
-    Trigger frontCoralIntake = stick.button(3);
+    Trigger frontCoralIntake = stick.button(3).debounce(0.2);
+    Trigger climbLocked = stick.axisGreaterThan(3, -0.1);
+    Trigger climbActive = new Trigger(() -> climbing);
 
     levelOne.onTrue(structure.setNextCoral(CoralState.L1));
     levelTwo.onTrue(structure.setNextCoral(CoralState.L2));
@@ -83,50 +87,26 @@ public class Robot extends LoggedRobot {
     levelFour.onTrue(structure.setNextCoral(CoralState.L4));
     algaeHigh.onTrue(structure.setNextAlgae(AlgaeState.HIGH));
     algaeLow.onTrue(structure.setNextAlgae(AlgaeState.LOW));
-    readyClimb.onTrue(structure.readyClimb());
-    climb.onTrue(structure.climb());
+    readyClimb.and(climbLocked.negate()).onTrue(structure.readyClimb());
+    climb.and(climbLocked.negate()).and(climbActive.negate()).onTrue(structure.climb());
+    climb
+        .and(climbLocked.negate())
+        .and(climbActive.negate())
+        .onFalse(Commands.runOnce(() -> climbing = true));
+    climb.and(climbLocked.negate()).and(climbActive).onTrue(structure.pauseClimb());
+    climb
+        .and(climbLocked.negate())
+        .and(climbActive)
+        .onFalse(Commands.runOnce(() -> climbing = false));
     backCoralIntake.onTrue(structure.backCoralIntake());
     backCoralIntake.onFalse(structure.stow());
-    Trigger onBlue =
-        new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue);
-    Trigger onRed = onBlue.negate();
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
+    backCoralIntake.onTrue(swerve.targetCoralStation(false));
     stowButton.onTrue(structure.stow());
     confirmIntake.onTrue(structure.confirmIntake());
-    confirmIntake.onFalse(structure.stow());
+    confirmIntake.onFalse(structure.stopPlacer());
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
+    frontCoralIntake.onTrue(swerve.targetCoralStation(true));
 
     SmartDashboard.putData("Buttons/Target L1", structure.setNextCoral(CoralState.L1));
     SmartDashboard.putData("Buttons/Target L2", structure.setNextCoral(CoralState.L2));
@@ -141,25 +121,29 @@ public class Robot extends LoggedRobot {
     SmartDashboard.putData("Buttons/Ground Coral Intake", structure.groundIntake());
     SmartDashboard.putData("Buttons/Ground Algae Intake", structure.algaeGroundIntake());
     SmartDashboard.putData("Buttons/Stow", structure.stow());
+    SmartDashboard.putData("Buttons/Face Back Intake", swerve.targetCoralStation(false));
+    SmartDashboard.putData("Buttons/Face Front Intake", swerve.targetCoralStation(true));
   }
 
   private void setupDriveController() {
     Trigger onBlue =
         new Trigger(() -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue);
     Trigger onRed = onBlue.negate();
-    Trigger faceForwards = new Trigger(() -> xbox.getRightY() < -0.5);
-    Trigger faceBackwards = new Trigger(() -> xbox.getRightY() > 0.5);
+    Trigger faceForwards = new Trigger(() -> xbox.getRightY() < -0.8);
+    Trigger faceBackwards = new Trigger(() -> xbox.getRightY() > 0.8);
     Trigger resetHeading = xbox.a();
-    Trigger backCoralIntake = xbox.povRight();
-    Trigger frontCoralIntake = xbox.povUp();
-    Trigger algaeGroundIntake = xbox.povDown();
-    Trigger coralGroundIntake = xbox.povLeft();
-    Trigger alignReefLeft = xbox.leftBumper();
+    Trigger backCoralIntake = xbox.povRight().debounce(0.2);
+    Trigger frontCoralIntake = xbox.povUp().debounce(0.2);
+    Trigger algaeGroundIntake = xbox.povDown().debounce(0.2);
+    Trigger coralGroundIntake = xbox.povLeft().debounce(0.2);
+    Trigger alignReefLeft = xbox.x();
     Trigger alignReefMiddle = xbox.leftStick();
-    Trigger alignReefRight = xbox.rightBumper();
+    Trigger alignReefRight = xbox.b();
     Trigger stow = xbox.y();
     Trigger readyProcessor = xbox.rightStick();
     Trigger shoot = xbox.rightTrigger();
+    Trigger faceReefCoral = xbox.rightBumper();
+    Trigger stopMusic = xbox.start();
 
     resetHeading.and(onBlue).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(0)));
     resetHeading.and(onRed).onTrue(swerve.resetHeading(Rotation2d.fromDegrees(180)));
@@ -167,75 +151,74 @@ public class Robot extends LoggedRobot {
     faceForwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
     faceBackwards.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(0)));
     faceBackwards.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(180)));
-    alignReefLeft.onFalse(structure.readyNextCoral());
-    alignReefLeft.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Left));
+    alignReefLeft
+        .debounce(0.2)
+        .whileTrue(
+            swerve
+                .reefCentric(xbox.getHID())
+                .until(swerve.doesRightCameraSeeTag)
+                .andThen(
+                    swerve
+                        .leftBranchCentric()
+                        .alongWith(structure.readyNextCoral())
+                        .andThen(structure.shoot())
+                        .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     alignReefMiddle.onTrue(structure.readyNextAlgae());
-    alignReefMiddle.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Middle));
-    alignReefRight.onFalse(structure.readyNextCoral());
-    alignReefRight.debounce(0.2).whileTrue(swerve.alignToReef(Alignment.Right));
+    alignReefRight
+        .debounce(0.2)
+        .whileTrue(
+            swerve
+                .reefCentric(xbox.getHID())
+                .until(swerve.doesLeftCameraSeeTag)
+                .andThen(
+                    swerve
+                        .rightBranchCentric()
+                        .alongWith(structure.readyNextCoral())
+                        .andThen(structure.shoot())
+                        .andThen(Commands.runOnce(() -> structure.stow().schedule()))));
     stow.onTrue(structure.stow());
     readyProcessor.and(onBlue).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-90)));
     readyProcessor.and(onRed).onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(90)));
-    shoot.onTrue(
-        structure
-            .shoot()
-            .andThen(swerve.backup())
-            .andThen(Commands.runOnce(() -> structure.stow().schedule()))
-            .withName("Shoot and Stow"));
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    backCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    backCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
+
+    shoot
+        .and(structure.moveAfterShoot)
+        .onTrue(structure.shootL1().andThen(Commands.runOnce(() -> structure.stow().schedule())));
+    shoot
+        .and(structure.moveAfterShoot.negate())
+        .onTrue(structure.shoot().andThen(Commands.runOnce(() -> structure.stow().schedule())));
+    backCoralIntake.onTrue(swerve.targetCoralStation(false));
     frontCoralIntake.onTrue(structure.frontCoralIntake());
     frontCoralIntake.onFalse(structure.stow());
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-125)));
-    frontCoralIntake
-        .and(onBlue)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(125)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight)
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(55)));
-    frontCoralIntake
-        .and(onRed)
-        .and(swerve.closerToRight.negate())
-        .onTrue(swerve.setTargetHeading(Rotation2d.fromDegrees(-55)));
+    frontCoralIntake.onTrue(swerve.targetCoralStation(true));
     coralGroundIntake.onTrue(structure.groundIntake());
     coralGroundIntake.onFalse(structure.stow());
     algaeGroundIntake.onTrue(structure.algaeGroundIntake());
-    algaeGroundIntake.onFalse(structure.stopPlacer());
+    algaeGroundIntake.onFalse(structure.algaeGroundHold());
+    faceReefCoral.debounce(0.1).whileTrue(swerve.reefCentric(xbox.getHID()));
+    faceReefCoral.onFalse(structure.readyNextCoral());
+    stopMusic.onTrue(structure.stopSinging());
   }
 
-  public void setupAuto() {
+  private void setupAuto() {
     NamedCommands.registerCommand(
-        "Ready L4", structure.readyLevel4().andThen(structure.stopPlacer()));
+        "Ready L4", structure.readyLevel4Auto().andThen(structure.stopPlacer()));
     NamedCommands.registerCommand("Ready High Algae", structure.readyAlgaeHigh());
     NamedCommands.registerCommand("Ready Low Algae", structure.readyAlgaeLow());
     NamedCommands.registerCommand("Shoot", structure.shoot());
     NamedCommands.registerCommand("Intake", structure.backCoralIntake());
     NamedCommands.registerCommand("Stow", structure.stow());
+    NamedCommands.registerCommand(
+        "Auto Align Top", swerve.forwardBranchCentric().alongWith(structure.readyLevel4Auto()));
+    NamedCommands.registerCommand(
+        "Auto Align Bottom", swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto()));
+    NamedCommands.registerCommand("Wait For Intake", Commands.waitUntil(structure.intook));
 
     SendableChooser<Command> chooser = new SendableChooser<>();
+    chooser.setDefaultOption("None", Commands.none());
     chooser.addOption("3 Coral Left", new PathPlannerAuto("3 Piece"));
     chooser.addOption("3 Coral Right", new PathPlannerAuto("3 Piece", true));
     chooser.addOption("1 Coral Backup", new PathPlannerAuto("Backup"));
-    SmartDashboard.putData("Auto Chooser/Auto Chooser", chooser);
+    SmartDashboard.putData("Auto Chooser", chooser);
     RobotModeTriggers.autonomous().whileTrue(Commands.deferredProxy(chooser::getSelected));
   }
 

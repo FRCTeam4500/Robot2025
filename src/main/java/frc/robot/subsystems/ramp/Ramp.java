@@ -1,11 +1,13 @@
 package frc.robot.subsystems.ramp;
 
+import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,8 +24,7 @@ import frc.robot.utilities.logging.Loggable;
 public class Ramp extends SubsystemBase implements Loggable {
   private Motor tiltMotor;
 
-  private double intakeAngle = -200;
-  private double stowAngle = -273;
+  private double hideAngle = -390;
 
   /** Creates a new Ramp subsystem. */
   public Ramp() {
@@ -34,22 +35,28 @@ public class Ramp extends SubsystemBase implements Loggable {
             (SparkMax max) -> {
               SparkMaxConfig config = new SparkMaxConfig();
               config.idleMode(IdleMode.kBrake);
-              config.inverted(true);
-              config.encoder.positionConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
-              config.encoder.velocityConversionFactor((1.0 / ((60 / 12) * (60 / 18))) * 360);
+              config.inverted(false);
+              config.encoder.positionConversionFactor((1.0 / (60 / 12)) * 360);
+              config.encoder.velocityConversionFactor((1.0 / (60 / 12) * 360));
               config.smartCurrentLimit(60);
-              max.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+              REVLibError err =
+                  max.configure(
+                      config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+              if (!err.equals(REVLibError.kOk)) {
+                HoundLog.logFault(
+                    "[Ramp] Tilt Motor Config Error: " + err.name(), AlertType.kError);
+              }
             },
             (FeedforwardSim jim) -> {
               jim.withHardstops(90, 270);
             },
-            -145,
+            -192,
             FeedbackController.fromPID(
-                new PIDController(0.015, 0, 0),
+                new PIDController(0.03, 0, 0),
                 (PIDController pid) -> {
                   pid.setTolerance(5);
                 }),
-            FeedforwardController.forArmGravity(0.31, 0.07, 0, 0),
+            FeedforwardController.forNone(),
             TargetType.Position);
     tiltMotor.getSysIDCommands("Ramp", 0.2, 0.5, 4).putOnDashboard("Ramp", this);
   }
@@ -69,7 +76,12 @@ public class Ramp extends SubsystemBase implements Loggable {
    * @return Command to move ramp to the stow angle.
    */
   public Command hide() {
-    return Commands.runOnce(() -> moveRamp(stowAngle));
+    return Commands.runOnce(
+            () -> {
+              moveRamp(hideAngle);
+            })
+        .andThen(Commands.waitUntil(() -> tiltMotor.getPosition() <= hideAngle))
+        .andThen(Commands.runOnce(() -> tiltMotor.setVoltage(0), this));
   }
 
   /**
@@ -78,7 +90,8 @@ public class Ramp extends SubsystemBase implements Loggable {
    * @param Command to move ramp to the intake angle.
    */
   public Command show() {
-    return Commands.runOnce(() -> moveRamp(intakeAngle));
+    return Commands.runOnce(() -> tiltMotor.setTarget(0))
+        .andThen(Commands.runOnce(() -> tiltMotor.setVoltage(0), this));
   }
 
   @Override

@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.925915009985048,
-        "y": 5.661252932520813
+        "x": 6.431676136363636,
+        "y": 6.104076704545455
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.123947590845291,
-        "y": 5.420853252397473
+        "x": 5.6638636363636365,
+        "y": 5.705213068181817
       },
       "prevControl": {
-        "x": 5.356690261737138,
-        "y": 5.512126737847133
+        "x": 6.112585227272727,
+        "y": 5.984417613636364
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,21 +39,21 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 4.0,
-    "maxAcceleration": 2.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -119.99999999999999
+    "velocity": 0.75,
+    "rotation": -119.42745640318985
   },
   "reversed": false,
-  "folder": "To Score",
+  "folder": "3 Piece",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": -119.99999999999999
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

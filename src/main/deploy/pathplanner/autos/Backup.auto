@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "4-H no align"
+                  "pathName": "4-H"
                 }
               },
               {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "H-Barge no align"
+            "pathName": "H-Barge"
           }
         },
         {
@@ -56,13 +56,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Barge-GH no align"
+            "pathName": "Barge-GH"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "GH-Back"
           }
         },
         {
@@ -74,7 +80,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }
