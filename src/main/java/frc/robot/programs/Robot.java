@@ -212,9 +212,10 @@ public class Robot extends LoggedRobot {
     NamedCommands.registerCommand(
         "Auto Align Bottom", swerve.backwardBranchCentric().alongWith(structure.readyLevel4Auto()));
     NamedCommands.registerCommand("Wait For Intake", Commands.waitUntil(structure.intook));
-    NamedCommands.registerCommand("Auto Align Left", swerve.leftBranchCentric().alongWith(structure.readyLevel4()));
-    NamedCommands.registerCommand("Auto Align Right", swerve.rightBranchCentric().alongWith(structure.readyLevel4()));
-
+    NamedCommands.registerCommand(
+        "Auto Align Left", swerve.leftBranchCentric().alongWith(structure.readyLevel4()));
+    NamedCommands.registerCommand(
+        "Auto Align Right", swerve.rightBranchCentric().alongWith(structure.readyLevel4()));
 
     SendableChooser<Command> chooser = new SendableChooser<>();
     chooser.setDefaultOption("None", Commands.none());
