@@ -52,51 +52,50 @@ public class Elevator extends SubsystemBase implements Loggable {
 
   public Elevator() {
     setIdleMode = (mode -> {});
-    upMotor = Motor.fromIdealSim(FeedbackController.fromPID(0, 0, 0, (pid) -> {}), TargetType.Position, 0);
-    // upMotor =
-    //     Motor.fromSparkMax(
-    //         ElevatorWiring.ELEVATOR_ID,
-    //         false,
-    //         (SparkMax spark) -> {
-    //           SparkMaxConfig config = new SparkMaxConfig();
-    //           config.idleMode(IdleMode.kBrake);
-    //           config.encoder.positionConversionFactor(1 / 63.1167979003);
-    //           config.encoder.velocityConversionFactor(1 / 63.1167979003);
-    //           config.smartCurrentLimit(60);
-    //           REVLibError err =
-    //               spark.configure(
-    //                   config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    //           if (!err.equals(REVLibError.kOk)) {
-    //             HoundLog.logFault(
-    //                 "[Elevator] Extension Motor Config Error: " + err.name(), AlertType.kError);
-    //           }
-    //           setIdleMode =
-    //               mode -> {
-    //                 config.idleMode(mode);
-    //                 REVLibError idlerr =
-    //                     spark.configure(
-    //                         config,
-    //                         ResetMode.kResetSafeParameters,
-    //                         PersistMode.kNoPersistParameters);
-    //                 if (!idlerr.equals(REVLibError.kOk)) {
-    //                   HoundLog.logFault(
-    //                       "[Elevator] Idle Mode Config Error: " + err.name(), AlertType.kError);
-    //                 } else {
-    //                   HoundLog.clearFault("[Elevator] Idle Mode Config Error: " + err.name());
-    //                 }
-    //               };
-    //         },
-    //         (FeedforwardSim sim) -> {
-    //           sim.withHardstops(0, 1);
-    //         },
-    //         0,
-    //         FeedbackController.fromPID(
-    //             new PIDController(75, 0, 0),
-    //             (PIDController pid) -> {
-    //               pid.setTolerance(0.05);
-    //             }),
-    //         FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
-    //         TargetType.Position);
+    upMotor =
+        Motor.fromSparkMax(
+            ElevatorWiring.ELEVATOR_ID,
+            false,
+            (SparkMax spark) -> {
+              SparkMaxConfig config = new SparkMaxConfig();
+              config.idleMode(IdleMode.kBrake);
+              config.encoder.positionConversionFactor(1 / 63.1167979003);
+              config.encoder.velocityConversionFactor(1 / 63.1167979003);
+              config.smartCurrentLimit(60);
+              REVLibError err =
+                  spark.configure(
+                      config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+              if (!err.equals(REVLibError.kOk)) {
+                HoundLog.logFault(
+                    "[Elevator] Extension Motor Config Error: " + err.name(), AlertType.kError);
+              }
+              setIdleMode =
+                  mode -> {
+                    config.idleMode(mode);
+                    REVLibError idlerr =
+                        spark.configure(
+                            config,
+                            ResetMode.kResetSafeParameters,
+                            PersistMode.kNoPersistParameters);
+                    if (!idlerr.equals(REVLibError.kOk)) {
+                      HoundLog.logFault(
+                          "[Elevator] Idle Mode Config Error: " + err.name(), AlertType.kError);
+                    } else {
+                      HoundLog.clearFault("[Elevator] Idle Mode Config Error: " + err.name());
+                    }
+                  };
+            },
+            (FeedforwardSim sim) -> {
+              sim.withHardstops(0, 1);
+            },
+            0,
+            FeedbackController.fromPID(
+                new PIDController(75, 0, 0),
+                (PIDController pid) -> {
+                  pid.setTolerance(0.05);
+                }),
+            FeedforwardController.forConstantGravity(0.775, 0.21877, 8.0517, 2.143),
+            TargetType.Position);
     zeroingSwitch = new DigitalInput(ElevatorWiring.ZEROING_CHANNEL);
     upMotor.getSysIDCommands("Elevator", 0.5, 2, 5).putOnDashboard("Elevator", this);
     upMotor.setMaxNegativeVoltage(-10);
