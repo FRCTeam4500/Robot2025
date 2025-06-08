@@ -1,16 +1,11 @@
 package frc.robot.subsystems.arm;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,8 +24,7 @@ public class Arm extends SubsystemBase implements Loggable {
 
   private final double startAngle = 90.851;
   private final double stowAngle = 75;
-  private double placeL4Angle = 55;
-  private DoubleSupplier l4AngleGetter = () -> placeL4Angle;
+  private final double placeL4Angle = 55;
   private final double placeL3Angle = 60;
   private final double placeL2Angle = 73.15;
   private final double placeL1Angle = 40;
@@ -84,16 +78,6 @@ public class Arm extends SubsystemBase implements Loggable {
 
     tiltMotor.useThroughBoreEncoder(ArmWiring.ENCODER_CHANNEL, true, .218);
     tiltMotor.getSysIDCommands("Arm", 0.25, 0.5, 4).putOnDashboard("Arm", this);
-    SmartDashboard.putData(
-      new Sendable() {
-
-        @Override
-        public void initSendable(SendableBuilder builder) {
-          builder.addDoubleProperty("Editable Arm L4 Position", () -> placeL4Angle, (d) -> placeL4Angle = d);
-        }
-        
-      }
-    );
   }
 
   public Command stow() {
@@ -190,7 +174,7 @@ public class Arm extends SubsystemBase implements Loggable {
   public Command placeL4() {
     return Commands.runOnce(
             () -> {
-              tiltMotor.setTarget(l4AngleGetter.getAsDouble());
+              tiltMotor.setTarget(placeL4Angle);
             },
             this)
         .andThen(
