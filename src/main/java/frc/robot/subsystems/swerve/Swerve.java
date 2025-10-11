@@ -71,7 +71,7 @@ public class Swerve extends SubsystemBase implements Loggable {
           new Limelight(
               "limelight-left",
               new Transform3d(
-                  new Translation3d(0.2286, 0.1905, 0.1905),
+                  new Translation3d(0.24241, 0.1725, 0.1905),
                   new Rotation3d(0, Math.toRadians(-15), 0)))
         };
     gyro = Gyro.fromNavX(() -> getSpeeds().omegaRadiansPerSecond, navx -> {});
